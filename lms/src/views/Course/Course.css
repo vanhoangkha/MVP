@@ -1,0 +1,117 @@
+.course-main {
+    min-height: calc(100vh - 120px);
+    width: 1000px;
+    background-color: white;
+    box-shadow: 0px 1px 2px rgba(0, 28, 36, 0.6);
+    margin: 40px;
+    margin-left: calc(50% - 500px);
+    padding: 20px;
+}
+
+.course-info {
+    display: inline-block;
+    width: calc(100% - 300px);
+    padding-right: 20px;
+}
+
+.course-title {
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.course-property {
+    color: rgba(0,0,0,.87);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.course-property a {
+    text-decoration: none;
+    color: #0073bb;
+}
+
+.course-property-icon {
+    margin-right: 10px;
+}
+
+.course-desc {
+    color: rgba(0,0,0,.54);
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+.course-separator {
+    border-bottom: solid 1px #D5DBDB;
+    margin: 20px -20px;
+}
+
+.course-action {
+    text-align: end;
+}
+
+.course-thumbnail {
+    display: inline-block;
+    width: 300px;
+    vertical-align: top; 
+}
+
+.course-thumbnail img {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+.course-bottom {
+    padding: 0 80px;
+}
+
+.course-what-to-learn-title {
+    font-size: 20px;
+    margin: 20px 0 30px 0;
+}
+
+.course-what-to-learn-item {
+    margin-bottom: 20px;
+}
+
+.course-what-to-learn-item div {
+    display: inline-block;
+    width: calc(100% - 20px);
+    padding-left: 20px;
+}
+
+.course-what-to-learn-item span {
+    color: #ec7211 !important;
+}
+
+.course-lectures {
+    border-bottom: solid 1px #D5DBDB;
+    padding: 15px;
+    margin: 0 -20px;
+}
+
+.course-lectures:first-child {
+    margin-top: -20px;
+}
+
+.course-lectures:last-child {
+    margin-bottom: -20px;
+}
+
+.course-lecture-item {
+    margin: 0 40px;
+    padding: 10px 0;
+    border-bottom: solid 1px #D5DBDB;
+    color: #879596;
+    font-size: 12px;
+}
+
+.course-lecture-item:last-child {
+    border-bottom: none;
+    margin-bottom: -10px;
+}
+
+.course-lectures > div:first-child {
+    border: none !important;
+    font-size: 14px;
+    font-weight: bold !important;
+}

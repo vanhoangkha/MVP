@@ -1,0 +1,10 @@
+{
+  "resourceName": "Categories",
+  "tableName": "Categories",
+  "partitionKey": {
+    "fieldName": "Name",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

@@ -1,0 +1,12 @@
+{
+  "resourceName": "Videos",
+  "policyUUID": "a24437a4",
+  "bucketName": "lms70b1ab2bca664365b2cdfa02584c02a9",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "READ"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

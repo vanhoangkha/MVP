@@ -1,0 +1,14 @@
+{
+  "resourceName": "UserCourse",
+  "tableName": "UserCourse",
+  "partitionKey": {
+    "fieldName": "UserID",
+    "fieldType": "string"
+  },
+  "sortKey": {
+    "fieldName": "CourseID",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

@@ -1,0 +1,10 @@
+{
+  "resourceName": "Lectures",
+  "tableName": "Lectures",
+  "partitionKey": {
+    "fieldName": "ID",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

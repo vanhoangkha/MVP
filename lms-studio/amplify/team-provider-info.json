@@ -1,0 +1,27 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lmsstudio-dev-31057-authRole",
+      "UnauthRoleArn": "arn:aws:iam::320740598534:role/amplify-lmsstudio-dev-31057-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::320740598534:role/amplify-lmsstudio-dev-31057-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-lmsstudio-dev-31057-deployment",
+      "UnauthRoleName": "amplify-lmsstudio-dev-31057-unauthRole",
+      "StackName": "amplify-lmsstudio-dev-31057",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:320740598534:stack/amplify-lmsstudio-dev-31057/3d7b4e50-0e14-11ee-9529-02ebe51b26a8",
+      "AmplifyAppId": "d1nq8fdu3ddi3x",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-lmsstudio-dev-31057-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1nq8fdu3ddi3x",
+          "type": "manual"
+        }
+      },
+      "auth": {
+        "lmsstudioc3fd255f": {}
+      }
+    }
+  }
+}

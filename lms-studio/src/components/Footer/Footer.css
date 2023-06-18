@@ -1,0 +1,34 @@
+.footer {
+    height: 30px;
+    background-color: #232F3E;
+    padding: 0 20px;
+}
+
+.footer-div {
+    margin-top: -8px;
+    display: inline-block;
+}
+
+.footer-div-left {
+    width: 50px;
+}
+
+.footer-div-right {
+    text-align: right;
+    width: calc(100% - 50px);
+}
+
+.footer span {
+    color: #AAB7B8;
+    font-size: 12px;
+}
+
+.footer a {
+    color: #D5DBDB;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.footer-div-right a {
+    margin-left: 40px;
+}
