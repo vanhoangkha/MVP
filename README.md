@@ -17,9 +17,13 @@ $ cd lms/lms-studio
 $ (sudo) amplify init
 
 ? Enter a name for the environment: dev
+
 ? Choose your default editor: <Choose your favorite editor>
+
 Using default provider  awscloudformation
+
 ? Select the authentication method you want to use: AWS profile
+
 ? Please choose the profile you want to use : <Choose the profile you created in Configure the Amplify CLI from section 2. Download Amplify CLI>
 
 $ amplify push
@@ -61,7 +65,7 @@ Inside your cloned repository from section 1, create a new branch, naming conven
 
 You develope, test the project with that branch.
 
-After that, you create a pull request to the CodeCommit Git Repository in mintuan's account.
+After that, you create a pull request to the CodeCommit Git Repository to mintuan's account.
 
 mintuan will review and merge the pull requests from everyone.
 
