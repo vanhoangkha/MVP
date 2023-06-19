@@ -1,15 +1,15 @@
-### 1. Git clone code from mintuan's account into your local laptop: 
+# 1. Git clone code from mintuan's account into your local laptop: 
 $ git clone https://git-codecommit.ap-southeast-1.amazonaws.com/v1/repos/LMS
 
 
 
-### 2. Download Amplify CLI:  
+# 2. Download Amplify CLI:  
 Follow below instructions in section "Install the Amplify CLI", and section "Configure the Amplify CLI": 
 https://docs.amplify.aws/cli/start/install/#configure-the-amplify-cli 
 * Note: amplify configure will ask you to sign into the AWS Console. Remember to log into your own isengard account to sign into that AWS Console.
 * Step: "Specify the AWS Region" -> Choose Singapore Region.
 
-### 3. Init Amplify and connect your local env to the Cloud:
+# 3. Init Amplify and connect your local env to the Cloud:
 Open your local LMS root folder, then:
 
 $ cd lms/lms-studio
@@ -25,7 +25,7 @@ Using default provider  awscloudformation
 $ amplify push
 
 
-####  Similarly, do all above steps in this section 3 for lms:
+##  Similarly, do all above steps in this section 3 for lms:
 Open your local LMS root folder, then:
 
 $ cd lms/lms
@@ -34,10 +34,10 @@ $ (sudo) amplify init
 ...
 
 
-### 4. Check your apps are on or not:
+# 4. Check your apps are on or not:
 Open your own isengard account and go to "Amplify" service to check if your app is now shown on or not (apps'name:  lms, lmsstudio)   
 
-### 5. Run Frontend  from your local laptop:
+# 5. Run Frontend  from your local laptop:
 #### How to run lms FE:
 Open your local LMS root folder, then:
 
@@ -56,7 +56,7 @@ $ npm i
 
 $ npm start
 
-### 6. How can we contribute to the source code ?
+# 6. How can we contribute to the source code ?
 Inside your cloned repository from section 1, create a new branch, naming convention: <branch_name_convention>
 
 You develope, test the project with that branch.
