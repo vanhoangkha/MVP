@@ -65,7 +65,7 @@ Inside your cloned repository from section 1, create a new branch, naming conven
 
 You develope, test the project with that branch.
 
-After that, you create a pull request to the CodeCommit Git Repository to mintuan's account.
+After that, you create a pull request to the CodeCommit Git Repository inside mintuan's account.
 
 mintuan will review and merge the pull requests from everyone.
 
