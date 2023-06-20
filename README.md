@@ -1,17 +1,24 @@
-# 1. Git clone code from mintuan's account into your local laptop: 
+# LEARNING MANAGEMENT SYSTEM
+
+## 1. Architect Overview
+![architect](/images/LMS.jpg)
+- Cloud Academy -> ***lms***
+- Cloud Academy -> ***lms-studio***
+## 2. Clone code:
+```bash
 $ git clone https://git-codecommit.ap-southeast-1.amazonaws.com/v1/repos/LMS
+```
 
 
-
-# 2. Download Amplify CLI:  
+## 2. Download Amplify CLI:  
 Follow below instructions in section "Install the Amplify CLI", and section "Configure the Amplify CLI": 
-https://docs.amplify.aws/cli/start/install/#configure-the-amplify-cli 
-* Note: amplify configure will ask you to sign into the AWS Console. Remember to log into your own isengard account to sign into that AWS Console.
-* Step: "Specify the AWS Region" -> Choose Singapore Region.
+[Amplify setup link](https://docs.amplify.aws/cli/start/install/#configure-the-amplify-cli)
+* **Note**: amplify configure will ask you to sign into the AWS Console. Remember to log into your own isengard account to sign into that AWS Console.
+* **Step**: "Specify the AWS Region" -> Choose Singapore Region.
 
-# 3. Init Amplify and connect your local env to the Cloud:
-Open your local LMS root folder, then:
-
+## 3. Init Amplify and connect your local env to the Cloud:
+- Open your local LMS root folder and do amplify setup with ***lms-studio*** first:
+```bash
 $ cd lms/lms-studio
 
 $ (sudo) amplify init
@@ -27,16 +34,16 @@ Using default provider  awscloudformation
 ? Please choose the profile you want to use : <Choose the profile you created in Configure the Amplify CLI from section 2. Download Amplify CLI>
 
 $ amplify push
+```
 
-
-##  Similarly, do all above steps in this section 3 for lms:
+- Similarly, do all above steps in this section 3 for ***lms***:
 Open your local LMS root folder, then:
-
+```bash
 $ cd lms/lms
 
 $ (sudo) amplify init
 ...
-
+```
 
 # 4. Check your apps are on or not:
 Open your own isengard account and go to "Amplify" service to check if your app is now shown on or not (apps'name:  lms, lmsstudio)   
