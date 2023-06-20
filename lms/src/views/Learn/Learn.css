@@ -1,23 +1,20 @@
 .learn-parent-container {
     /* background-color: #232F3E; */
-    padding: 20px 20px 0 20px;
+    /* padding: 20px 20px 0 20px; */
     height: calc(100vh - 118px);
+}
+
+.fullscreen {
+    height: 100%;
 }
   
 .learn-fullscreen-enabled {
     background: white !important;
 }
-  
-/* .learn-side-bar-container {
-    background-image: linear-gradient(#262262, #232F3E, #232F3E, #232F3E, #232F3E, #232F3E);
-    width: 300px;
-    padding: 10px 20px;
-    padding-bottom: 5px;
-    height: 100%;
-    float: left;
-    display: flex;
-    flex-flow: column;
-} */
+
+.fullscreen-enabled .learn-lab-content-container {
+    padding: 20px;
+}
   
 .learn-video-player-container {
     height: 100%;
@@ -40,7 +37,7 @@ a.learn-fill-div:hover {
 }
 
 .learn-logo-container {
-    background-color: rgba(255,255,255,0.learn-1);
+    background-color: rgba(255,255,255,0.1);
     padding: 15px;
     border-radius: 15px;
     margin-bottom: 40px;
@@ -186,7 +183,7 @@ a.learn-fill-div:hover {
   
 .learn-parent-loading {
     text-align: center;
-    padding-top: 50vh !important;
+    padding-top: 40vh !important;
 }
   
 .learn-lecture-loading {
@@ -198,7 +195,7 @@ a.learn-fill-div:hover {
 .learn-player-loading {
     height: 100%;
     text-align: center;
-    padding-top: 50vh !important;
+    padding-top: 30vh !important;
 }
   
 .learn-loading-gif {
@@ -206,7 +203,11 @@ a.learn-fill-div:hover {
 }
   
 .learn-content-parent {
-    height: calc(100vh - 240px);
+    height: 100%;
+}
+
+.learn-content-parent.full-screen {
+    background-color: white;
 }
   
 .learn-content-main {
@@ -215,7 +216,7 @@ a.learn-fill-div:hover {
   
 .learn-content-control {
     height: 30px;
-    background-color: rgba(0, 0, 0, 0.learn-2);
+    background-color: rgba(38, 50, 56, 0.8);
 }
   
 .learn-content-control-left {
@@ -231,7 +232,7 @@ a.learn-fill-div:hover {
   
 .learn-content-control-btn {
     background-color: transparent;
-    /* color: white; */
+    color: white;
     border: 0px;
     width: 40px;
 }
@@ -242,10 +243,6 @@ a.learn-fill-div:hover {
   
 .learn-video-react-control-bar {
     background-color: rgba(0, 0, 0, 0.08) !important;
-  }
-  
-.learn-lab-content-container {
-    padding: 15px 20px;
 }
   
 .learn-lab-content-header {
@@ -275,13 +272,14 @@ a.learn-fill-div:hover {
   
 .learn-next-lecture {
     width: 300px;
-    height: 60px;
+    height: 80px;
     position: absolute;
-    bottom: 70px;
+    bottom: 10px;
     right: 10px;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.8);
     border-radius: 10px;
     padding: 15px;
+    color: white;
 }
   
 .learn-next-lecture-count {
@@ -289,42 +287,42 @@ a.learn-fill-div:hover {
     font-weight: bold;
     text-align: center;
     position: relative;
-    top: -15px;
+    top: -5px;
+    display: inline-block;
+    width: 20%;
+}
+
+.learn-next-lecture-right {
+    width: 80%;
+    display: inline-block;
 }
   
 .learn-next-lecture-header {
-    margin-top: 0 !important;
-    position: relative;
-    left: -15px;
-    top: -5px;
     font-size: 12px;
-    opacity: 0.5;
+    opacity: 0.6;
 }
   
 .learn-next-lecture-name {
-    width: 220px;
+    width: 200px;
     font-size: 14px;
-    position: relative;
-    left: -3px;
-    top: -10px;
     display:inline-block !important;
     text-overflow: ellipsis;
-    overflow: hidden; 
+    overflow: hidden;
     white-space: nowrap;
 }
   
 .learn-next-lecture-cancel {
     background-color: transparent;
-    /* color: white; */
+    color: white;
     border: 0px;
     width: 40px;
-    position: relative;
-    left: -10px;
-    top: -10px;
+    position: absolute;
+    right: 0;
+    top: 10px;
 }
   
 .learn-auto-next-control {
-    display: inline;
+    display: inline-block !important;
     font-size: 10px !important;
     margin-left: 10px;
     padding: 2px 5px !important;
@@ -332,17 +330,19 @@ a.learn-fill-div:hover {
     outline: none !important;
     box-shadow: none !important;
     opacity: 0.7;
+    color: white !important;
 }
   
 .learn-auto-next-control-icon {
-    font-size: 11px;
-    margin-left: 2px;
+    font-size: 14px;
+    position: relative;
+    left: 4px;
+    top: 3px;
 }
 
 .learn-board {
-    box-shadow: 0px 1px 2px rgba(0, 28, 36, 0.6);
-    /* border: solid 1px black; */
     background-color: white;
+    height: 100%;
 }
 
 .learn-board-header {
@@ -356,11 +356,60 @@ a.learn-fill-div:hover {
 .learn-board-content {
     padding: 20px;
     font-size: 14px;
+    height: calc(100% - 62px)
 }
 
-.learn-board-footer {
-    height: 56px;
-    border-top: solid 1px #EAEDED;
-    text-align: right;
-    padding: 12px 20px 12px 20px;
+.learn-navigation-badge {
+    float: right;
+    /* opacity: 0.5; */
+}
+
+.learn-navigation-badge svg {
+    color: #2E7D32;
+    height: 8px;
+    position: relative;
+    top: -1px;
+}
+
+.learn-navigation-chapter {
+    width: 230px;
+}
+
+.learn-navigation-chapter span {
+    float: right;
+}
+
+.learn-navigation-chapter svg {
+    position: relative;
+    top: 2px;
+}
+
+.learn-navigation-progress {
+    color: #EC7211;
+    font-weight: bold;
+}
+
+.learn-navigation-progress-completed {
+    color: #2E7D32;
+    font-weight: bold;
+}
+
+.learn-navigation-progress-completed svg {
+    position: relative;
+    top: 2px;
+}
+
+/* This is temporary overwrite Clouscape CSS */
+.awsui_link-active_l0dv0_5p78l_219 {
+    font-weight: normal !important;
+}
+
+/* This is temporary overwrite Clouscape CSS */
+.awsui_wrapper-footer_gwq0h_ohtdp_199 {
+    font-weight: bold !important;
+}
+
+/* This is temporary overwrite Clouscape CSS */
+.awsui_info_l0dv0_5p78l_253 {
+    opacity: 0.7;
 }

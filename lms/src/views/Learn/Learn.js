@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import './Learn.css';
 import "video-react/dist/video-react.css";
-import { API } from 'aws-amplify';
+import { API, Auth } from 'aws-amplify';
 import {Helmet} from "react-helmet";
 import NavBar from '../../components/NavBar/NavBar';
-import { AppLayout, BreadcrumbGroup, SideNavigation } from '@cloudscape-design/components';
+import { AppLayout, BreadcrumbGroup, SideNavigation, Toggle } from '@cloudscape-design/components';
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import { Player, LoadingSpinner, BigPlayButton, ControlBar, ReplayControl, ForwardControl, PlaybackRateMenuButton, VolumeMenuButton, FullscreenToggle } from 'video-react';
 
-import { IoChevronBack, IoChevronForward, IoExpand, IoContract, IoClose } from 'react-icons/io5';
+import { IoChevronBack, IoChevronForward, IoExpand, IoContract, IoClose, IoCheckmarkCircleOutline, IoCloseCircleOutline, IoTimeOutline, IoEllipseSharp, IoCheckmarkSharp } from 'react-icons/io5';
+import { Navigate } from "react-router-dom";
+
+import loadingGif from '../../assets/images/loading.gif';
 
 const DEBUG = true;
 const landingPageUrl = "https://dev.dfpjafbqllhh1.amplifyapp.com/";
@@ -21,16 +24,14 @@ function PageMetadata(props) {
   }
   
   function LoadingContainer() {
-    return <div fluid="true" className='learn-parent-container parent-loading'>
-        {/* <img src={loadingGif} alt="loading..." className='learn-loading-gif' /> */}
-        Loading...
+    return <div fluid="true" className='learn-parent-loading'>
+        <img src={loadingGif} alt="loading..." className='learn-loading-gif' />
     </div>;
   }
   
   function ContentLoading() {
     return <div className='learn-player-loading'>
-        {/* <img src={loadingGif} alt="loading..." className='learn-loading-gif' /> */}
-        Loading...
+        <img src={loadingGif} alt="loading..." className='learn-loading-gif' />
     </div>;
   }
   
@@ -97,7 +98,7 @@ function PageMetadata(props) {
   
   function LabContent(props) {
     return <div className="learn-lab-content-container">
-      <div className="learn-lab-content-header">Bài tập thực hành</div>
+      {/* <div className="learn-lab-content-header">Bài tập thực hành</div> */}
       <div className="learn-lab-content-desc">{props.desc}</div>
       <div className="learn-lab-content-link">
         <button onClick={() => {props.openLink(props.url)}}>
@@ -109,7 +110,7 @@ function PageMetadata(props) {
   
   function DocumentContent(props) {
     return <div className="learn-lab-content-container">
-      <div className="learn-lab-content-header">Tài liệu tham khảo</div>
+      {/* <div className="learn-lab-content-header">Tài liệu tham khảo</div> */}
       <div className="learn-lab-content-desc">{props.desc}</div>
       <div className="learn-lab-content-link">
         <button onClick={() => {props.openLink(props.url)}}>
@@ -121,7 +122,7 @@ function PageMetadata(props) {
   
   function SurveyContent(props) {
     return <div className="learn-lab-content-container">
-      <div className="learn-lab-content-header">{props.name}</div>
+      {/* <div className="learn-lab-content-header">{props.name}</div> */}
       <div className="learn-lab-content-desc">{props.desc}</div>
       <div className="learn-lab-content-link">
         <button onClick={() => {props.openLink(props.url)}}>
@@ -138,7 +139,7 @@ function PageMetadata(props) {
     const [timeLeft, setTimeLeft] = useState(100);
   
     return <FullScreen handle={handle}>
-      <div className='learn-content-parent'>
+      <div className={fullscreen ? 'learn-content-parent full-screen' : 'learn-content-parent'}>
         <div className='learn-content-main'>
           {props.loading ? 
             <ContentLoading /> : 
@@ -155,6 +156,7 @@ function PageMetadata(props) {
                 setFullscreen(!fullscreen);
               }}
               handleVideoEnded={() => {
+                props.markLectureCompleted();
                 if (autoNext && !props.isLast) {
                   setTimeLeft(100);
                   props.nextLecture();
@@ -179,7 +181,7 @@ function PageMetadata(props) {
               <button className='learn-content-control-btn' onClick={props.nextLecture}>
                 <IoChevronForward />
               </button>}
-            {/* <ToggleButton Todo
+            <Toggle Todo
               className="learn-auto-next-control"
               id="toggle-check"
               type="checkbox"
@@ -187,11 +189,11 @@ function PageMetadata(props) {
               checked={autoNext}
               onChange={(e) => setAutoNext(!autoNext)}
             >
-              Tự động chuyển bài 
+              Auto Next
               {autoNext ? 
                 <IoCheckmarkCircleOutline className='learn-auto-next-control-icon'/> : 
                 <IoCloseCircleOutline className='learn-auto-next-control-icon'/>}
-            </ToggleButton> */}
+            </Toggle>
           </div>
           <div className='learn-content-control-right'>
             <button className='learn-content-control-btn' onClick={() => {
@@ -203,29 +205,25 @@ function PageMetadata(props) {
           </div>
         </div>
         {autoNext && !props.isLast && timeLeft!==null && timeLeft<=5 ? 
-          <div className='learn-next-lecture'>
-            <div>
-              <div xs={3} className="learn-next-lecture-count">
-                {timeLeft}
-              </div>
-              <div xs={9}>
-                <div>
-                  <div xs={10} className="learn-next-lecture-header">Bài tiếp theo</div>
-                  <div xs={2}>
-                    <button className='learn-next-lecture-cancel' onClick={() => {
-                      setAutoNext(false);
-                    }}>
-                      <IoClose/>
-                    </button>
-                  </div>
+            <div className='learn-next-lecture'>
+                <div className="learn-next-lecture-count">
+                    {timeLeft}
                 </div>
-                <div className="learn-next-lecture-name">
-                  {props.nextLectureName}
+                <div className="learn-next-lecture-right">
+                    <div>
+                        <div className="learn-next-lecture-header">Next</div>
+                        <button className='learn-next-lecture-cancel' onClick={() => {
+                            setAutoNext(false);
+                        }}>
+                            <IoClose/>
+                        </button>
+                    </div>
+                    <div className="learn-next-lecture-name">
+                        {props.nextLectureName}
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div> : 
-          <></>}
+            </div> : 
+            <></>}
       </div>
     </FullScreen>
   }
@@ -234,6 +232,7 @@ export default class Learn extends React.Component {
     constructor(props) { 
       super(props); 
       this.state = { 
+        loggedIn: null,
         loading: true,
         course: null,
         lecture: {
@@ -242,21 +241,22 @@ export default class Learn extends React.Component {
           lecture: null
         },
         nextLectureName: "",
+        completedLectures: [],
       };
     }
   
     getHashParams() {
       return {
-        course: window.location.href.split("/")[4],
-        lecture: window.location.href.split("/")[2],
+        course: window.location.hash.split("/")[2],
+        lecture: window.location.hash.split("/")[4],
       }
     }
   
     setHashParams(course, lecture) {
-    //   if (!lecture)
-        // window.location.hash = "/course/" + course;
-    //   else
-        window.location.hash = "/lecture/" + lecture;
+        if (!lecture)
+            window.location.hash = "/learn/" + course;
+        else
+            window.location.hash = "/learn/" + course + "/lecture/" + lecture;
     }
   
     setLocalStorage(course, lecture) {
@@ -273,11 +273,9 @@ export default class Learn extends React.Component {
     }
 
     loadLectureById(lectureId) {
-        console.log(lectureId);
         this.state.course.chapters.forEach((chapter, chapterIndex) => {
             chapter.lectures.forEach((lecture, lectureIndex) => {
                 if (lecture.lectureId === lectureId) {
-                    console.log(chapterIndex, lectureIndex);
                     this.loadLecture(chapterIndex, lectureIndex);
                 }
             })
@@ -286,7 +284,6 @@ export default class Learn extends React.Component {
   
     loadLecture(chapterIndex, lectureIndex) {
         let lectureId = this.state.course.chapters[chapterIndex].lectures[lectureIndex].lectureId;
-        console.log(lectureId);
     
         const apiName = 'courses';
         const path = '/lectures/' + lectureId; 
@@ -312,10 +309,15 @@ export default class Learn extends React.Component {
                     },
                     loading: false,
                     nextLectureName: this.getNextLectureName(chapterIndex, lectureIndex)
+                }, () => {
+                    let hashParams = this.getHashParams();
+                    this.setHashParams(hashParams.course, response.ID);
+                    this.setLocalStorage(hashParams.course, response.ID);
+                    
+                    if (this.state.lecture.lecture.type === 'lab' || this.state.lecture.lecture.type === 'survey' || this.state.lecture.lecture.type === 'document') {
+                        this.markLectureCompleted(this.state.lecture.lecture.id);
+                    }
                 });
-                let hashParams = this.getHashParams();
-                this.setHashParams(hashParams.course, response.data.id);
-                this.setLocalStorage(hashParams.course, response.data.id);
             })
             .catch(error => {
                 console.log(error);
@@ -347,9 +349,6 @@ export default class Learn extends React.Component {
         API
             .get(apiName, path, init)
             .then(response => {      
-                // this.setHashParams(course, lecture);
-                // this.setLocalStorage(course, lecture);
-
                 let course = {
                     id: response.ID,
                     name: response.Name,
@@ -361,6 +360,7 @@ export default class Learn extends React.Component {
                     whatToLearn: response.WhatToLearn,
                     requirements: response.Requirements,
                     chapters: response.Chapters,
+                    totalLecture: 0,
                 }
         
                 let chapters = course.chapters;
@@ -370,14 +370,22 @@ export default class Learn extends React.Component {
                 while (chapters[0].lectures[firstLectureIndex].type === "section") firstLectureIndex++;
         
                 for (let i = 0; i < chapters.length; i++) {
+                    chapters[i].length = 0;
                     chapters[i].lectures[0].realIndex = 0;
+                    chapters[i].length += chapters[i].lectures[0].length;
                     for (let j = 1; j < chapters[i].lectures.length; j++) {
-                    if (chapters[i].lectures[j-1].type === "section")
-                        chapters[i].lectures[j].realIndex = chapters[i].lectures[j-1].realIndex;
-                    else 
-                        chapters[i].lectures[j].realIndex = chapters[i].lectures[j-1].realIndex + 1;
+                        if (chapters[i].lectures[j-1].type === "section") {
+                            chapters[i].lectures[j].realIndex = chapters[i].lectures[j-1].realIndex;
+                        } else {
+                            chapters[i].lectures[j].realIndex = chapters[i].lectures[j-1].realIndex + 1;
+                            chapters[i].length += chapters[i].lectures[j].length;
+                        }
                     }
                 }
+
+                chapters.forEach(chapter => {
+                    chapter.lectures.forEach(lecture => course.totalLecture += lecture.type !== "section");
+                })
         
                 if (!!lecture)
                     for (let i = 0; i < chapters.length; i++) {
@@ -394,14 +402,16 @@ export default class Learn extends React.Component {
                         name: course.name,
                         chapters: chapters,
                         firstLectureIndex: firstLectureIndex,
+                        totalLecture: course.totalLecture
                     },
+                }, () => {
+                    this.loadUserLecture();
+                    if (hashLectureIndex === -1) 
+                        this.loadLecture(0, firstLectureIndex);
+                    else
+                        this.loadLecture(hashChapterIndex, hashLectureIndex);
                 });
-        
-                if (hashLectureIndex === -1) 
-                    this.loadLecture(0, firstLectureIndex);
-                else 
-                    this.loadLecture(hashChapterIndex, hashLectureIndex);
-                })
+            })
             .catch(error => {
                 console.log(error);
                 if (!DEBUG)
@@ -409,7 +419,7 @@ export default class Learn extends React.Component {
             });
     }
 
-    loadUserCourse(courseId) {
+    loadUserCourse() {
         let hashParams = this.getHashParams();
         let course = hashParams.course;
         
@@ -417,14 +427,35 @@ export default class Learn extends React.Component {
         const path = '/users/courses/' + course;
         
         API.get(apiName, path)
-          .then((response) => {
-            // console.log(response);
-          })
-          .catch((error) => {
-            console.log(error.response);
-          });
+            .then((response) => {
+                // console.log(response);
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
     }
   
+    loadUserLecture() {
+        const apiName = 'courses';
+        const path = '/users/lectures/' + this.state.userId;
+
+        console.log(path);
+        
+        API.get(apiName, path)
+            .then((response) => {
+                let completedLectures = [];
+                response.forEach(lecture => {
+                    completedLectures.push(lecture.LectureID);
+                })
+                this.setState({
+                    completedLectures: completedLectures,
+                })
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+    }
+
     prevLecture() {
       let chapterId = this.state.lecture.chapterId;
       let lectureId = this.state.lecture.lectureId;
@@ -485,81 +516,160 @@ export default class Learn extends React.Component {
       return chapterId < this.state.course.chapters.length && lectureId < this.state.course.chapters[chapterId].lectures.length
         ? this.state.course.chapters[chapterId].lectures[lectureId].name
         : "";
-    }  
+    }
+
+    async markLectureCompleted(lectureId) {
+        if (!this.state.completedLectures.includes(lectureId)) {
+            this.setState(prevState => {
+                if (!prevState.completedLectures.includes(lectureId))
+                    prevState.completedLectures.push(lectureId);
+                    const apiName = 'courses';
+                    const path = '/users/lectures';
+                    const myInit = {
+                        body: {
+                            UserID: this.state.userId,
+                            LectureID: lectureId,
+                            Status: "COMPLETED",
+                        }
+                    };
+
+                    API.put(apiName, path, myInit)
+                    .then((response) => {
+                        console.log(response);
+                    })
+                    .catch((error) => {
+                        console.log(error.response);
+                    });
+                return prevState;
+            });
+        }
+    }
+    
+    async ionViewCanEnter() {
+        try {
+            await Auth.currentAuthenticatedUser();
+            this.setState({
+                loggedIn: true,
+            })
+        } catch {
+            this.setState({
+                loggedIn: false,
+            })
+        }
+    }
+    
+    async loadUserId(callback) {
+        let credentials = await Auth.currentUserCredentials();
+        this.setState({
+            userId: credentials.identityId,
+        }, callback)
+    }
 
     componentDidMount() {
+        this.ionViewCanEnter();
+        this.loadUserId(() => this.loadCourse());
         this.loadCourse();
         this.loadUserCourse();
     }
 
-    render() {
-        console.log(this.state.lecture);
-        return <div>
-            <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
-            <AppLayout headerSelector="#h"
-                navigation={<SideNavigation
-                    activeHref={!this.state.lecture || !this.state.lecture.lecture ? "" : this.state.lecture.lecture.id}
-                    header={{ text: !this.state.course ? "" : this.state.course.name }}
-                    onFollow={event => {
-                        if (!event.detail.external) {
-                            event.preventDefault();
-                            if (!!event.detail.href) {
-                                this.loadLectureById(event.detail.href);
-                            }
-                        }
-                    }}
-                    items={!this.state.course || !this.state.course.chapters ? [] : 
-                        this.state.course.chapters.map(chapter => {
-                            let chapterToRender = {
-                                type: "section",
-                                text: chapter.name,
-                                items: chapter.lectures.map(lecture => {
-                                    return {
-                                        type: "link",
-                                        text: lecture.name,
-                                        href: lecture.lectureId,
-                                }}),
-                            };
-                            return chapterToRender;
-                        })
-                    }
-                />}
-                breadcrumbs={<BreadcrumbGroup
-                    items={[
-                        { 
-                            text: "My Learning", 
-                            href: "/mylearning" 
-                        },
-                        {
-                            text: !this.state.course ? "" : this.state.course.name
-                        }
-                    ]}
-                    ariaLabel="Breadcrumbs"
-                />}
-                content={!this.state.course ? 
-                    <LoadingContainer /> : 
-                    <div fluid="true" className='learn-parent-container'>
-                      <PageMetadata courseName={this.state.course.name} />
+    formatTime(timeInSecond) {
+        let minute = Math.floor(timeInSecond / 60);
+        let second = timeInSecond % 60;
 
-                      <div className='learn-video-player-container'>
-                        <div className='learn-board'>
-                            <div className='learn-board-header'>
-                                Requirements
-                            </div>
-                            <div className='learn-board-content'>
-                                <MainContent loading={this.state.loading}
-                                lecture={this.state.lecture} 
-                                nextLectureName={this.state.nextLectureName}
-                                isFirst={this.state.lecture.chapterId === 0 && this.state.course.chapters[this.state.lecture.chapterId].lectures[this.state.lecture.lectureId].realIndex === 0}
-                                isLast={this.state.lecture.chapterId === this.state.course.chapters.length - 1 && this.state.lecture.lectureId === this.state.course.chapters[this.state.lecture.chapterId].lectures.length - 1}
-                                prevLecture={() => {this.prevLecture()}}
-                                nextLecture={() => {this.nextLecture()}} />
+        if (minute < 10) minute = "0" + minute;
+        if (second < 10) second = "0" + second;
+
+        return minute + ":" + second;
+    }
+
+    render() {
+        return this.state.loggedIn === false 
+            ? <Navigate to="/auth" />
+            : <div>
+                <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
+                <AppLayout headerSelector="#h"
+                    navigation={<SideNavigation
+                        activeHref={!this.state.lecture || !this.state.lecture.lecture ? "" : this.state.lecture.lecture.id}
+                        header={{ text: !this.state.course ? "" : this.state.course.name }}
+                        onFollow={event => {
+                            if (!event.detail.external) {
+                                event.preventDefault();
+                                if (!!event.detail.href) {
+                                    if (event.detail.href === "#certificate") {
+                                        console.log("View Cert");
+                                    } else {
+                                        this.loadLectureById(event.detail.href);
+                                    }
+                                }
+                            }
+                        }}
+                        items={!this.state.course || !this.state.course.chapters ? [] : [
+                                {
+                                    type: "link",
+                                    href: this.state.completedLectures.length / this.state.course.totalLecture >= 0.8 ? "#certificate" : "",
+                                    text: this.state.completedLectures.length / this.state.course.totalLecture >= 0.8
+                                        ? <span className="learn-navigation-progress-completed">Completed  {this.state.completedLectures.length} out of {this.state.course.totalLecture} lectures <IoCheckmarkSharp/></span>
+                                        : <span className="learn-navigation-progress">Completed  {this.state.completedLectures.length} out of {this.state.course.totalLecture} lectures</span>
+                                }
+                            ].concat(
+                                this.state.course.chapters.map(chapter => {
+                                    let chapterToRender = {
+                                        type: "section",
+                                        text: <div className="learn-navigation-chapter">{chapter.name} <span><IoTimeOutline /> {this.formatTime(chapter.length)}</span></div>,
+                                        defaultExpanded: !!this.state.lecture && !!this.state.lecture.lecture && chapter.lectures.filter(lecture => lecture.lectureId === this.state.lecture.lecture.id).length > 0,
+                                        items: chapter.lectures.map(lecture => {
+                                            return {
+                                                type: "link",
+                                                text: lecture.name,
+                                                href: lecture.lectureId,
+                                                info: this.state.completedLectures.includes(lecture.lectureId)
+                                                    ? <span className="learn-navigation-badge"><IoEllipseSharp/>{this.formatTime(lecture.length)}</span>
+                                                    : <span className="learn-navigation-badge">{this.formatTime(lecture.length)}</span>
+                                            }
+                                        }),
+                                    };
+                                    return chapterToRender;
+                                })
+                            )
+                        }
+                    />}
+                    breadcrumbs={<BreadcrumbGroup
+                        items={[
+                            { 
+                                text: "My Learning", 
+                                href: "#/mylearning" 
+                            },
+                            {
+                                text: !this.state.course ? "" : this.state.course.name
+                            }
+                        ]}
+                        ariaLabel="Breadcrumbs"
+                    />}
+                    content={!this.state.course ? 
+                        <LoadingContainer /> :
+                        <div fluid="true" className='learn-parent-container'>
+                        <PageMetadata courseName={this.state.course.name} />
+
+                        <div className='learn-video-player-container'>
+                            <div className='learn-board'>
+                                <div className='learn-board-header'>
+                                    {!this.state.lecture.lecture ? "" : this.state.lecture.lecture.name}
+                                </div>
+                                <div className='learn-board-content'>
+                                    <MainContent loading={this.state.loading}
+                                        lecture={this.state.lecture} 
+                                        nextLectureName={this.state.nextLectureName}
+                                        isFirst={this.state.lecture.chapterId === 0 && this.state.course.chapters[this.state.lecture.chapterId].lectures[this.state.lecture.lectureId].realIndex === 0}
+                                        isLast={this.state.lecture.chapterId === this.state.course.chapters.length - 1 && this.state.lecture.lectureId === this.state.course.chapters[this.state.lecture.chapterId].lectures.length - 1}
+                                        markLectureCompleted={() => {this.markLectureCompleted(this.state.lecture.lecture.id)}}
+                                        prevLecture={() => {this.prevLecture()}}
+                                        nextLecture={() => {this.nextLecture()}} />
+                                </div>
                             </div>
                         </div>
-                      </div>
-                    </div>}
-                disableContentPaddings={true}
-            />
-        </div>;
+                        </div>}
+                    disableContentPaddings={true}
+                    />
+            </div>;
     }
 }

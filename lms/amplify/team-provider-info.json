@@ -38,6 +38,10 @@
         "categories": {
           "deploymentBucketName": "amplify-lms-dev-120646-deployment",
           "s3Key": "amplify-builds/categories-666d6e6e7833766f4977-build.zip"
+        },
+        "usersLectures": {
+          "deploymentBucketName": "amplify-lms-dev-120646-deployment",
+          "s3Key": "amplify-builds/usersLectures-304d5a43397376554453-build.zip"
         }
       }
     }

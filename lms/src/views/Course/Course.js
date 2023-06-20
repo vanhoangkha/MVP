@@ -19,7 +19,7 @@ export default class Course extends React.Component {
 
     componentDidMount() {
         const apiName = 'courses';
-        const path = '/courses/' + window.location.href.split('/')[4];
+        const path = '/courses/' + window.location.hash.split('/')[2];
         
         API.get(apiName, path)
         .then((response) => {
@@ -42,7 +42,6 @@ export default class Course extends React.Component {
     }
 
     openLearn() {
-        console.log(this.state.course.id);
         this.setState({
             redirectToLearn: true
         })

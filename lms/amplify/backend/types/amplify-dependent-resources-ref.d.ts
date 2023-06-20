@@ -48,6 +48,16 @@ export type AmplifyDependentResourcesAttributes = {
         "Videos": {
             "BucketName": "string",
             "Region": "string"
+        },
+        "UserLecture": {
+            "Name": "string",
+            "Arn": "string",
+            "StreamArn": "string",
+            "PartitionKeyName": "string",
+            "PartitionKeyType": "string",
+            "SortKeyName": "string",
+            "SortKeyType": "string",
+            "Region": "string"
         }
     },
     "function": {
@@ -70,6 +80,12 @@ export type AmplifyDependentResourcesAttributes = {
             "LambdaExecutionRole": "string"
         },
         "categories": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
+        },
+        "usersLectures": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",
