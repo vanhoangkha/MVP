@@ -74,7 +74,7 @@ Sample data for Course and Lecture tables are stored in sample-data folder.
 You can add these data to DynamoDB using JSON view when create new item in DynamoDB Console.
 
 ## 7. How can we contribute to the source code ?
-Inside your cloned repository from section 1. From the dev branch, create a new feature branch, naming convention: <f_feature_name> (E.g: f_create_course).
+Inside your cloned repository from section 1. From the ```d_unicorm_gym_master``` branch, create a new feature branch, naming convention: ```f_feature_name``` (E.g: ```f_create_course```).
 
 You develope, test the project with that branch.
 
@@ -85,8 +85,8 @@ mintuan will review and merge the pull requests from everyone.
 Development steps:
 - Implement UI with React JS.
 - Implement APIs and integrate with the UI:
-    - API Gateway and DynamoDB tables are already created, the lambda function named studioCourses for ‘/courses/‘ APIs is also created.
-    - If you need to import DynamoDB table or S3 bucket from LMS to LMS Studio project, run ‘amplify import storage’.
-    - If you need to add new APIs and lambda functions, run ‘amplify update api’ and add a new path.
-    - Use ‘studio’ prefix for Lambda function name to avoid conflict with the LMS project. E.g: studioCourses, studioLectures.
-    - Please use Node JS for your Lambda function to ensure consistency, and don’t create new api.
+    - API Gateway and DynamoDB tables are already created, the lambda function named ```studioCourses``` for ```/courses/``` APIs is also created.
+    - If you need to import DynamoDB table or S3 bucket from LMS to LMS Studio project, run ```amplify import storage```.
+    - If you need to add new APIs and lambda functions, run ```amplify update api``` and add a new path.
+    - Use ```studio``` prefix for Lambda function name to avoid conflict with the LMS project. E.g: ```studioCourses```, ```studioLectures```.
+    - Please use Node JS for your Lambda function to ensure consistency, and don’t create new api gateway.
