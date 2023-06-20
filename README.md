@@ -1,4 +1,4 @@
-# LEARNING MANAGEMENT SYSTEM
+# LEARNING MANAGEMENT SYSTEM - QUANG
 
 ## 1. Architect Overview
 ![architect](/images/LMS.jpg)
@@ -45,33 +45,35 @@ $ (sudo) amplify init
 ...
 ```
 
-# 4. Check your apps are on or not:
-Open your own isengard account and go to "Amplify" service to check if your app is now shown on or not (apps'name:  lms, lmsstudio)   
+## 4. Check your apps are on or not:
+Open your own isengard account and go to "Amplify" service to check if your app is now shown on or not (apps'name:  ***lms***, ***lmsstudio***)   
 
-# 5. Run Frontend  from your local laptop:
-#### How to run lms FE:
+## 5. Run Frontend  from your local laptop:
+###5.1. How to run lms FE:
 Open your local LMS root folder, then:
-
+```bash
 $ cd LMS/lms/
 
 $ npm i
 
 $ npm start
+```
 
-#### How to run lms-studio FE:
+###5.2. How to run lms-studio FE:
 Open your local LMS root folder, then:
-
+```bash
 $ cd LMS/lms-studio/
 
 $ npm i
 
 $ npm start
+```
 
-# 6. Add sample data to dynamodb tables
+## 6. Add sample data to dynamodb tables
 Sample data for Course and Lecture tables are stored in sample-data folder.
 You can add these data to DynamoDB using JSON view when create new item in DynamoDB Console.
 
-# 7. How can we contribute to the source code ?
+## 7. How can we contribute to the source code ?
 Inside your cloned repository from section 1, create a new branch, naming convention: <branch_name_convention>
 
 You develope, test the project with that branch.
