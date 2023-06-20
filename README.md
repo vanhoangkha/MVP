@@ -60,7 +60,11 @@ $ npm i
 
 $ npm start
 
-# 6. How can we contribute to the source code ?
+# 6. Add sample data to dynamodb tables
+Sample data for Course and Lecture tables are stored in sample-data folder.
+You can add these data to DynamoDB using JSON view when create new item in DynamoDB Console.
+
+# 7. How can we contribute to the source code ?
 Inside your cloned repository from section 1, create a new branch, naming convention: <branch_name_convention>
 
 You develope, test the project with that branch.
@@ -68,4 +72,3 @@ You develope, test the project with that branch.
 After that, you create a pull request to the CodeCommit Git Repository inside mintuan's account.
 
 mintuan will review and merge the pull requests from everyone.
-
