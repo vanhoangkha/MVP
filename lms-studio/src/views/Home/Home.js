@@ -48,7 +48,7 @@ class Home extends React.Component {
 
     render() {
         return !!this.state.courseToRedirect ?
-            <Navigate to={'/courses/' + this.state.courseToRedirect} /> :
+            <Navigate to={'/course/' + this.state.courseToRedirect} /> :
             <div>
                 <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
                 <div className='dashboard-main'>
