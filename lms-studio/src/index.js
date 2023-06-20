@@ -14,12 +14,18 @@ import "@cloudscape-design/global-styles/index.css"
 import {
   createBrowserRouter,
   RouterProvider,
+  Navigate,
 } from "react-router-dom";
 
 // Import Views
 import AuthForm from './components/AuthForm/AuthForm';
 import Home from './views/Home/Home';
 import Course from './views/Course/Course';
+import Management from './views/Management/Management';
+import MyLectures from './views/Management/MyLectures/MyLectures';
+import PublicLectures from './views/Management/PublicLectures/PublicLectures';
+import MyCourses from './views/Management/MyCourses/MyCourses';
+import PublicCourses from './views/Management/PublicCourses/PublicCourses';
 
 // Configure Amplify
 Amplify.configure(awsExports);
@@ -37,6 +43,32 @@ const router = createBrowserRouter([
   {
     path: "/course/:id",
     element: <Course/>,
+  },
+  {
+    path: "/management",
+    element: <Management />,
+    children: [
+      {
+        path: '',
+        element: <Navigate to="/management/myLectures" replace />
+      },
+      {
+        path: 'myLectures',
+        element: <MyLectures />
+      },
+      {
+        path: 'publicLectures',
+        element: <PublicLectures />
+      },
+      {
+        path: 'myCourses',
+        element: <MyCourses />
+      },
+      {
+        path: 'publicCourses',
+        element: <PublicCourses />
+      }
+    ]
   },
 ]);
 

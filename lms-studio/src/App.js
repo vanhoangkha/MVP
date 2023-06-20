@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import "@cloudscape-design/global-styles/index.css"
 
 function App() {
   return (
