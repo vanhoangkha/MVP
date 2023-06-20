@@ -1,4 +1,4 @@
-# LEARNING MANAGEMENT SYSTEM - QUANG
+# LEARNING MANAGEMENT SYSTEM
 
 ## 1. Architect Overview
 ![architect](/images/LMS.jpg)
