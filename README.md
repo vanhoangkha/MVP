@@ -1,4 +1,4 @@
-# LEARNING MANAGEMENT SYSTEM - PROJECT
+# LEARNING MANAGEMENT SYSTEM
 
 ## 1. Architect Overview
 ![architect](/images/LMS.jpg)
