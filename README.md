@@ -9,6 +9,7 @@
 $ git clone https://git-codecommit.ap-southeast-1.amazonaws.com/v1/repos/LMS
 ```
 
+After that, check out git branch ```d_unicorm_gym_master```
 
 ## 2. Download Amplify CLI:  
 Follow below instructions in section "Install the Amplify CLI", and section "Configure the Amplify CLI": 
@@ -17,9 +18,10 @@ Follow below instructions in section "Install the Amplify CLI", and section "Con
 * **Step**: "Specify the AWS Region" -> Choose Singapore Region.
 
 ## 3. Init Amplify and connect your local env to the Cloud:
-- Open your local LMS root folder and do amplify setup with ***lms-studio*** first:
+- Check out git branch ```d_unicorm_gym_master``` before continue.
+- Open your local LMS root folder and do amplify setup with ***lms*** first:
 ```bash
-$ cd lms/lms-studio
+$ cd lms/lms
 
 $ (sudo) amplify init
 
@@ -39,11 +41,12 @@ $ amplify push
 - Similarly, do all above steps in this section 3 for ***lms***:
 Open your local LMS root folder, then:
 ```bash
-$ cd lms/lms
+$ cd lms/lms-studio
 
 $ (sudo) amplify init
 ...
 ```
+- When init ```lms-studio``` project, if amplify add for table to import, select ```courses-dev```.
 
 ## 4. Check your apps are on or not:
 Open your own isengard account and go to "Amplify" service to check if your app is now shown on or not (apps'name:  ***lms***, ***lmsstudio***)   
