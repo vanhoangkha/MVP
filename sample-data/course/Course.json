@@ -1,0 +1,68 @@
+{
+    "ID": "SAA",
+    "Categories": [
+     "Networking",
+     "Storage"
+    ],
+    "Chapters": [
+     {
+      "lectures": [
+       {
+        "lectureId": "course-intro-aws-fundamental",
+        "length": 200,
+        "name": "What is AWS?",
+        "type": "video"
+       },
+       {
+        "lectureId": "aws-account",
+        "length": 95,
+        "name": "Create AWS account",
+        "type": "lab"
+       }
+      ],
+      "name": "Introduction"
+     },
+     {
+      "lectures": [
+       {
+        "lectureId": "ec2",
+        "length": 15,
+        "name": "EC2 introduction",
+        "type": "video"
+       },
+       {
+        "lectureId": "ec2-deep-dive",
+        "length": 15,
+        "name": "EC2 deep dive",
+        "type": "video"
+       },
+       {
+        "lectureId": "s3",
+        "length": 15,
+        "name": "Amazon S3 introduction",
+        "type": "video"
+       }
+      ],
+      "name": "Compute Services"
+     }
+    ],
+    "Description": "In this lab, users will programmatically deploy Cisco Secure Firewall Threat Defence (FTDv) and Firewall Management Center (FMC) using Infrastructure as Code (Terraform). The firewalls will be placed behind a network load balancer. User will also programmatically configure the firewalls once onboarded to ensure it allows required traffic flow from internet to the test machine setup in the AWS environment.",
+    "Last Updated": 1686760629,
+    "Length": 15,
+    "Level": "300",
+    "Name": "AWS Solution Architect Associate",
+    "Requirements": [
+     "It is recommended to have taken at least one associate-level AWS certification",
+     "Basics of networking are a nice-to-have although we explain them too in the course"
+    ],
+    "Tags": [
+     "EC2",
+     "Marketplace"
+    ],
+    "WhatToLearn": [
+     "FULLY UPDATED FOR ANS-C00: Pass the AWS Certified Networking Specialty Certification",
+     "Learn networking on AWS in depth",
+     "All 700+ slides available as downloadable PDF",
+     "Practice alongside several advanced hands-on"
+    ]
+   }

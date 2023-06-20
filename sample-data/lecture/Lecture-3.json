@@ -1,0 +1,9 @@
+{
+    "ID": "aws-account",
+    "Content": "https://www.facebook.com/groups/660548818043427",
+    "Desc": "In this first lab, you will be creating your new AWS account and use Multi-factor Authentication (MFA) to improve your account security. Next, you will create an Administrator Group and Admin User to manage access to resources in your account instead of using the root user.\nFinally, we will step through account authentication with AWS Support in the event you experience authentication problems.",
+    "Length": 1200,
+    "Name": "Create AWS account",
+    "Type": "survey",
+    "Viewed": 5205
+   }
