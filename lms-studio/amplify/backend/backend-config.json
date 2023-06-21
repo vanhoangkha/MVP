@@ -34,13 +34,28 @@
       }
     }
   },
-  "function": {},
+  "function": {
+    "studioCourses": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
   "storage": {},
   "api": {
     "lmsStudio": {
       "service": "API Gateway",
       "providerPlugin": "awscloudformation",
-      "dependsOn": []
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "studioCourses",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        }
+      ]
     }
   }
 }

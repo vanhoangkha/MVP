@@ -1,4 +1,18 @@
 {
   "version": 1,
-  "paths": {}
+  "paths": {
+    "/courses": {
+      "name": "/courses",
+      "lambdaFunction": "studioCourses",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
 }
