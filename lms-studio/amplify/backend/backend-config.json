@@ -34,49 +34,13 @@
       }
     }
   },
-  "function": {
-    "studioCourses": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "storage",
-          "resourceName": "coursesdev",
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "attributeEnvMap": {
-            "Name": "TABLE_NAME",
-            "Arn": "TABLE_ARN"
-          }
-        }
-      ]
-    }
-  },
-  "storage": {
-    "coursesdev": {
-      "service": "DynamoDB",
-      "serviceType": "imported",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": []
-    }
-  },
+  "function": {},
+  "storage": {},
   "api": {
     "lmsStudio": {
       "service": "API Gateway",
       "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "studioCourses",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        }
-      ]
+      "dependsOn": []
     }
   }
 }

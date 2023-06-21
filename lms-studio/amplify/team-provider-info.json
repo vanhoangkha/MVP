@@ -22,22 +22,6 @@
       },
       "auth": {
         "lmsstudioc3fd255f": {}
-      },
-      "storage": {
-        "coursesdev": {
-          "tableName": "courses-dev",
-          "region": "ap-southeast-1",
-          "arn": "arn:aws:dynamodb:ap-southeast-1:320740598534:table/courses-dev",
-          "streamArn": "arn:aws:dynamodb:ap-southeast-1:320740598534:table/courses-dev/stream/2023-06-14T15:41:33.491",
-          "partitionKeyName": "ID",
-          "partitionKeyType": "S"
-        }
-      },
-      "function": {
-        "studioCourses": {
-          "deploymentBucketName": "amplify-lmsstudio-dev-31057-deployment",
-          "s3Key": "amplify-builds/studioCourses-7862684730374d552f61-build.zip"
-        }
       }
     }
   }
