@@ -1,7 +1,7 @@
 # LEARNING MANAGEMENT SYSTEM
 
 ## 1. Architect Overview
-![architect](/images/LMS.jpg)
+![architect](images/LMS.jpg)
 - Cloud Academy -> ***lms***
 - Cloud Academy -> ***lms-studio***
 ## 2. Clone code:
