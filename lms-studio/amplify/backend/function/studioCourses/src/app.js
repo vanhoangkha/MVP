@@ -132,49 +132,49 @@ app.get(path + hashKeyPath, function(req, res) {
 // * HTTP put method for insert object *
 // *************************************/
 
-// app.put(path, function(req, res) {
+app.put(path, function(req, res) {
 
-//   if (userIdPresent) {
-//     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-//   }
+  if (userIdPresent) {
+    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  }
 
-//   let putItemParams = {
-//     TableName: tableName,
-//     Item: req.body
-//   }
-//   dynamodb.put(putItemParams, (err, data) => {
-//     if (err) {
-//       res.statusCode = 500;
-//       res.json({ error: err, url: req.url, body: req.body });
-//     } else{
-//       res.json({ success: 'put call succeed!', url: req.url, data: data })
-//     }
-//   });
-// });
+  let putItemParams = {
+    TableName: tableName,
+    Item: req.body
+  }
+  dynamodb.put(putItemParams, (err, data) => {
+    if (err) {
+      res.statusCode = 500;
+      res.json({ error: err, url: req.url, body: req.body });
+    } else{
+      res.json({ success: req.body, url: req.url, data: data })
+    }
+  });
+});
 
 // /************************************
 // * HTTP post method for insert object *
 // *************************************/
 
-// app.post(path, function(req, res) {
+app.post(path, function(req, res) {
 
-//   if (userIdPresent) {
-//     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-//   }
+  if (userIdPresent) {
+    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  }
 
-//   let putItemParams = {
-//     TableName: tableName,
-//     Item: req.body
-//   }
-//   dynamodb.put(putItemParams, (err, data) => {
-//     if (err) {
-//       res.statusCode = 500;
-//       res.json({error: err, url: req.url, body: req.body});
-//     } else {
-//       res.json({success: 'post call succeed!', url: req.url, data: data})
-//     }
-//   });
-// });
+  let putItemParams = {
+    TableName: tableName,
+    Item: req.body
+  }
+  dynamodb.put(putItemParams, (err, data) => {
+    if (err) {
+      res.statusCode = 500;
+      res.json({error: err, url: req.url, body: req.body});
+    } else {
+      res.json({success: 'post call succeed!', url: req.url, data: data})
+    }
+  });
+});
 
 // /**************************************
 // * HTTP remove method to delete object *

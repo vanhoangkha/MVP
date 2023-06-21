@@ -1,43 +1,25 @@
 {
   "version": 1,
   "paths": {
-    "/courses": {
-      "name": "/courses",
-      "lambdaFunction": "studioCourses",
-      "permissions": {
-        "setting": "private",
-        "auth": [
-          "create",
-          "read",
-          "update",
-          "delete"
-        ]
-      }
-    },
     "/lectures": {
       "name": "/lectures",
       "lambdaFunction": "studioCourses",
       "permissions": {
-        "setting": "private",
-        "auth": [
-          "create",
-          "read",
-          "update",
-          "delete"
-        ]
+        "setting": "open"
       }
     },
     "/userLectures": {
       "name": "/userLectures",
       "lambdaFunction": "studioCourses",
       "permissions": {
-        "setting": "private",
-        "auth": [
-          "create",
-          "read",
-          "update",
-          "delete"
-        ]
+        "setting": "open"
+      }
+    },
+    "/courses": {
+      "name": "/courses",
+      "lambdaFunction": "studioCourses",
+      "permissions": {
+        "setting": "open"
       }
     }
   }

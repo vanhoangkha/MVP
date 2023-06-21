@@ -45,7 +45,7 @@
       "function": {
         "studioCourses": {
           "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
-          "s3Key": "amplify-builds/studioCourses-6e797161422f31336452-build.zip",
+          "s3Key": "amplify-builds/studioCourses-645a415a6e4971534833-build.zip",
           "tableName": "courses-newenv"
         },
         "studioLectures": {
