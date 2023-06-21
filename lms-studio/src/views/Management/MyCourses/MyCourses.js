@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@cloudscape-design/components/table";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
@@ -9,32 +9,23 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import ButtonDropdown from "@cloudscape-design/components/button-dropdown";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import Title from "../../../components/Title";
-
-const items = [
-  {
-    name: "AWS Course 1",
-    updatedAt: "2023/6",
-    state: "Enabled",
-  },
-  {
-    name: "AWS Course 2",
-    updatedAt: "2023/6",
-    state: "Disabled",
-  },
-  {
-    name: "AWS Course 3",
-    updatedAt: "2023/6",
-    state: "Enabled",
-  },
-  {
-    name: "AWS Course 4",
-    updatedAt: "2023/6",
-    state: "Enabled",
-  },
-];
+import { getCoursesService } from "../services/course";
 
 const MyCourses = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
+
+  const [courses, setCourses] = useState([])
+
+  const handleGetCouses = async () => {
+    const {data} = await getCoursesService()
+
+    console.log(data)
+    setCourses(data)
+  }
+
+  useEffect(() => {
+    handleGetCouses()
+  },[])
 
   return (
     <>
@@ -59,16 +50,16 @@ const MyCourses = () => {
         }}
         columnDefinitions={[
           {
-            id: "name",
+            id: "Name",
             header: "Course name",
-            cell: (e) => e.name,
+            cell: (e) => e.Name,
             sortingField: "name",
             isRowHeader: true,
           },
           {
-            id: "updatedAt",
+            id: "Last Updated",
             header: "Last Updated",
-            cell: (e) => e.updatedAt,
+            cell: (e) => <span>{(new Date(e['Last Updated']).toDateString())}</span>,
             sortingField: "updatedAt",
           },
           {
@@ -84,11 +75,11 @@ const MyCourses = () => {
           },
         ]}
         columnDisplay={[
-          { id: "name", visible: true },
-          { id: "updatedAt", visible: true },
+          { id: "Name", visible: true },
+          { id: "Last Updated", visible: true},
           { id: "state", visible: true },
         ]}
-        items={items}
+        items={courses}
         loadingText="Loading resources"
         selectionType="multi"
         trackBy="name"
@@ -108,8 +99,8 @@ const MyCourses = () => {
           <Header
             counter={
               selectedItems.length
-                ? "(" + selectedItems.length + `/${items.length})`
-                : `(${items.length})`
+                ? "(" + selectedItems.length + `/${courses.length})`
+                : `(${courses.length})`
             }
             actions={
               <SpaceBetween direction="horizontal" size="xs">
@@ -124,11 +115,6 @@ const MyCourses = () => {
                     {
                       text: "Activate",
                       id: "mv",
-                      disabled: false,
-                    },
-                    {
-                      text: "Status 3",
-                      id: "rn",
                       disabled: false,
                     },
                     {
