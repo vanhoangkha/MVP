@@ -28,7 +28,7 @@ const partitionKeyType = "S";
 const sortKeyName = "CourseID";
 const sortKeyType = "S";
 const hasSortKey = sortKeyName !== "";
-const path = "/users/courses";
+const path = "/usercourse";
 const UNAUTH = 'UNAUTH';
 const hashKeyPath = '/:' + partitionKeyName;
 const sortKeyPath = hasSortKey ? '/:' + sortKeyName : '';
@@ -59,37 +59,37 @@ const convertUrlType = (param, type) => {
 //  * HTTP Get method for list objects *
 //  ********************************/
 
-// app.get(path + hashKeyPath, function(req, res) {
-//   const condition = {}
-//   condition[partitionKeyName] = {
-//     ComparisonOperator: 'EQ'
-//   }
+app.get(path, function(req, res) {
+  const condition = {}
+  condition[partitionKeyName] = {
+    ComparisonOperator: 'EQ'
+  }
+  condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
+  // if (userIdPresent && req.apiGateway) {
+  //   condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
+  // } else {
+  //   try {
+  //     condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
+  //   } catch(err) {
+  //     res.statusCode = 500;
+  //     res.json({error: 'Wrong column type ' + err});
+  //   }
+  // }
 
-//   if (userIdPresent && req.apiGateway) {
-//     condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
-//   } else {
-//     try {
-//       condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
-//     } catch(err) {
-//       res.statusCode = 500;
-//       res.json({error: 'Wrong column type ' + err});
-//     }
-//   }
+  let queryParams = {
+    TableName: tableName,
+    KeyConditions: condition
+  }
 
-//   let queryParams = {
-//     TableName: tableName,
-//     KeyConditions: condition
-//   }
-
-//   dynamodb.query(queryParams, (err, data) => {
-//     if (err) {
-//       res.statusCode = 500;
-//       res.json({error: 'Could not load items: ' + err});
-//     } else {
-//       res.json(data.Items);
-//     }
-//   });
-// });
+  dynamodb.query(queryParams, (err, data) => {
+    if (err) {
+      res.statusCode = 500;
+      res.json({error: 'Could not load items: ' + err});
+    } else {
+      res.json(data.Items);
+    }
+  });
+});
 
 /*****************************************
  * HTTP Get method for get single object *
@@ -122,6 +122,7 @@ app.get(path + sortKeyPath, function(req, res) {
     TableName: tableName,
     Key: params
   }
+  console.log(getItemParams)
 
   dynamodb.get(getItemParams,(err, data) => {
     if(err) {
@@ -129,32 +130,17 @@ app.get(path + sortKeyPath, function(req, res) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {
       let response;
+      console.log(data)
       if (data.Item) {
         response = data.Item;
       } else {
         response = data;
       }
-
-      //If this is the first time user access course, then enroll them to the course, else just save the last accessed time
-      if (Object.keys(response).length === 0) {
-        response = params;
-        response.Status = "IN_PROGRESS";
-      }
-      response.LastAccessed = new Date().getTime();
-
       let putItemParams = {
         TableName: tableName,
         Item: response
       }
-
-      dynamodb.put(putItemParams, (err, data) => {
-        if (err) {
-          res.statusCode = 500;
-          res.json({ error: err, url: req.url, body: req.body });
-        } else{
-          res.json(response);
-        }
-      });
+      res.json(response);
     }
   });
 });
@@ -164,25 +150,25 @@ app.get(path + sortKeyPath, function(req, res) {
 // * HTTP put method for insert object *
 // *************************************/
 
-// app.put(path, function(req, res) {
+app.put(path, function(req, res) {
 
-//   if (userIdPresent) {
-//     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-//   }
+  if (userIdPresent) {
+    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  }
 
-//   let putItemParams = {
-//     TableName: tableName,
-//     Item: req.body
-//   }
-//   dynamodb.put(putItemParams, (err, data) => {
-//     if (err) {
-//       res.statusCode = 500;
-//       res.json({ error: err, url: req.url, body: req.body });
-//     } else{
-//       res.json({ success: 'put call succeed!', url: req.url, data: data })
-//     }
-//   });
-// });
+  let putItemParams = {
+    TableName: tableName,
+    Item: req.body
+  }
+  dynamodb.put(putItemParams, (err, data) => {
+    if (err) {
+      res.statusCode = 500;
+      res.json({ error: err, url: req.url, body: req.body });
+    } else{
+      res.json({ success: 'put call succeed!', url: req.url, data: data })
+    }
+  });
+});
 
 // /************************************
 // * HTTP post method for insert object *

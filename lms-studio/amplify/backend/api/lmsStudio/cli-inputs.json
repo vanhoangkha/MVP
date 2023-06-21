@@ -8,16 +8,16 @@
         "setting": "open"
       }
     },
-    "/userLectures": {
-      "name": "/userLectures",
+    "/courses": {
+      "name": "/courses",
       "lambdaFunction": "studioCourses",
       "permissions": {
         "setting": "open"
       }
     },
-    "/courses": {
-      "name": "/courses",
-      "lambdaFunction": "studioCourses",
+    "/usercourse": {
+      "name": "/usercourse",
+      "lambdaFunction": "studioUserCourse",
       "permissions": {
         "setting": "open"
       }

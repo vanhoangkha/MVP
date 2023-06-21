@@ -47,12 +47,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "studioUserLectures",
+            "studioUserCourse",
             {
               "Fn::Join": [
                 "",
                 [
-                  "studioUserLectures",
+                  "studioUserCourse",
                   "-",
                   {
                     "Ref": "env"
@@ -78,7 +78,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs14.x",
         "Layers": [],
         "Timeout": 25
       }
@@ -89,12 +89,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "lmsstudioLambdaRole2229d2f6",
+            "lmsstudioLambdaRole7065f59c",
             {
               "Fn::Join": [
                 "",
                 [
-                  "lmsstudioLambdaRole2229d2f6",
+                  "lmsstudioLambdaRole7065f59c",
                   "-",
                   {
                     "Ref": "env"

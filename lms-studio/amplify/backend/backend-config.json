@@ -9,6 +9,14 @@
           ],
           "category": "function",
           "resourceName": "studioCourses"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studioUserCourse"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -55,7 +63,7 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "studioUserLectures": {
+    "studioUserCourse": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -109,19 +117,19 @@
         }
       ]
     },
-    "AMPLIFY_function_studioUserLectures_deploymentBucketName": {
+    "AMPLIFY_function_studioUserCourse_deploymentBucketName": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "studioUserLectures"
+          "resourceName": "studioUserCourse"
         }
       ]
     },
-    "AMPLIFY_function_studioUserLectures_s3Key": {
+    "AMPLIFY_function_studioUserCourse_s3Key": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "studioUserLectures"
+          "resourceName": "studioUserCourse"
         }
       ]
     },
