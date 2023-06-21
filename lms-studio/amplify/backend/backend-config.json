@@ -1,61 +1,146 @@
 {
-  "hosting": {
-    "amplifyhosting": {
-      "service": "amplifyhosting",
+  "api": {
+    "lmsStudio": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studioCourses"
+        }
+      ],
       "providerPlugin": "awscloudformation",
-      "type": "manual"
+      "service": "API Gateway"
     }
   },
   "auth": {
     "lmsstudioc3fd255f": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
       "customAuth": false,
+      "dependsOn": [],
       "frontendAuthConfig": {
-        "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
-        "signupAttributes": [
-          "EMAIL"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyMinLength": 8,
-          "passwordPolicyCharacters": []
-        },
         "mfaConfiguration": "OFF",
         "mfaTypes": [
           "SMS"
         ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
         "verificationMechanisms": [
           "EMAIL"
         ]
-      }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
     }
   },
   "function": {
     "studioCourses": {
       "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studioLectures": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studioUserLectures": {
+      "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
   },
-  "storage": {},
-  "api": {
-    "lmsStudio": {
-      "service": "API Gateway",
+  "hosting": {
+    "amplifyhosting": {
       "providerPlugin": "awscloudformation",
-      "dependsOn": [
+      "service": "amplifyhosting",
+      "type": "manual"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_studioCourses_deploymentBucketName": {
+      "usedBy": [
         {
           "category": "function",
-          "resourceName": "studioCourses",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
+          "resourceName": "studioCourses"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioCourses_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioCourses"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioCourses_tableName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioCourses"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioLectures_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioLectures"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioLectures_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioLectures"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioUserLectures_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioUserLectures"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioUserLectures_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioUserLectures"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
         }
       ]
     }
-  }
+  },
+  "storage": {}
 }

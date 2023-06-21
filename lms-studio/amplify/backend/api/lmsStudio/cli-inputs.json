@@ -13,6 +13,32 @@
           "delete"
         ]
       }
+    },
+    "/lectures": {
+      "name": "/lectures",
+      "lambdaFunction": "studioCourses",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    },
+    "/userLectures": {
+      "name": "/userLectures",
+      "lambdaFunction": "studioCourses",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
     }
   }
 }
