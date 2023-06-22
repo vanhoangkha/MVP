@@ -598,7 +598,7 @@ export default class Learn extends React.Component {
                                 event.preventDefault();
                                 if (!!event.detail.href) {
                                     if (event.detail.href === "#certificate") {
-                                        console.log("View Cert");
+                                        window.open('/#/cert/' +  window.location.hash.split("/")[2], '_blank');
                                     } else {
                                         this.loadLectureById(event.detail.href);
                                     }

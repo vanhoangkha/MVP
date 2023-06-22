@@ -79,7 +79,6 @@ export default class MyLearningCourse extends React.Component {
     calculateProgress() {
         let completedLectures = 0;
         this.state.course.chapters.forEach(chapter => {
-            console.log(chapter.lectures);
             completedLectures += chapter.lectures.filter(lecture => this.state.allCompletedLectures.includes(lecture.lectureId)).length;
         })
         this.setState({completedLectures: completedLectures});
@@ -93,8 +92,10 @@ export default class MyLearningCourse extends React.Component {
     render() {
         let course = this.state.course;
 
-        return !!this.state.redirectToLearn
-            ?<Navigate to={'/learn/' + course.id} />
+        return !!this.state.redirectToCert
+            ? <Navigate to={'/cert/' + course.id} />
+            : !!this.state.redirectToLearn
+            ? <Navigate to={'/learn/' + course.id} />
             : !course
             ? <div><img src={loadingGif} alt="loading..." className='mylearning-loading-gif' /></div>
             : <div className='mylearning-course'>
@@ -135,7 +136,7 @@ export default class MyLearningCourse extends React.Component {
                         /> : <img src={loadingGif} alt="loading..." className='mylearning-loading-gif' />}
                 </div>
                 <div className='mylearning-course-action'>
-                    {this.state.completedLectures / this.state.totalLectures >= 0.8 ? <Button>
+                    {this.state.completedLectures / this.state.totalLectures >= 0.8 ? <Button onClick={() => this.setState({redirectToCert: course.id})}>
                         Certificate <Icon name='file' />
                     </Button> : ""}
                     <Button variant="primary" className='btn-orange mylearning-continue-btn' onClick={() => this.setState({redirectToLearn: course.id})}>

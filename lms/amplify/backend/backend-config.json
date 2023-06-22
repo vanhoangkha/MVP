@@ -59,6 +59,10 @@
     "UserLecture": {
       "service": "DynamoDB",
       "providerPlugin": "awscloudformation"
+    },
+    "Cert": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation"
     }
   },
   "function": {
@@ -156,6 +160,25 @@
           }
         }
       ]
+    },
+    "certs": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "storage",
+          "resourceName": "Cert",
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "attributeEnvMap": {
+            "Name": "TABLE_NAME",
+            "Arn": "TABLE_ARN"
+          }
+        }
+      ]
     }
   },
   "api": {
@@ -198,6 +221,14 @@
         {
           "category": "function",
           "resourceName": "usersLectures",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "certs",
           "attributes": [
             "Name",
             "Arn"

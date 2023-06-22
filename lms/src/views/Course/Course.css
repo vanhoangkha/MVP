@@ -115,3 +115,9 @@
     font-size: 14px;
     font-weight: bold !important;
 }
+
+.course-loading-gif {
+    height: 16px;
+    margin-left: 50%;
+    margin-top: 40vh;
+}

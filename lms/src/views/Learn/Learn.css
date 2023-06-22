@@ -197,6 +197,10 @@ a.learn-fill-div:hover {
     text-align: center;
     padding-top: 30vh !important;
 }
+
+.fullscreen-enabled .learn-player-loading {
+    padding-top: 50vh !important;
+}
   
 .learn-loading-gif {
     height: 16px;

@@ -6,6 +6,7 @@ import { Grid, Button, Icon, ExpandableSection } from '@cloudscape-design/compon
 import courseDefaultThumbnail from '../../assets/images/course-default-thumbnail.png';
 import NavBar from '../../components/NavBar/NavBar';
 import Footer from '../../components/Footer/Footer';
+import loadingGif from '../../assets/images/loading.gif';
 
 
 export default class Course extends React.Component {
@@ -75,7 +76,10 @@ export default class Course extends React.Component {
             <Navigate to={'/learn/' + course.id} /> :
             <div>
                 <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
-                {!course ? <div className='course-main'/> : <div className='course-main'>
+                {!course ? <div className='course-main'>
+                    <img src={loadingGif} alt="loading..." className='course-loading-gif' />
+                </div>
+                : <div className='course-main'>
                     <div className='course-info'>
                             <div className='course-title'>
                             {course.name}

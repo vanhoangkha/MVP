@@ -11,6 +11,7 @@ import hightlightIcon1 from '../../assets/images/dashboard-highlight-1.png';
 import hightlightIcon2 from '../../assets/images/dashboard-highlight-2.png';
 import hightlightIcon3 from '../../assets/images/dashboard-highlight-3.png';
 import courseDefaultThumbnail from '../../assets/images/course-default-thumbnail.png';
+import loadingGif from '../../assets/images/loading.gif';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -98,7 +99,7 @@ export default class Home extends React.Component {
                         <p className='dashboard-courses-header'>Available courses</p>
                         <div className='dashboard-courses-header-decor' />
                         <div className='dashboard-courses-list'>
-                            {this.state.courses.map(course => 
+                            {this.state.courses.length === 0 ? <img src={loadingGif} alt="loading..." className='dashboard-loading-gif' /> : this.state.courses.map(course => 
                                 <div className='dashboard-courses-list-item' key={course.id}>
                                     <div className='dashboard-courses-list-item-info'>
                                         <div className='dashboard-courses-list-item-title'>
