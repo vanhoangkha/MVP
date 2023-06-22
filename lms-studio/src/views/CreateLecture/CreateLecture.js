@@ -17,6 +17,7 @@ import Textarea from "@cloudscape-design/components/textarea";
 import RadioGroup from "@cloudscape-design/components/radio-group";
 import FileUpload from "@cloudscape-design/components/file-upload";
 import { withAuthenticator } from '@aws-amplify/ui-react';
+import { Storage } from 'aws-amplify';
 
 class CreateLecture extends React.Component {
     constructor(props) {
@@ -27,10 +28,14 @@ class CreateLecture extends React.Component {
             lectureDescription: "",
             lectureType: "Video",
             lectureVideo: [],
+            lectureVideoS3Key: "",
             workshopUrl: "",
             workshopDescription: "",
             architectureDiagram: [],
-            quiz: []
+            architectureDiagramS3Key: "",
+            randomId: Math.floor(Math.random() * 1000000),
+            quiz: [],
+            quizS3Key: ""
         };
     }
 
@@ -44,7 +49,7 @@ class CreateLecture extends React.Component {
                     <Box variant="awsui-key-label">
                         File name
                     </Box>
-                    <div>{this.state.lectureVideo.length === 0 ? "" : this.state.lectureVideo[0].name}</div>
+                    <div>{this.state.lectureVideoS3Key}</div>
                 </div>
             </ColumnLayout>
         } else if (this.state.lectureType === "Workshop") {
@@ -68,7 +73,7 @@ class CreateLecture extends React.Component {
                     <Box variant="awsui-key-label">
                         Architecture Diagram
                     </Box>
-                    <div>{this.state.architectureDiagram.length === 0 ? "" : this.state.architectureDiagram[0].name}</div>
+                    <div>{this.state.architectureDiagramS3Key}</div>
                 </div>
             </ColumnLayout>
         } else {
@@ -81,18 +86,45 @@ class CreateLecture extends React.Component {
                     <Box variant="awsui-key-label">
                         File name
                     </Box>
-                    <div>{this.state.quiz.length === 0 ? "" : this.state.quiz[0].name}</div>
+                    <div>{this.state.quizS3Key}</div>
                 </div>
             </ColumnLayout>
         }
     }
+
 
     AddContent = () => {
         if (this.state.lectureType === "Video") {
             return <FormField label="Lecture Videos" description="Theory video for lecture"
             >
                 <FileUpload
-                    onChange={({ detail }) => this.setState({ lectureVideo: detail.value })}
+                    onChange={
+                        async ({ detail }) => {
+                            this.setState({ lectureVideo: detail.value });
+                            if(detail.value.length === 0) {
+                                if(this.state.lectureVideoS3Key !== "") {
+                                    await Storage.remove(this.state.lectureVideoS3Key, {
+                                        level: "protected"
+                                    });
+                                    this.setState({lectureVideoS3Key: ""});
+                                }
+                            } else {
+                                const file = detail.value[0];
+                                if(!file.type in ['video/mp4', 'video/mov']) {
+                                    console.log("TODO: lecture video content validation");
+                                }
+                                try {
+                                    const s3Key = `lecture-videos/${this.state.randomId}-${file.name.replace(/ /g,"_")}`;
+                                    await Storage.put(s3Key, file, {
+                                        level: "protected",
+                                    });
+                                    this.setState({lectureVideoS3Key: s3Key})
+                                } catch (error) {
+                                    console.log("Error uploading file: ", error);
+                                }
+                            }
+                        }
+                    }
                     value={this.state.lectureVideo}
                     i18nStrings={{
                         uploadButtonText: e =>
@@ -145,7 +177,33 @@ class CreateLecture extends React.Component {
                     description="Architecture diagram"
                 >
                     <FileUpload
-                        onChange={({ detail }) => this.setState({ architectureDiagram: detail.value })}
+                        onChange={
+                            async ({ detail }) => {
+                                this.setState({ architectureDiagram: detail.value });
+                                if(detail.value.length === 0) {
+                                    if(this.state.architectureDiagramS3Key !== "") {
+                                        await Storage.remove(this.state.architectureDiagramS3Key, {
+                                            level: "protected"
+                                        });
+                                        this.setState({architectureDiagramS3Key: ""});
+                                    }
+                                } else {
+                                    const file = detail.value[0];
+                                    if(!file.type in ['image/jpeg', 'image/png']) {
+                                        console.log("TODO: architecture diagram validation");
+                                    }
+                                    try {
+                                        const s3Key = `architecture-diagrams/${this.state.randomId}-${file.name.replace(/ /g,"_")}`;
+                                        await Storage.put(s3Key, file, {
+                                            level: "protected",
+                                        });
+                                        this.setState({architectureDiagramS3Key: s3Key})
+                                    } catch (error) {
+                                        console.log("Error uploading file: ", error);
+                                    }
+                                }
+                            }
+                        }
                         value={this.state.architectureDiagram}
                         i18nStrings={{
                             uploadButtonText: e =>
@@ -174,7 +232,33 @@ class CreateLecture extends React.Component {
                 description="Add this.state.quiz questions"
             >
                 <FileUpload
-                    onChange={({ detail }) => this.setState({ quiz: detail.value })}
+                    onChange={
+                        async ({ detail }) => {
+                            this.setState({ quiz: detail.value });
+                            if(detail.value.length === 0) {
+                                if(this.state.quizS3Key !== "") {
+                                    await Storage.remove(this.state.quizS3Key, {
+                                        level: "protected"
+                                    });
+                                    this.setState({quizS3Key: ""});
+                                }
+                            } else {
+                                const file = detail.value[0];
+                                if(!file.type in ['text/json']) {
+                                    console.log("TODO: quiz content validation");
+                                }
+                                try {
+                                    const s3Key = `quizzes/${this.state.randomId}-${file.name.replace(/ /g,"_")}`;
+                                    await Storage.put(s3Key, file, {
+                                        level: "protected",
+                                    });
+                                    this.setState({quizS3Key: s3Key})
+                                } catch (error) {
+                                    console.log("Error uploading file: ", error);
+                                }
+                            }
+                        }
+                    }
                     value={this.state.quiz}
                     i18nStrings={{
                         uploadButtonText: e =>
