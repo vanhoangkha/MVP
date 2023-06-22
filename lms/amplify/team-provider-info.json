@@ -29,7 +29,7 @@
         },
         "UserCourse": {
           "deploymentBucketName": "amplify-lms-dev-120646-deployment",
-          "s3Key": "amplify-builds/UserCourse-4339554956334d694341-build.zip"
+          "s3Key": "amplify-builds/UserCourse-7a4f336e6572464b354d-build.zip"
         },
         "lectures": {
           "deploymentBucketName": "amplify-lms-dev-120646-deployment",

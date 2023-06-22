@@ -438,14 +438,16 @@ export default class Learn extends React.Component {
     loadUserLecture() {
         const apiName = 'courses';
         const path = '/users/lectures/' + this.state.userId;
-
-        console.log(path);
         
         API.get(apiName, path)
             .then((response) => {
                 let completedLectures = [];
-                response.forEach(lecture => {
-                    completedLectures.push(lecture.LectureID);
+                response.forEach(userLecture => {
+                    this.state.course.chapters.forEach(chapter => {
+                        if (chapter.lectures.filter(lecture => lecture.lectureId === userLecture.LectureID).length > 0) {
+                            completedLectures.push(userLecture.LectureID);
+                        }
+                    })
                 })
                 this.setState({
                     completedLectures: completedLectures,
@@ -568,7 +570,7 @@ export default class Learn extends React.Component {
     componentDidMount() {
         this.ionViewCanEnter();
         this.loadUserId(() => this.loadCourse());
-        this.loadCourse();
+        // this.loadCourse();
         this.loadUserCourse();
     }
 
