@@ -45,7 +45,7 @@
       "function": {
         "studioCourses": {
           "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
-          "s3Key": "amplify-builds/studioCourses-356f5445756c414d3455-build.zip",
+          "s3Key": "amplify-builds/studioCourses-755a416e314178744d79-build.zip",
           "tableName": "courses-newenv"
         },
         "studioLectures": {
@@ -69,6 +69,9 @@
       },
       "api": {
         "lmsStudio": {}
+      },
+      "storage": {
+        "studioLectureVideos": {}
       }
     }
   },
@@ -199,6 +202,13 @@
           "partitionKeyName": "ID",
           "partitionKeyType": "S"
         }
+      }
+    }
+  },
+  "notprod": {
+    "categories": {
+      "auth": {
+        "lmsstudioc3fd255f": {}
       }
     }
   }
