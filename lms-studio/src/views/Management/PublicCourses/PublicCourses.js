@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@cloudscape-design/components/table";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
@@ -8,32 +8,52 @@ import Pagination from "@cloudscape-design/components/pagination";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import Title from "../../../components/Title";
+import { getPublicCoursesService } from "../services/course";
 
-const items = [
-  {
-    name: "AWS Course 1",
-    updatedAt: "2023/6",
-    state: "Enabled",
-  },
-  {
-    name: "AWS Course 2",
-    updatedAt: "2023/6",
-    state: "Disabled",
-  },
-  {
-    name: "AWS Course 3",
-    updatedAt: "2023/6",
-    state: "Enabled",
-  },
-  {
-    name: "AWS Course 4",
-    updatedAt: "2023/6",
-    state: "Enabled",
-  },
-];
+// const items = [
+//   {
+//     name: "AWS Course 1",
+//     updatedAt: "2023/6",
+//     state: "Enabled",
+//   },
+//   {
+//     name: "AWS Course 2",
+//     updatedAt: "2023/6",
+//     state: "Disabled",
+//   },
+//   {
+//     name: "AWS Course 3",
+//     updatedAt: "2023/6",
+//     state: "Enabled",
+//   },
+//   {
+//     name: "AWS Course 4",
+//     updatedAt: "2023/6",
+//     state: "Enabled",
+//   },
+// ];
 
 const PublicCourses = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
+
+  const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  const handleGetCouses = async () => {
+    setLoading(true)
+
+    try {
+    const {data} = await getPublicCoursesService()
+    setCourses(data)
+    setLoading(false)
+    } catch(_) {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    handleGetCouses()
+  },[])
 
   return (
     <>
@@ -51,23 +71,28 @@ const PublicCourses = () => {
             } selected`,
           itemSelectionLabel: ({ selectedItems }, item) => {
             const isItemSelected = selectedItems.filter(
-              (i) => i.name === item.name
+              (i) => i.Name === item.Name
             ).length;
-            return `${item.name} is ${isItemSelected ? "" : "not"} selected`;
+            const isItem = selectedItems.filter(
+              (i) => i.Name === item.Name
+            )
+            //return `${item.Name} is ${isItemSelected ? "" : "not"} selected`;
+            console.log(`isItemSelected is: ${JSON.stringify(selectedItems)}`)
+            return `${item.Name} is ${isItemSelected ? "" : "not"} selected`;
           },
         }}
         columnDefinitions={[
           {
-            id: "name",
+            id: "Name",
             header: "Course name",
-            cell: (e) => e.name,
-            sortingField: "name",
+            cell: (e) => e.Name,
+            sortingField: "Name",
             isRowHeader: true,
           },
           {
             id: "updatedAt",
             header: "Last Updated",
-            cell: (e) => e.updatedAt,
+            cell: (e) => <span>{(new Date(e['Last Updated']).toDateString())}</span>,
             sortingField: "updatedAt",
           },
           {
@@ -83,14 +108,15 @@ const PublicCourses = () => {
           },
         ]}
         columnDisplay={[
-          { id: "name", visible: true },
+          { id: "Name", visible: true },
           { id: "updatedAt", visible: true },
           { id: "state", visible: true },
         ]}
-        items={items}
+        items={courses}
+        loading={loading}
         loadingText="Loading resources"
-        selectionType="multi"
-        trackBy="name"
+        selectionType="single"
+        trackBy="Name"
         empty={
           <Box textAlign="center" color="inherit">
             <b>No resources</b>
@@ -107,8 +133,8 @@ const PublicCourses = () => {
           <Header
             counter={
               selectedItems.length
-                ? "(" + selectedItems.length + `/${items.length})`
-                : `(${items.length})`
+                ? "(" + selectedItems.length + `/${courses.length})`
+                : `(${courses.length})`
             }
             actions={
               <SpaceBetween direction="horizontal" size="xs">

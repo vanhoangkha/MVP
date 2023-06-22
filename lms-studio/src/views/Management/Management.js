@@ -1,16 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import NavBar from "../../components/NavBar/NavBar";
 import Footer from "../../components/Footer/Footer";
 import {  } from "@aws-amplify/ui-react";
 import SideNavigation from "@cloudscape-design/components/side-navigation";
 import Applayout from "@cloudscape-design/components/app-layout";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BreadcrumbGroup } from "@cloudscape-design/components";
 
 const Management = (props) => {
-  const [activeHref, setActiveHref] = useState("myLectures");
+  const [activeHref, setActiveHref] = useState();
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setActiveHref(location.pathname.split('/').pop())
+  },[])
 
   return (
     <>
@@ -21,6 +27,7 @@ const Management = (props) => {
           <BreadcrumbGroup
             items={[
               { text: "Home", href: "/management" },
+              // { text: "My Courses", href: "/management/myCourses"}
             ]}
             ariaLabel="Breadcrumbs"
           />
