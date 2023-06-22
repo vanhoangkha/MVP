@@ -23,6 +23,8 @@ import { withAuthenticator } from "@aws-amplify/ui-react";
 import SideNavigation from "@cloudscape-design/components/side-navigation";
 import Applayout from "@cloudscape-design/components/app-layout";
 import { useNavigate } from "react-router-dom";
+import ExpandableSection from "@cloudscape-design/components/expandable-section";
+import { createElement } from 'react';
 
 class CreateCourse extends React.Component {
   constructor(props) {
@@ -76,16 +78,7 @@ class CreateCourse extends React.Component {
             quizS3Key: "saa-quiz.json"
           }
         ],
-        chapters: [{
-          name: "Chapter 1: ...",
-          items: [
-            {
-              type: "section",
-              value: "Section 1: ..."
-            }
-          ]
-        }],
-
+        chapters: [],
         visible: false,
         selectedLectures: []
     }
@@ -96,6 +89,18 @@ class CreateCourse extends React.Component {
       <ul>
         { this.state.requirements.map((item, index) => <li key={index}>{item}</li>)}
       </ul>);
+  }
+
+  renderChapters = () => {
+    return (<div>
+      {this.state.chapters.map((chapter, cIndex) =>
+      <ExpandableSection key={cIndex} headerText={chapter.name}>
+      <ul>
+      { chapter.items.map((item, index) => <li key={index}>{item.value}</li>)}
+      </ul>
+    </ExpandableSection>
+    )}
+    </div>)
   }
 
   render = () => {
@@ -290,16 +295,32 @@ class CreateCourse extends React.Component {
                                     const selectedLecturesSize = this.state.selectedLectures.length;
                                     this.setState({
                                       selectedLectures: [],
-                                      chapters: [...this.state.chapters, this.state.currentChapter]
-                                    })
-                                    console.log(this.state.currentChapter)
+                                      currentChapter: {
+                                      name: this.state.currentChapter.name,
+                                      items: this.state.currentChapter.items.slice(0, this.state.currentChapter.items.length - selectedLecturesSize)
+                                    }})
                                     this.setState({visible: false})
                                   }}>Cancel</Button>
                                   <Button variant="primary" onClick={() =>{
-                                    console.log(this.state.selectedLectures)
-                                    
-                                    this.setState({visible: false})
-                                    console.log(this.state.currentChapter)
+                                    const newlySelectedLectures = this.state.selectedLectures.map((lecture) => {
+                                      return {
+                                        type: lecture.lectureType,
+                                        value: lecture.lectureTitle
+                                      }
+                                    })
+                                    const updatedCurrChapter = {
+                                      name: this.state.currentChapter.name,
+                                      items: this.state.currentChapter.items.concat(newlySelectedLectures)
+                                    }
+                                    this.setState({
+                                      selectedLectures: [],
+                                      currentChapter: {
+                                        name: "",
+                                        items: []
+                                      },
+                                      chapters: [...this.state.chapters, updatedCurrChapter],
+                                      visible: false
+                                    })
                                   }}>Ok</Button>
                                 </SpaceBetween>
                               </Box>
@@ -310,15 +331,6 @@ class CreateCourse extends React.Component {
                                   onSelectionChange={({ detail }) =>
                                     {
                                       this.setState({selectedLectures: detail.selectedItems})
-                                      const newlySelectedLectures = detail.selectedItems.map((lecture) => {
-                                        return {
-                                          type: lecture.lectureType,
-                                          value: lecture.lectureTitle
-                                        }
-                                      })
-                                      this.setState({currentChapter: {
-                                        items: this.state.currentChapter.items.concat(newlySelectedLectures)
-                                      }})
                                     }
                                   }
                                   selectedItems={this.state.selectedLectures}
@@ -519,7 +531,8 @@ class CreateCourse extends React.Component {
                               <Header variant="h2">Course Detail</Header>
                             }
                           >
-                            <ColumnLayout columns={4} variant="text-grid">
+                            <ColumnLayout columns={1} variant="text-grid">
+                              {this.renderChapters()}
                             </ColumnLayout>
                           </Container>
                         </SpaceBetween>
