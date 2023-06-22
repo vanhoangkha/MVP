@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import NavBar from '../../components/NavBar/NavBar';
 import Footer from '../../components/Footer/Footer';
 import { withAuthenticator } from '@aws-amplify/ui-react';
+import { API } from 'aws-amplify';
 
 class Home extends React.Component {
     constructor(props) {
@@ -12,6 +13,33 @@ class Home extends React.Component {
             courseToRedirect: null,
             courses: [],
         };
+    }
+
+    componentDidMount() {
+        const apiName = 'lmsStudio';
+        const path = '/courses';
+        
+        API.get(apiName, path)
+          .then((response) => {
+            let transformedCourses = [];
+
+            response.forEach(course => {
+                transformedCourses.push({
+                    id: course.ID,
+                    name: course.Name,
+                    categories: course.Categories,
+                    tags: course.Tags,
+                    level: course.Level,
+                    length: course.Length,
+                    description: course.Description
+                });
+            });
+
+            this.setState({courses: transformedCourses});
+          })
+          .catch((error) => {
+            console.log(error.response);
+          });
     }
 
     redirectToCourse(courseId) {
@@ -25,7 +53,9 @@ class Home extends React.Component {
                 <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
                 <div className='dashboard-main'>
                     Home Page Here<br/>
-                    <a onClick={() => {this.redirectToCourse("ASD")}}>Click here to redirect to course "SAA"</a>
+                    {this.state.courses.map(course => 
+                        <a onClick={() => {this.redirectToCourse(course.id)}}>Click here to redirect to course <b>{course.name}</b><br/></a>
+                    )}
                 </div>
                 <Footer />
             </div>;

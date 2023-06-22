@@ -15,14 +15,6 @@
     },
     "s3Key": {
       "Type": "String"
-    },
-    "storageUserCourseName": {
-      "Type": "String",
-      "Default": "storageUserCourseName"
-    },
-    "storageUserCourseArn": {
-      "Type": "String",
-      "Default": "storageUserCourseArn"
     }
   },
   "Conditions": {
@@ -55,12 +47,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "UserCourse",
+            "userOverView",
             {
               "Fn::Join": [
                 "",
                 [
-                  "UserCourse",
+                  "userOverView",
                   "-",
                   {
                     "Ref": "env"
@@ -86,7 +78,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs18.x",
         "Layers": [],
         "Timeout": 25
       }
@@ -97,12 +89,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "lmsLambdaRolede503861",
+            "lmsstudioLambdaRole9a49a988",
             {
               "Fn::Join": [
                 "",
                 [
-                  "lmsLambdaRolede503861",
+                  "lmsstudioLambdaRole9a49a988",
                   "-",
                   {
                     "Ref": "env"
@@ -168,38 +160,45 @@
                   }
                 ]
               }
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "dynamodb:DescribeTable",
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem"
-              ],
-              "Resource": [
-                {
-                  "Ref": "storageUserCourseArn"
-                },
-                {
-                  "Fn::Join": [
-                    "/",
-                    [
-                      {
-                        "Ref": "storageUserCourseArn"
-                      },
-                      "index/*"
-                    ]
-                  ]
-                }
-              ]
             }
           ]
         }
       }
+    },
+    "CustomLambdaExecutionPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "custom-lambda-execution-policy",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "dynamodb:Scan"
+              ],
+              "Resource": [
+                "arn:aws:dynamodb:*:*:table:*"
+              ],
+              "Effect": "Allow"
+            },
+            {
+              "Action": [
+                "cognito-idp:*"
+              ],
+              "Resource": [
+                "arn:aws:cognito-idp:ap-southeast-1:697944894855:userpool/*"
+              ],
+              "Effect": "Allow"
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ]
+      },
+      "DependsOn": "LambdaExecutionRole"
     }
   },
   "Outputs": {

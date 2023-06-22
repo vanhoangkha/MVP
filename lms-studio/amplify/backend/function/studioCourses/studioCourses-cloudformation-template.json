@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"12.1.1\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"10.0.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -16,13 +16,13 @@
     "s3Key": {
       "Type": "String"
     },
-    "storageUserCourseName": {
+    "storagecoursesdevName": {
       "Type": "String",
-      "Default": "storageUserCourseName"
+      "Default": "storagecoursesdevName"
     },
-    "storageUserCourseArn": {
+    "storagecoursesdevArn": {
       "Type": "String",
-      "Default": "storageUserCourseArn"
+      "Default": "storagecoursesdevArn"
     }
   },
   "Conditions": {
@@ -55,12 +55,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "UserCourse",
+            "studioCourses",
             {
               "Fn::Join": [
                 "",
                 [
-                  "UserCourse",
+                  "studioCourses",
                   "-",
                   {
                     "Ref": "env"
@@ -97,12 +97,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "lmsLambdaRolede503861",
+            "lmsstudioLambdaRole4442ab5f",
             {
               "Fn::Join": [
                 "",
                 [
-                  "lmsLambdaRolede503861",
+                  "lmsstudioLambdaRole4442ab5f",
                   "-",
                   {
                     "Ref": "env"
@@ -182,14 +182,14 @@
               ],
               "Resource": [
                 {
-                  "Ref": "storageUserCourseArn"
+                  "Ref": "storagecoursesdevArn"
                 },
                 {
                   "Fn::Join": [
                     "/",
                     [
                       {
-                        "Ref": "storageUserCourseArn"
+                        "Ref": "storagecoursesdevArn"
                       },
                       "index/*"
                     ]
@@ -224,14 +224,6 @@
     "LambdaExecutionRole": {
       "Value": {
         "Ref": "LambdaExecutionRole"
-      }
-    },
-    "LambdaExecutionRoleArn": {
-      "Value": {
-        "Fn::GetAtt": [
-          "LambdaExecutionRole",
-          "Arn"
-        ]
       }
     }
   }

@@ -1,71 +1,82 @@
 {
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "providerPlugin": "awscloudformation",
+      "type": "manual"
+    }
+  },
   "auth": {
     "lmsstudioc3fd255f": {
-      "customAuth": false,
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
       "dependsOn": [],
+      "customAuth": false,
       "frontendAuthConfig": {
-        "mfaConfiguration": "OFF",
-<<<<<<< HEAD
-        "mfaTypes": [
-          "SMS"
-        ],
-=======
-        "mfaTypes": ["SMS"],
->>>>>>> eef97fd0568a2e64147756fcf1bd27606818adef
-        "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [],
-          "passwordPolicyMinLength": 8
-        },
-<<<<<<< HEAD
-        "signupAttributes": [
-          "EMAIL"
-        ],
         "socialProviders": [],
         "usernameAttributes": [
           "EMAIL"
         ],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
         "verificationMechanisms": [
           "EMAIL"
         ]
-=======
-        "signupAttributes": ["EMAIL"],
-        "socialProviders": [],
-        "usernameAttributes": ["EMAIL"],
-        "verificationMechanisms": ["EMAIL"]
->>>>>>> eef97fd0568a2e64147756fcf1bd27606818adef
-      },
-      "providerPlugin": "awscloudformation",
-      "service": "Cognito"
+      }
     }
   },
-  "function": {},
-  "hosting": {
-    "amplifyhosting": {
+  "function": {
+    "studioCourses": {
+      "build": true,
       "providerPlugin": "awscloudformation",
-      "service": "amplifyhosting",
-      "type": "manual"
-    }
-  },
-  "parameters": {
-    "AMPLIFY_hosting_amplifyhosting_appId": {
-      "usedBy": [
+      "service": "Lambda",
+      "dependsOn": [
         {
-          "category": "hosting",
-          "resourceName": "amplifyhosting"
+          "category": "storage",
+          "resourceName": "coursesdev",
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "attributeEnvMap": {
+            "Name": "TABLE_NAME",
+            "Arn": "TABLE_ARN"
+          }
         }
       ]
-    },
-    "AMPLIFY_hosting_amplifyhosting_type": {
-      "usedBy": [
+    }
+  },
+  "storage": {
+    "coursesdev": {
+      "service": "DynamoDB",
+      "serviceType": "imported",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
+  },
+  "api": {
+    "lmsStudio": {
+      "service": "API Gateway",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
         {
-          "category": "hosting",
-          "resourceName": "amplifyhosting"
+          "category": "function",
+          "resourceName": "studioCourses",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
         }
       ]
     }
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> eef97fd0568a2e64147756fcf1bd27606818adef
