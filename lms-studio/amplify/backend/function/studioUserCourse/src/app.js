@@ -78,7 +78,8 @@ app.get(path, function(req, res) {
 
   let queryParams = {
     TableName: tableName,
-    KeyConditions: condition
+    KeyConditions: condition,
+    IndexName:"CreatorID-index"
   }
 
   dynamodb.query(queryParams, (err, data) => {
@@ -151,25 +152,31 @@ app.get(path + sortKeyPath, function(req, res) {
 // *************************************/
 
 app.put(path, function(req, res) {
-
-  if (userIdPresent) {
+  console.log(req.body)
+  if (userIdPresent &&! !req.body[0]['userID']) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
-
-  let putItemParams = {
+  let promises = req.body.map((item) => {
+    let putItemParams = {
     TableName: tableName,
-    Item: req.body
-  }
-  dynamodb.put(putItemParams, (err, data) => {
-    if (err) {
-      res.statusCode = 500;
-      res.json({ error: err, url: req.url, body: req.body });
-    } else{
-      res.json({ success: 'put call succeed!', url: req.url, data: data })
-    }
-  });
-});
+    Item: item,
+    ReturnValues: "ALL_OLD"
 
+  }
+  return dynamodb.put(putItemParams).promise().then((err, data) => {
+    if (err) {
+      return err
+    } else{
+      return data
+    }
+  })
+  })
+  
+  Promise.all(promises).then(function(results) {
+    console.log(results)
+    res.json({results})
+})
+});
 // /************************************
 // * HTTP post method for insert object *
 // *************************************/

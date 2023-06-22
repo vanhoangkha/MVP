@@ -23,7 +23,7 @@ if (process.env.ENV && process.env.ENV !== "NONE") {
 }
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
-const partitionKeyName = "CourseID";
+const partitionKeyName = "CreatorID";
 const partitionKeyType = "S";
 const sortKeyName = "";
 const sortKeyType = "";
@@ -82,8 +82,10 @@ app.get(path, function(req, res) {
 
   let queryParams = {
     TableName: tableName,
-    KeyConditions: condition
+    KeyConditions: condition,
+    IndexName:"CreatorID-index"
   }
+  console.log(queryParams)
 
   dynamodb.query(queryParams, (err, data) => {
     if (err) {
