@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import NavBar from '../../components/NavBar/NavBar';
 import Footer from '../../components/Footer/Footer';
 // import { withAuthenticator } from '@aws-amplify/ui-react';
+
 import SideNavigation from '@cloudscape-design/components/side-navigation';
 import Applayout from '@cloudscape-design/components/app-layout';
 import Container from '@cloudscape-design/components/container';
@@ -27,6 +28,23 @@ const Leaderboard = (props) => {
     { name: 'Item 2' },
   ]);
   const navigate = useNavigate();
+  // var topCourses = [
+  //   {
+  //     courseID: 1,
+  //     courseName: 'course name 1',
+  //     courseDescription: 'this is course 1',
+  //     creatorName: 'gia lim',
+  //     oppValue: '230k ARR',
+  //   },
+  //   {
+  //     courseID: 2,
+  //     courseName: 'course name 2',
+  //     courseDescription: 'this is course 2',
+  //     creatorName: 'gia lim',
+  //     oppValue: '400k ARR',
+  //   },
+  // ];
+
   return (
     <>
       <NavBar navigation={props.navigation} title="Cloud Academy" />
@@ -98,15 +116,13 @@ const Leaderboard = (props) => {
                     <Header
                       variant="h1"
                       info={<Link>Info</Link>}
-                      description="This is a generic description used in the header."
+                      description="View the top courses for this week!"
                       actions={
                         <Button variant="primary">Button</Button>
                       }
                     >
                       Top Contributors
                     </Header>
-
-                    <Alert>This is a generic alert.</Alert>
                   </SpaceBetween>
                 }
               >
@@ -122,8 +138,8 @@ const Leaderboard = (props) => {
                       media={{
                         content: (
                           <img
-                            src="/image-placeholder.png"
-                            alt="placeholder"
+                            src="/courseImg-2.jpg"
+                            alt="courseThumbnail"
                           />
                         ),
                         height: 200,
@@ -131,28 +147,53 @@ const Leaderboard = (props) => {
                       }}
                       footer={
                         <div className="container-media-footer">
-                          <Link href="#">Internal link</Link>
+                          <Link href="#">
+                            Created by Tuan Vo (@mintuan){' '}
+                          </Link>
                           <Button iconName="share" variant="icon" />
+                          <Box variant="small">
+                            Opportunity Influenced: 200k ARR
+                          </Box>
+                          <Box variant="small">
+                            Last Update: 5 hours ago
+                          </Box>
                         </div>
                       }
                     >
                       <SpaceBetween direction="vertical" size="s">
                         <SpaceBetween direction="vertical" size="xxs">
-                          <Box variant="small">March 10, 2023</Box>
-                          <Box variant="h2">Contributor 1</Box>
+                          <Box variant="small">
+                            #sagemaker #s3 #personalise
+                          </Box>
+                          <Box variant="h2">
+                            Building a System Recommender on AWS
+                          </Box>
                         </SpaceBetween>
-                        This is a paragraph.
-                        <Button>Go to Course</Button>
+                        Participants will learn about the fundamental
+                        concepts of recommendation systems, data
+                        preprocessing and feature engineering
+                        techniques, and how to train and evaluate
+                        machine learning models for generating
+                        accurate recommendations. They will also gain
+                        hands-on experience in utilizing AWS services
+                        such as Amazon S3 for data storage, Amazon
+                        SageMaker for model training and deployment,
+                        and Amazon Personalize for building scalable
+                        recommendation systems.
+                        <Button href="/management/publicCourses">
+                          Go to Course
+                        </Button>
                       </SpaceBetween>
                     </Container>
                   </div>
+
                   <div style={{ paddingTop: 60 }}>
                     <Container
                       media={{
                         content: (
                           <img
-                            src="/image-placeholder.png"
-                            alt="placeholder"
+                            src="/courseImg-1.jpg"
+                            alt="courseThumbnail"
                           />
                         ),
                         height: 200,
@@ -160,28 +201,51 @@ const Leaderboard = (props) => {
                       }}
                       footer={
                         <div className="container-media-footer">
-                          <Link href="#">Internal link</Link>
+                          <Link href="#">
+                            Created by Trinh Vo (@trinhvo)
+                          </Link>
                           <Button iconName="share" variant="icon" />
+                          <Box variant="small">
+                            Opportunity Influenced: 320k ARR
+                          </Box>
+                          <Box variant="small">
+                            Last Update: 5 hours ago
+                          </Box>
                         </div>
                       }
                     >
                       <SpaceBetween direction="vertical" size="s">
                         <SpaceBetween direction="vertical" size="xxs">
-                          <Box variant="small">March 10, 2023</Box>
-                          <Box variant="h2">Contributor 2</Box>
+                          <Box variant="small">
+                            #data #analytics #jupyter
+                          </Box>
+                          <Box variant="h2">Juptyer x AWS</Box>
                         </SpaceBetween>
-                        This is a paragraph.
-                        <Button>Primary action</Button>
+                        Participants will gain hands-on experience in
+                        setting up Jupyter Notebooks on AWS and learn
+                        how to seamlessly integrate various AWS
+                        services into their data analysis and machine
+                        learning workflows. The course covers topics
+                        such as accessing and managing AWS resources
+                        from Jupyter Notebooks, utilizing AWS SDKs and
+                        APIs for data retrieval and storage, deploying
+                        and scaling Jupyter environments on AWS, and
+                        leveraging AWS machine learning services for
+                        advanced analytics.
+                        <Button href="/management/publicCourses">
+                          Go to Course
+                        </Button>
                       </SpaceBetween>
                     </Container>
                   </div>
+
                   <div style={{ paddingTop: 60 }}>
                     <Container
                       media={{
                         content: (
                           <img
-                            src="/image-placeholder.png"
-                            alt="placeholder"
+                            src="/courseImg-3.png"
+                            alt="courseThumbnail"
                           />
                         ),
                         height: 200,
@@ -189,18 +253,44 @@ const Leaderboard = (props) => {
                       }}
                       footer={
                         <div className="container-media-footer">
-                          <Link href="#">Internal link</Link>
+                          <Link href="#">
+                            Created by Gia Lim (@lmlim){' '}
+                          </Link>
                           <Button iconName="share" variant="icon" />
+                          <Box variant="small">
+                            Opportunity Influenced: 180k ARR
+                          </Box>
+                          <Box variant="small">
+                            Last Update: 5 hours ago
+                          </Box>
                         </div>
                       }
                     >
                       <SpaceBetween direction="vertical" size="s">
                         <SpaceBetween direction="vertical" size="xxs">
-                          <Box variant="small">March 10, 2023</Box>
-                          <Box variant="h2">Contributor 3</Box>
+                          <Box variant="small">
+                            #costexplorer #usagereport #costop
+                          </Box>
+                          <Box variant="h2">
+                            Starting Your Cloud Financial Management
+                            Journey: Cost Visibility
+                          </Box>
                         </SpaceBetween>
-                        This is a paragraph.
-                        <Button>Primary action</Button>
+                        Participants will explore various tools and
+                        techniques for tracking and analyzing cost
+                        data, including cost allocation tags, AWS Cost
+                        Explorer, and AWS Cost and Usage Reports. They
+                        will also learn how to set up budgets and
+                        alerts to proactively monitor their spending
+                        and avoid any unexpected cost overruns. By the
+                        end of the course, participants will have a
+                        clear understanding of their cloud cost
+                        landscape and the knowledge to implement
+                        strategies that drive cost optimization and
+                        maximize the value of their cloud investments.
+                        <Button href="/management/publicCourses">
+                          Go to Course
+                        </Button>
                       </SpaceBetween>
                     </Container>
                   </div>
@@ -230,21 +320,21 @@ const Leaderboard = (props) => {
                   }}
                   columnDefinitions={[
                     {
-                      id: 'contributorName',
+                      id: 'Contributor Name',
                       header: 'Contributor Name',
                       cell: (e) => e.name,
                       sortingField: 'name',
                       isRowHeader: true,
                     },
                     {
-                      id: 'lecture',
-                      header: 'Lecture',
+                      id: 'Course Name',
+                      header: 'Course Name',
                       cell: (e) => e.alt,
                       sortingField: 'alt',
                     },
                     {
-                      id: 'course',
-                      header: 'Course',
+                      id: 'Opp Value',
+                      header: 'Opp Value',
                       cell: (e) => e.type,
                     },
                     {
@@ -260,61 +350,62 @@ const Leaderboard = (props) => {
                     },
                   ]}
                   columnDisplay={[
-                    { id: 'contributorName', visible: true },
-                    { id: 'lecture', visible: true },
-                    { id: 'course', visible: true },
+                    { id: 'Contributor Name', visible: true },
+                    { id: 'Course Name', visible: true },
+                    { id: 'Opp Value', visible: true },
                     { id: 'description', visible: true },
                     { id: 'userRating', visible: true },
                   ]}
                   items={[
                     {
-                      name: 'Name 1',
-                      alt: 'First',
-                      description: 'This is the first item',
-                      type: '1A',
+                      name: 'Hung Ngyuen Gia ',
+                      alt: 'Intro to AWS',
+                      description: 'This course is an intro to AWS',
+                      type: '150k ARR',
                       size: 'Small',
                       userRating: '5 out of 5',
                     },
                     {
-                      name: 'Name 2',
-                      alt: 'Second',
-                      description: 'This is the second item',
-                      type: '1B',
+                      name: 'Arief Hidayat',
+                      alt: 'How to be an SA',
+                      description: 'Be the best SA',
+                      type: '100k ARR',
                       size: 'Large',
                       userRating: '4.8 out of 5',
                     },
                     {
-                      name: 'Name 3',
-                      alt: 'Third',
-                      description: '-',
-                      type: '1A',
+                      name: 'Quang Chu',
+                      alt: 'How to eat Spicy Food',
+                      description:
+                        'I am an pro now, let me teach you!',
+                      type: '80 ARR',
                       size: 'Large',
                       userRating: '4.9 out of 5',
                     },
                     {
-                      name: 'Name 4',
-                      alt: 'Fourth',
-                      description: 'This is the fourth item',
-                      type: '2A',
+                      name: 'Wanich',
+                      alt: 'Be a backend pro!',
+                      description:
+                        'Learn how to build backend in 2 days!',
+                      type: '90 ARR',
                       size: 'Small',
                       userRating: '5 out of 5',
                     },
                     {
-                      name: 'Name 5',
-                      alt: '-',
-                      description:
-                        'This is the fifth item with a longer description',
-                      type: '2A',
+                      name: 'Hang Duong',
+                      alt: 'Hello World App',
+                      description: 'Set up an Amplify App on AWS',
+                      type: '120 ARR',
                       size: 'Large',
                       userRating: '4.6 out of 5',
                     },
                     {
-                      name: 'Name 6',
-                      alt: 'Sixth',
-                      description: 'This is the sixth item',
-                      type: '1A',
+                      name: 'Tanisorn',
+                      alt: 'Have a Kit Kat',
+                      description: 'Take a break man!',
+                      type: '500 ARR',
                       size: 'Small',
-                      userRating: '4.3 out of 5',
+                      userRating: '5 out of 5',
                     },
                   ]}
                   loadingText="Loading resources"
@@ -335,7 +426,7 @@ const Leaderboard = (props) => {
                   }
                   filter={
                     <TextFilter
-                      filteringPlaceholder="Find Contributors"
+                      filteringcourseThumbnail="Find Course Names"
                       filteringText=""
                     />
                   }
@@ -361,9 +452,9 @@ const Leaderboard = (props) => {
                       preferences={{
                         pageSize: 10,
                         contentDisplay: [
-                          { id: 'contributorName', visible: true },
-                          { id: 'lecture', visible: true },
-                          { id: 'course', visible: true },
+                          { id: 'Contributor Name', visible: true },
+                          { id: 'Course Name', visible: true },
+                          { id: 'Opp Value', visible: true },
                           { id: 'description', visible: true },
                           { id: 'userRating', visible: true },
                         ],
@@ -381,12 +472,15 @@ const Leaderboard = (props) => {
                       contentDisplayPreference={{
                         options: [
                           {
-                            id: 'contributorName',
+                            id: 'Contributor Name',
                             label: 'Contributor Name',
                             alwaysVisible: true,
                           },
-                          { id: 'lecture', label: 'Lecture' },
-                          { id: 'course', label: 'Course' },
+                          {
+                            id: 'Course Name',
+                            label: 'Course Name',
+                          },
+                          { id: 'Opp Value', label: 'Opp Value' },
                           { id: 'description', label: 'Description' },
                           { id: 'userRating', label: 'userRating' },
                         ],
