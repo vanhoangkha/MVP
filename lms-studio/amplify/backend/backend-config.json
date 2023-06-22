@@ -5,13 +5,18 @@
       "dependsOn": [],
       "frontendAuthConfig": {
         "mfaConfiguration": "OFF",
+<<<<<<< HEAD
         "mfaTypes": [
           "SMS"
         ],
+=======
+        "mfaTypes": ["SMS"],
+>>>>>>> eef97fd0568a2e64147756fcf1bd27606818adef
         "passwordProtectionSettings": {
           "passwordPolicyCharacters": [],
           "passwordPolicyMinLength": 8
         },
+<<<<<<< HEAD
         "signupAttributes": [
           "EMAIL"
         ],
@@ -22,6 +27,12 @@
         "verificationMechanisms": [
           "EMAIL"
         ]
+=======
+        "signupAttributes": ["EMAIL"],
+        "socialProviders": [],
+        "usernameAttributes": ["EMAIL"],
+        "verificationMechanisms": ["EMAIL"]
+>>>>>>> eef97fd0568a2e64147756fcf1bd27606818adef
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
@@ -53,4 +64,8 @@
       ]
     }
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> eef97fd0568a2e64147756fcf1bd27606818adef
