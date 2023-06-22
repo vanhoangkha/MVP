@@ -1,178 +1,260 @@
 {
+  "api": {
+    "courses": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "courses"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "UserCourse"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "lectures"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "categories"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
   "auth": {
     "lmsbc7a393d": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
       "customAuth": false,
+      "dependsOn": [],
       "frontendAuthConfig": {
-        "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
-        "signupAttributes": [
-          "EMAIL"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyMinLength": 8,
-          "passwordPolicyCharacters": []
-        },
         "mfaConfiguration": "OFF",
         "mfaTypes": [
           "SMS"
         ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
         "verificationMechanisms": [
           "EMAIL"
         ]
-      }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    }
+  },
+  "function": {
+    "UserCourse": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributeEnvMap": {
+            "Arn": "TABLE_ARN",
+            "Name": "TABLE_NAME"
+          },
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "storage",
+          "resourceName": "UserCourse"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "categories": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributeEnvMap": {
+            "Arn": "TABLE_ARN",
+            "Name": "TABLE_NAME"
+          },
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "storage",
+          "resourceName": "Categories"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "courses": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributeEnvMap": {
+            "Arn": "TABLE_ARN",
+            "Name": "TABLE_NAME"
+          },
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "storage",
+          "resourceName": "courses"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "lectures": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributeEnvMap": {
+            "Arn": "TABLE_ARN",
+            "Name": "TABLE_NAME"
+          },
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "storage",
+          "resourceName": "Lectures"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "hosting": {
     "amplifyhosting": {
-      "service": "amplifyhosting",
       "providerPlugin": "awscloudformation",
+      "service": "amplifyhosting",
       "type": "manual"
     }
   },
-  "storage": {
-    "courses": {
-      "service": "DynamoDB",
-      "providerPlugin": "awscloudformation"
+  "parameters": {
+    "AMPLIFY_function_UserCourse_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "UserCourse"
+        }
+      ]
     },
-    "UserCourse": {
-      "service": "DynamoDB",
-      "providerPlugin": "awscloudformation"
+    "AMPLIFY_function_UserCourse_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "UserCourse"
+        }
+      ]
+    },
+    "AMPLIFY_function_categories_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "categories"
+        }
+      ]
+    },
+    "AMPLIFY_function_categories_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "categories"
+        }
+      ]
+    },
+    "AMPLIFY_function_courses_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "courses"
+        }
+      ]
+    },
+    "AMPLIFY_function_courses_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "courses"
+        }
+      ]
+    },
+    "AMPLIFY_function_lectures_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "lectures"
+        }
+      ]
+    },
+    "AMPLIFY_function_lectures_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "lectures"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "Categories": {
+      "providerPlugin": "awscloudformation",
+      "service": "DynamoDB"
     },
     "Lectures": {
-      "service": "DynamoDB",
-      "providerPlugin": "awscloudformation"
-    },
-    "Categories": {
-      "service": "DynamoDB",
-      "providerPlugin": "awscloudformation"
-    },
-    "Videos": {
-      "service": "S3",
       "providerPlugin": "awscloudformation",
-      "dependsOn": []
-    }
-  },
-  "function": {
-    "courses": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "storage",
-          "resourceName": "courses",
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "attributeEnvMap": {
-            "Name": "TABLE_NAME",
-            "Arn": "TABLE_ARN"
-          }
-        }
-      ]
+      "service": "DynamoDB"
     },
     "UserCourse": {
-      "build": true,
       "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "storage",
-          "resourceName": "UserCourse",
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "attributeEnvMap": {
-            "Name": "TABLE_NAME",
-            "Arn": "TABLE_ARN"
-          }
-        }
-      ]
+      "service": "DynamoDB"
     },
-    "lectures": {
-      "build": true,
+    "Videos": {
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "storage",
-          "resourceName": "Lectures",
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "attributeEnvMap": {
-            "Name": "TABLE_NAME",
-            "Arn": "TABLE_ARN"
-          }
-        }
-      ]
+      "service": "S3"
     },
-    "categories": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "storage",
-          "resourceName": "Categories",
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "attributeEnvMap": {
-            "Name": "TABLE_NAME",
-            "Arn": "TABLE_ARN"
-          }
-        }
-      ]
-    }
-  },
-  "api": {
     "courses": {
-      "service": "API Gateway",
       "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "courses",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "UserCourse",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "lectures",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "categories",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        }
-      ]
+      "service": "DynamoDB"
     }
   }
 }

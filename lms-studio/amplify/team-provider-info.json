@@ -1,27 +1,43 @@
 {
   "dev": {
+    "awscloudformation": {},
+    "categories": {
+      "function": {
+        "studioCourses": {}
+      }
+    }
+  },
+  "devthree": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-lmsstudio-dev-31057-authRole",
-      "UnauthRoleArn": "arn:aws:iam::320740598534:role/amplify-lmsstudio-dev-31057-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::320740598534:role/amplify-lmsstudio-dev-31057-authRole",
+      "AuthRoleName": "amplify-lmsstudio-devthree-142357-authRole",
+      "UnauthRoleArn": "arn:aws:iam::063753277413:role/amplify-lmsstudio-devthree-142357-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::063753277413:role/amplify-lmsstudio-devthree-142357-authRole",
       "Region": "ap-southeast-1",
-      "DeploymentBucketName": "amplify-lmsstudio-dev-31057-deployment",
-      "UnauthRoleName": "amplify-lmsstudio-dev-31057-unauthRole",
-      "StackName": "amplify-lmsstudio-dev-31057",
-      "StackId": "arn:aws:cloudformation:ap-southeast-1:320740598534:stack/amplify-lmsstudio-dev-31057/3d7b4e50-0e14-11ee-9529-02ebe51b26a8",
-      "AmplifyAppId": "d1nq8fdu3ddi3x",
-      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-lmsstudio-dev-31057-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json",
-      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-lmsstudio-dev-31057-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+      "DeploymentBucketName": "amplify-lmsstudio-devthree-142357-deployment",
+      "UnauthRoleName": "amplify-lmsstudio-devthree-142357-unauthRole",
+      "StackName": "amplify-lmsstudio-devthree-142357",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:063753277413:stack/amplify-lmsstudio-devthree-142357/96e6b640-1004-11ee-ae7d-0ab29a174d52",
+      "AmplifyAppId": "d3do0fa98g6655",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-lmsstudio-devthree-142357-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
+      "auth": {
+        "lmsstudioc3fd255f": {}
+      },
+      "function": {
+        "studioCourses": {
+          "deploymentBucketName": "amplify-lmsstudio-devthree-142357-deployment",
+          "s3Key": "amplify-builds/studioCourses-2f765762723445415232-build.zip"
+        }
+      },
       "hosting": {
         "amplifyhosting": {
-          "appId": "d1nq8fdu3ddi3x",
+          "appId": "d3do0fa98g6655",
           "type": "manual"
         }
       },
-      "auth": {
-        "lmsstudioc3fd255f": {}
+      "api": {
+        "lmsStudio": {}
       }
     }
   }

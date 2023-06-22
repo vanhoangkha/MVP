@@ -20,6 +20,7 @@ import {
 import AuthForm from './components/AuthForm/AuthForm';
 import Home from './views/Home/Home';
 import Course from './views/Course/Course';
+import CreateCourse from './views/CreateCourse/CreateCourse';
 
 // Configure Amplify
 Amplify.configure(awsExports);
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
   {
     path: "/course/:id",
     element: <Course/>,
+  },
+  {
+    path: "/course/CreateCourse",
+    element: <CreateCourse/>,
   },
 ]);
 
