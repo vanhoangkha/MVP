@@ -23,7 +23,7 @@ if (process.env.ENV && process.env.ENV !== "NONE") {
 }
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
-const partitionKeyName = "ID";
+const partitionKeyName = "CourseID";
 const partitionKeyType = "S";
 const sortKeyName = "";
 const sortKeyType = "";
@@ -59,8 +59,12 @@ const convertUrlType = (param, type) => {
 //  * HTTP Get method for list objects *
 //  ********************************/
 
-app.get(path + hashKeyPath, function(req, res) {
+app.get(path, function(req, res) {
   const condition = {}
+  condition[partitionKeyName] = {
+    ComparisonOperator: 'EQ'
+  }
+  condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
   // condition[partitionKeyName] = {
   //   ComparisonOperator: 'EQ'
   // }

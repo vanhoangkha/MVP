@@ -1,13 +1,6 @@
 {
   "version": 1,
   "paths": {
-    "/lectures": {
-      "name": "/lectures",
-      "lambdaFunction": "studioCourses",
-      "permissions": {
-        "setting": "open"
-      }
-    },
     "/courses": {
       "name": "/courses",
       "lambdaFunction": "studioCourses",
@@ -18,6 +11,13 @@
     "/usercourse": {
       "name": "/usercourse",
       "lambdaFunction": "studioUserCourse",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/lectures": {
+      "name": "/lectures",
+      "lambdaFunction": "studioLectures",
       "permissions": {
         "setting": "open"
       }
