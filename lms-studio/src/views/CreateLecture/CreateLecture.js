@@ -35,7 +35,7 @@ class CreateLecture extends React.Component {
     }
 
     ReviewAddContent = () => {
-        if (this.state.lectureType == "Video") {
+        if (this.state.lectureType === "Video") {
             return <ColumnLayout
                 columns={2}
                 variant="text-grid"
@@ -44,10 +44,10 @@ class CreateLecture extends React.Component {
                     <Box variant="awsui-key-label">
                         File name
                     </Box>
-                    <div>{this.state.lectureVideo.length == 0 ? "" : this.state.lectureVideo[0].name}</div>
+                    <div>{this.state.lectureVideo.length === 0 ? "" : this.state.lectureVideo[0].name}</div>
                 </div>
             </ColumnLayout>
-        } else if (this.state.lectureType == "Workshop") {
+        } else if (this.state.lectureType === "Workshop") {
             return <ColumnLayout
                 columns={3}
                 variant="text-grid"
@@ -68,7 +68,7 @@ class CreateLecture extends React.Component {
                     <Box variant="awsui-key-label">
                         Architecture Diagram
                     </Box>
-                    <div>{this.state.architectureDiagram.length == 0 ? "" : this.state.architectureDiagram[0].name}</div>
+                    <div>{this.state.architectureDiagram.length === 0 ? "" : this.state.architectureDiagram[0].name}</div>
                 </div>
             </ColumnLayout>
         } else {
@@ -81,7 +81,7 @@ class CreateLecture extends React.Component {
                     <Box variant="awsui-key-label">
                         File name
                     </Box>
-                    <div>{this.state.quiz.length == 0 ? "" : this.state.quiz[0].name}</div>
+                    <div>{this.state.quiz.length === 0 ? "" : this.state.quiz[0].name}</div>
                 </div>
             </ColumnLayout>
         }
@@ -114,7 +114,7 @@ class CreateLecture extends React.Component {
                     constraintText=".mov, .mp4"
                 />
             </FormField>
-        } else if (this.state.lectureType == "Workshop") {
+        } else if (this.state.lectureType === "Workshop") {
             return <div>
                 <FormField
                     description="Workshop"
