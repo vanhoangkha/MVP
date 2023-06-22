@@ -41,7 +41,6 @@ const AssignCourse = (props) => {
   const [items, setItems] = React.useState([]);
 
   const { state } = useLocation();
-  console.log("state", state);
 
   const handlePutAssignCourse = async () => {
     const data = selectedUsers.map((e) => ({
@@ -51,7 +50,7 @@ const AssignCourse = (props) => {
       Status: "ASSIGNED",
     }));
     try {
-      const response = await putAssignCourseService(data);
+      await putAssignCourseService(data);
 
       setItems([{
         type: "success",
@@ -143,8 +142,6 @@ const AssignCourse = (props) => {
           }
           content={
             <div>
-              <br></br>
-              <Flashbar items={items} />
               <br></br>
               <div>
                 <Container
@@ -338,6 +335,8 @@ const AssignCourse = (props) => {
                   </Button>{" "}
                 </SpaceBetween>
               </div>
+              <br></br>
+              <Flashbar items={items} />
             </div>
           }
         />
