@@ -44,86 +44,81 @@ class CreateLecture extends React.Component {
         }
     }
 
-    ReviewAddContent = () => {
-        if (this.state.lectureType === "Video") {
-            return <ColumnLayout
-                columns={2}
-                variant="text-grid"
-            >
-                <div>
-                    <Box variant="awsui-key-label">
-                        File name
-                    </Box>
-                    <div>{this.state.lectureVideoS3Key}</div>
-                </div>
-            </ColumnLayout>
-        } else if (this.state.lectureType === "Workshop") {
-            return <ColumnLayout
-                columns={3}
-                variant="text-grid"
-            >
-                <div>
-                    <Box variant="awsui-key-label">
-                        Workshop URL
-                    </Box>
-                    <div>{this.state.workshopUrl}</div>
-                </div>
-                <div>
-                    <Box variant="awsui-key-label">
-                        Workshop Description
-                    </Box>
-                    <div>{this.state.workshopDescription}</div>
-                </div>
-                <div>
-                    <Box variant="awsui-key-label">
-                        Architecture Diagram
-                    </Box>
-                    <div>{this.state.architectureDiagramS3Key}</div>
-                </div>
-            </ColumnLayout>
-        } else {
+    uploadLectureVideo = async (file) => {
+        if (!(file.type in ['video/mp4', 'video/mov'])) {
+            console.log("TODO: lecture video content validation");
+        }
+        try {
+            const s3Key = `lecture-videos/${this.state.randomId}-${file.name.replace(/ /g, "_")}`;
+            await Storage.put(s3Key, file, {
+                level: "protected",
+            });
+            this.setState({ lectureVideoS3Key: s3Key })
+        } catch (error) {
+            console.log("Error uploading file: ", error);
+        }
+    }
 
-            return <ColumnLayout
-                columns={3}
-                variant="text-grid"
-            >
-                <div>
-                    <Box variant="awsui-key-label">
-                        File name
-                    </Box>
-                    <div>{this.state.quizS3Key}</div>
-                </div>
-            </ColumnLayout>
+    uploadArchitectureDiagram = async (file) => {
+        if (!(file.type in ['image/jpeg', 'image/png'])) {
+            console.log("TODO: architecture diagram validation");
+        }
+        try {
+            const s3Key = `architecture-diagrams/${this.state.randomId}-${file.name.replace(/ /g, "_")}`;
+            await Storage.put(s3Key, file, {
+                level: "protected",
+            });
+            this.setState({ architectureDiagramS3Key: s3Key })
+        } catch (error) {
+            console.log("Error uploading file: ", error);
+        }
+    }
+
+    uploadQuiz = async (file) => {
+        if (!(file.type in ['application/json'])) {
+            console.log("TODO: quiz content validation");
+        }
+        try {
+            const s3Key = `quizzes/${this.state.randomId}-${file.name.replace(/ /g, "_")}`;
+            await Storage.put(s3Key, file, {
+                level: "protected",
+            });
+            this.setState({ quizS3Key: s3Key })
+        } catch (error) {
+            console.log("Error uploading file: ", error);
         }
     }
 
     resetQuiz = async () => {
-        if(this.state.quizS3Key !== "") {
+        if (this.state.quizS3Key !== "") {
             await Storage.remove(this.state.quizS3Key, {
                 level: "protected"
             });
-            this.setState({quizS3Key: ""});
+            this.setState({ quizS3Key: "" });
         }
     }
+
     resetArchitectureDiagram = async () => {
-        if(this.state.architectureDiagramS3Key !== "") {
+        if (this.state.architectureDiagramS3Key !== "") {
             await Storage.remove(this.state.architectureDiagramS3Key, {
                 level: "protected"
             });
-            this.setState({architectureDiagramS3Key: ""});
+            this.setState({ architectureDiagramS3Key: "" });
         }
     }
+
     resetLectureVideo = async () => {
-        if(this.state.lectureVideoS3Key !== "") {
+        if (this.state.lectureVideoS3Key !== "") {
             await Storage.remove(this.state.lectureVideoS3Key, {
                 level: "protected"
             });
-            this.setState({lectureVideoS3Key: ""});
+            this.setState({ lectureVideoS3Key: "" });
         }
     }
 
 
-    AddContent = () => {
+    // render 'Add Content' in step 2
+    renderAddContent = () => {
         if (this.state.lectureType === "Video") {
             return <FormField label="Lecture Videos" description="Theory video for lecture"
             >
@@ -131,22 +126,10 @@ class CreateLecture extends React.Component {
                     onChange={
                         async ({ detail }) => {
                             this.setState({ lectureVideo: detail.value });
-                            if(detail.value.length === 0) {
+                            if (detail.value.length === 0) {
                                 this.resetLectureVideo();
                             } else {
-                                const file = detail.value[0];
-                                if(!(file.type in ['video/mp4', 'video/mov'])) {
-                                    console.log("TODO: lecture video content validation");
-                                }
-                                try {
-                                    const s3Key = `lecture-videos/${this.state.randomId}-${file.name.replace(/ /g,"_")}`;
-                                    await Storage.put(s3Key, file, {
-                                        level: "protected",
-                                    });
-                                    this.setState({lectureVideoS3Key: s3Key})
-                                } catch (error) {
-                                    console.log("Error uploading file: ", error);
-                                }
+                                this.uploadLectureVideo(detail.value[0]);
                             }
                         }
                     }
@@ -205,22 +188,10 @@ class CreateLecture extends React.Component {
                         onChange={
                             async ({ detail }) => {
                                 this.setState({ architectureDiagram: detail.value });
-                                if(detail.value.length === 0) {
+                                if (detail.value.length === 0) {
                                     this.resetArchitectureDiagram();
                                 } else {
-                                    const file = detail.value[0];
-                                    if(!(file.type in ['image/jpeg', 'image/png'])) {
-                                        console.log("TODO: architecture diagram validation");
-                                    }
-                                    try {
-                                        const s3Key = `architecture-diagrams/${this.state.randomId}-${file.name.replace(/ /g,"_")}`;
-                                        await Storage.put(s3Key, file, {
-                                            level: "protected",
-                                        });
-                                        this.setState({architectureDiagramS3Key: s3Key})
-                                    } catch (error) {
-                                        console.log("Error uploading file: ", error);
-                                    }
+                                    this.uploadArchitectureDiagram(detail.value[0]);
                                 }
                             }
                         }
@@ -255,22 +226,10 @@ class CreateLecture extends React.Component {
                     onChange={
                         async ({ detail }) => {
                             this.setState({ quiz: detail.value });
-                            if(detail.value.length === 0) {
+                            if (detail.value.length === 0) {
                                 this.resetQuiz();
                             } else {
-                                const file = detail.value[0];
-                                if(!(file.type in ['text/json'])) {
-                                    console.log("TODO: quiz content validation");
-                                }
-                                try {
-                                    const s3Key = `quizzes/${this.state.randomId}-${file.name.replace(/ /g,"_")}`;
-                                    await Storage.put(s3Key, file, {
-                                        level: "protected",
-                                    });
-                                    this.setState({quizS3Key: s3Key})
-                                } catch (error) {
-                                    console.log("Error uploading file: ", error);
-                                }
+                                this.uploadQuiz(detail.value[0]);
                             }
                         }
                     }
@@ -298,6 +257,59 @@ class CreateLecture extends React.Component {
         }
     }
 
+    // render review section in step 3
+    renderReviewSection = () => {
+        if (this.state.lectureType === "Video") {
+            return <ColumnLayout
+                columns={2}
+                variant="text-grid"
+            >
+                <div>
+                    <Box variant="awsui-key-label">
+                        File name
+                    </Box>
+                    <div>{this.state.lectureVideoS3Key}</div>
+                </div>
+            </ColumnLayout>
+        } else if (this.state.lectureType === "Workshop") {
+            return <ColumnLayout
+                columns={3}
+                variant="text-grid"
+            >
+                <div>
+                    <Box variant="awsui-key-label">
+                        Workshop URL
+                    </Box>
+                    <div>{this.state.workshopUrl}</div>
+                </div>
+                <div>
+                    <Box variant="awsui-key-label">
+                        Workshop Description
+                    </Box>
+                    <div>{this.state.workshopDescription}</div>
+                </div>
+                <div>
+                    <Box variant="awsui-key-label">
+                        Architecture Diagram
+                    </Box>
+                    <div>{this.state.architectureDiagramS3Key}</div>
+                </div>
+            </ColumnLayout>
+        } else {
+            return <ColumnLayout
+                columns={3}
+                variant="text-grid"
+            >
+                <div>
+                    <Box variant="awsui-key-label">
+                        File name
+                    </Box>
+                    <div>{this.state.quizS3Key}</div>
+                </div>
+            </ColumnLayout>
+        }
+    }
+
     render() {
         return (
             <div>
@@ -310,7 +322,6 @@ class CreateLecture extends React.Component {
                         ]}
                         ariaLabel="Breadcrumbs"
                     />
-
                     <Wizard
                         i18nStrings={{
                             stepNumberLabel: stepNumber =>
@@ -339,13 +350,13 @@ class CreateLecture extends React.Component {
                             }
                             const apiName = 'lmsStudio';
                             const path = '/lectures';
-                            API.post(apiName, path, { body: jsonData})
-                            .then((response) => {
-                                console.log(`TODO: handle submission response. ID: ${response.ID}`)
-                            })
-                            .catch((error) => {
-                                console.log(error.response);
-                            });
+                            API.post(apiName, path, { body: jsonData })
+                                .then((response) => {
+                                    console.log(`TODO: handle submission response. ID: ${response.ID}`)
+                                })
+                                .catch((error) => {
+                                    console.log(error.response);
+                                });
                         }}
                         onCancel={() => {
                             this.resetQuiz();
@@ -418,8 +429,7 @@ class CreateLecture extends React.Component {
                                         }
                                     >
                                         <SpaceBetween direction="vertical" size="l">
-                                            {/* <AddContent/> */}
-                                            {this.AddContent()}
+                                            {this.renderAddContent()}
 
 
 
@@ -499,8 +509,7 @@ class CreateLecture extends React.Component {
                                                     </Header>
                                                 }
                                             >
-                                                {/* <ReviewAddContent/> */}
-                                                {this.ReviewAddContent()}
+                                                {this.renderReviewSection()}
 
                                             </Container>
                                         </SpaceBetween>
@@ -517,4 +526,3 @@ class CreateLecture extends React.Component {
 }
 
 export default withAuthenticator(CreateLecture);
-
