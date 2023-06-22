@@ -79,7 +79,7 @@ app.get(path, function(req, res) {
   let queryParams = {
     TableName: tableName,
     KeyConditions: condition,
-    IndexName:"CreatorID-index"
+    // IndexName:"CreatorID-index"
   }
 
   dynamodb.query(queryParams, (err, data) => {
@@ -153,9 +153,9 @@ app.get(path + sortKeyPath, function(req, res) {
 
 app.put(path, function(req, res) {
   console.log(req.body)
-  if (userIdPresent &&! !req.body[0]['userID']) {
-    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  }
+  // if (userIdPresent) {
+  //   req.body['CreatorID'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  // }
   let promises = req.body.map((item) => {
     let putItemParams = {
     TableName: tableName,

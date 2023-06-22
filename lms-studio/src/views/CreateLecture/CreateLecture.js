@@ -18,11 +18,35 @@ import RadioGroup from "@cloudscape-design/components/radio-group";
 import FileUpload from "@cloudscape-design/components/file-upload";
 import { Storage } from 'aws-amplify';
 import { API } from 'aws-amplify';
+import {v4 as uuid} from 'uuid'
 
 class CreateLecture extends React.Component {
     constructor(props) {
         super(props);
         this.state = this.getDefaultState();
+    }
+
+    submitRequest = () => {
+        const jsonData = {
+            ID: uuid(),
+            Name: this.state.lectureTitle,
+            Desc: this.state.lectureDescription,
+            Type: this.state.lectureType,
+            lectureVideoS3Key: this.state.lectureVideoS3Key,
+            workshopUrl: this.state.workshopUrl,
+            workshopDescription: this.state.workshopDescription,
+            architectureDiagramS3Key: this.state.architectureDiagramS3Key,
+            quizS3Key: this.state.quizS3Key
+        }
+        const apiName = 'lmsStudio';
+        const path = '/lectures';
+        API.put(apiName, path, { body: jsonData })
+            .then((response) => {
+                console.log(`TODO: handle submission response. ID: ${response.ID}`)
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
     }
 
     getDefaultState = () => {
@@ -336,27 +360,7 @@ class CreateLecture extends React.Component {
                             submitButton: "Submit",
                             optional: "optional"
                         }}
-                        onSubmit={() => {
-                            const jsonData = {
-                                lectureTitle: this.state.lectureTitle,
-                                lectureDescription: this.state.lectureDescription,
-                                lectureType: this.state.lectureType,
-                                lectureVideoS3Key: this.state.lectureVideoS3Key,
-                                workshopUrl: this.state.workshopUrl,
-                                workshopDescription: this.state.workshopDescription,
-                                architectureDiagramS3Key: this.state.architectureDiagramS3Key,
-                                quizS3Key: this.state.quizS3Key
-                            }
-                            const apiName = 'lmsStudio';
-                            const path = '/lectures';
-                            API.post(apiName, path, { body: jsonData })
-                                .then((response) => {
-                                    console.log(`TODO: handle submission response. ID: ${response.ID}`)
-                                })
-                                .catch((error) => {
-                                    console.log(error.response);
-                                });
-                        }}
+                        onSubmit={this.submitRequest}
                         onCancel={() => {
                             this.resetQuiz();
                             this.resetArchitectureDiagram();

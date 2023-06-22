@@ -114,7 +114,8 @@ const MyCourses = () => {
               
               <SpaceBetween direction="horizontal" size="xs">
                 <Link
-                  to={{ pathname: `/assignCourse/${selectedItems.Name}`, state: {selectedItems} }}
+                  to={{ pathname: `/assignCourse/${selectedItems.Name}` }}
+                  state={selectedItems}
                 >
                   <Button>Assign Course</Button>
                 </Link>

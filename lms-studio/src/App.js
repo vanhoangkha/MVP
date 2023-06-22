@@ -1,7 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
 import "@cloudscape-design/global-styles/index.css"
-import { withAuthenticator } from '@aws-amplify/ui-react';
 
 function App() {
   return (
@@ -24,4 +23,4 @@ function App() {
   );
 }
 
-export default withAuthenticator(App);
+export default App;

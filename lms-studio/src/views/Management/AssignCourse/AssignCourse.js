@@ -17,10 +17,12 @@ import {
   CollectionPreferences,
   Button,
 } from "@cloudscape-design/components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { API } from 'aws-amplify';
+import {v4 as uuid} from 'uuid'
+
 import NavBar from "../../../components/NavBar/NavBar";
 import Footer from "../../../components/Footer/Footer";
-import { putAssignCourseService } from "../services/assigncourse";
 
 const ValueWithLabel = ({ label, children }) => (
   <div>
@@ -36,35 +38,38 @@ const AssignCourse = (props) => {
   const [oppValue, setOppValue] = React.useState("");
   const [selectedUsers, setSelectedUsers] = useState([{}]);
   const navigate = useNavigate();
+  const {state:prevState} = useLocation();
+  console.log("passed vars: " + JSON.stringify(prevState))
+
 
   const handlePutAssignCourse = async (
-    course,
-    selectedUsers,
-    oppId,
-    oppValue,
-    checked
   ) => {
     const staticData = {
-      courseId: course.Id,
-      oppId: oppId,
-      oppValue: oppValue,
+      CourseID: prevState[0].ID,
+      OppID: oppId,
+      OppValue: oppValue,
       flexible: checked,
-      userStatus: "Assigned",
+      Status: "ASSIGNED",
+      CreatorID: prevState[0].CreatorID,
     };
     var userCourseArray = [];
 
     selectedUsers.forEach((user) => {
-      const dynamicData = { ...staticData, user };
-      userCourseArray.push(dynamicData);
+      if(user?.userID){
+        const dynamicData = { ...staticData, UserID: user.userID };
+        userCourseArray.push(dynamicData);
+      }
     });
-    try {
-      const response = await putAssignCourseService(userCourseArray);
 
-      console.log(response);
-      // business logic goes here
-    } catch (error) {
-      console.error(error); // from creation or business logic
-    }
+    const apiName = 'lmsStudio';
+    const path = '/usercourse';
+    API.put(apiName, path, { body: userCourseArray })
+    .then((response) => {
+        console.log(`TODO: handle submission response. ID: ${response.ID}`)
+    })
+    .catch((error) => {
+        console.log(error.response);
+    });
   };
   return (
     <>
@@ -213,9 +218,11 @@ const AssignCourse = (props) => {
                   items={[
                     {
                       name: "user1@amazon.com",
+                      userID: "a"
                     },
                     {
                       name: "user2@amazon.com",
+                      userID: "b"
                     },
                   ]}
                   loadingText="Loading users"
@@ -319,13 +326,7 @@ const AssignCourse = (props) => {
                   </Button>{" "}
                   <Button
                     variant="primary"
-                    //onClick={handlePutAssignCourse(
-                    //  props.course,
-                    //  selectedUsers,
-                    //  oppId,
-                    //  oppValue,
-                    //  checked
-                    //)}
+                    onClick={() => handlePutAssignCourse()}
                   >
                     Assign
                   </Button>{" "}
