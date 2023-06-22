@@ -1,4 +1,11 @@
 export type AmplifyDependentResourcesAttributes = {
+    "api": {
+        "lmsStudio": {
+            "RootUrl": "string",
+            "ApiName": "string",
+            "ApiId": "string"
+        }
+    },
     "auth": {
         "lmsstudioc3fd255f": {
             "IdentityPoolId": "string",
@@ -15,14 +22,14 @@ export type AmplifyDependentResourcesAttributes = {
             "Name": "string",
             "Arn": "string",
             "Region": "string",
-            "LambdaExecutionRole": "string"
+            "LambdaExecutionRole": "string",
+            "LambdaExecutionRoleArn": "string"
         }
     },
-    "api": {
-        "lmsStudio": {
-            "RootUrl": "string",
-            "ApiName": "string",
-            "ApiId": "string"
+    "storage": {
+        "studioLectureVideos": {
+            "BucketName": "string",
+            "Region": "string"
         }
     }
 }

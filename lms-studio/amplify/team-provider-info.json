@@ -86,5 +86,36 @@
         "usermng": {}
       }
     }
+  },
+  "devthree": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lmsstudio-devthree-145227-authRole",
+      "UnauthRoleArn": "arn:aws:iam::320740598534:role/amplify-lmsstudio-devthree-145227-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::320740598534:role/amplify-lmsstudio-devthree-145227-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-lmsstudio-devthree-145227-deployment",
+      "UnauthRoleName": "amplify-lmsstudio-devthree-145227-unauthRole",
+      "StackName": "amplify-lmsstudio-devthree-145227",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:320740598534:stack/amplify-lmsstudio-devthree-145227/be431260-10d1-11ee-8e83-024e6d02a714",
+      "AmplifyAppId": "d1nq8fdu3ddi3x",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-lmsstudio-devthree-145227-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "auth": {
+        "lmsstudioc3fd255f": {}
+      },
+      "function": {
+        "studioCourses": {
+          "deploymentBucketName": "amplify-lmsstudio-devthree-145227-deployment",
+          "s3Key": "amplify-builds/studioCourses-6f4232344d6b63565874-build.zip"
+        }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1nq8fdu3ddi3x",
+          "type": "manual"
+        }
+      }
+    }
   }
 }
