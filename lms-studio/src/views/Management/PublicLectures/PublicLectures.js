@@ -36,12 +36,18 @@ const PublicLectures = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
 
   const [lectures, setLectures] = useState([])
+  const [loading, setLoading] = useState(false)
 
   const handleGetLectures = async () => {
-    const {data} = await getPublicLecturesService()
+    setLoading(true)
 
-    console.log(data)
+    try {
+    const {data} = await getPublicLecturesService()
     setLectures(data)
+    setLoading(false)
+    } catch(_) {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -78,9 +84,9 @@ const PublicLectures = () => {
             isRowHeader: true,
           },
           {
-            id: "updatedAt",
+            id: "Last Updated",
             header: "Last Updated",
-            cell: (e) => e.updatedAt,
+            cell: (e) => <span>{(new Date(e['Last Updated']).toDateString())}</span>,
             sortingField: "updatedAt",
           },
           {
@@ -101,6 +107,7 @@ const PublicLectures = () => {
           { id: "state", visible: true },
         ]}
         items={lectures}
+        loading={loading}
         loadingText="Loading resources"
         selectionType="multi"
         trackBy="Name"

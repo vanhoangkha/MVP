@@ -37,12 +37,18 @@ const PublicCourses = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
 
   const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(false)
 
   const handleGetCouses = async () => {
-    const {data} = await getPublicCoursesService()
+    setLoading(true)
 
-    console.log(data)
+    try {
+    const {data} = await getPublicCoursesService()
     setCourses(data)
+    setLoading(false)
+    } catch(_) {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -86,7 +92,7 @@ const PublicCourses = () => {
           {
             id: "updatedAt",
             header: "Last Updated",
-            cell: (e) => e.updatedAt,
+            cell: (e) => <span>{(new Date(e['Last Updated']).toDateString())}</span>,
             sortingField: "updatedAt",
           },
           {
@@ -107,8 +113,9 @@ const PublicCourses = () => {
           { id: "state", visible: true },
         ]}
         items={courses}
+        loading={loading}
         loadingText="Loading resources"
-        selectionType="multi"
+        selectionType="single"
         trackBy="Name"
         empty={
           <Box textAlign="center" color="inherit">

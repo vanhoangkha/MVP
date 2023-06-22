@@ -17,12 +17,18 @@ const MyLectures = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
 
   const [lectures, setLectures] = useState([])
+  const [loading, setLoading] = useState(false)
 
   const handleGetLectures = async () => {
-    const {data} = await getMyLecturesService()
+    setLoading(true)
 
-    console.log(data)
+    try {
+    const {data} = await getMyLecturesService()
     setLectures(data)
+    setLoading(false)
+    } catch(_) {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -83,6 +89,7 @@ const MyLectures = () => {
           { id: "state", visible: true },
         ]}
         items={lectures}
+        loading={loading}
         loadingText="Loading resources"
         selectionType="multi"
         trackBy="Name"

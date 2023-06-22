@@ -9,7 +9,7 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import ButtonDropdown from "@cloudscape-design/components/button-dropdown";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import Title from "../../../components/Title";
-import { getCoursesService } from "../services/course";
+import { getMyCoursesService } from "../services/course";
 import { Link, useNavigate } from "react-router-dom";
 
 const MyCourses = () => {
@@ -24,7 +24,7 @@ const MyCourses = () => {
     setLoading(true)
 
     try {
-    const {data} = await getCoursesService()
+    const {data} = await getMyCoursesService()
     setCourses(data)
     setLoading(false)
     } catch(_) {

@@ -152,7 +152,7 @@ const AssignCourse = (props) => {
                   <ColumnLayout columns={3} variant="text-grid">
                     <SpaceBetween size="l">
                       <ValueWithLabel label="Course title">
-                        Value
+                        {state.Name}
                       </ValueWithLabel>
                       <ValueWithLabel label="Course Difficulty">
                         <Toggle
@@ -165,7 +165,7 @@ const AssignCourse = (props) => {
                       </ValueWithLabel>
                     </SpaceBetween>
                     <SpaceBetween size="l">
-                      <ValueWithLabel label="Description">Value</ValueWithLabel>
+                      <ValueWithLabel label="Description">{state.Description}</ValueWithLabel>
                       <ValueWithLabel label="Opportunity ID">
                         <Input
                           onChange={({ detail }) => setOppId(detail.value)}
@@ -174,7 +174,7 @@ const AssignCourse = (props) => {
                       </ValueWithLabel>
                     </SpaceBetween>
                     <SpaceBetween size="l">
-                      <ValueWithLabel label="Owner">Value</ValueWithLabel>
+                      <ValueWithLabel label="Owner">{state.CreatorID}</ValueWithLabel>
                       <ValueWithLabel label="Opportunity Value">
                         <Input
                           onChange={({ detail }) => setOppValue(detail.value)}
