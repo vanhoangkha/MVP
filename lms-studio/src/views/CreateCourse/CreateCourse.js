@@ -40,16 +40,58 @@ class CreateCourse extends React.Component {
         difficulty: false,
         currentRequirement: "",
         requirements: [],
-        currentChapter: "",
-        chapters: [],
+        currentChapter: {
+          name: "",
+          items: []
+        },
+        existingLectures: [
+          {
+            lectureTitle: "SAA Video",
+            lectureDescription: "Solution Architect Associate - Lecture Video",
+            lectureType: "Video",
+            lectureVideoS3Key: "saa.mp4",
+            workshopUrl: "",
+            workshopDescription: "",
+            architectureDiagramS3Key: "",
+            quizS3Key: ""
+          },
+          {
+            lectureTitle: "SAA Workshop",
+            lectureDescription: "Solution Architect Associate - Workshop",
+            lectureType: "Workshop",
+            lectureVideoS3Key: "",
+            workshopUrl: "https://saa.workshop.amazonaws.com/",
+            workshopDescription: "SAA workshop v1.0",
+            architectureDiagramS3Key: "saa-architecture.png",
+            quizS3Key: ""
+          },
+          {
+            lectureTitle: "SAA Quiz",
+            lectureDescription: "Solution Architect Associate - Quiz",
+            lectureType: "Quiz",
+            lectureVideoS3Key: "",
+            workshopUrl: "",
+            workshopDescription: "",
+            architectureDiagramS3Key: "",
+            quizS3Key: "saa-quiz.json"
+          }
+        ],
+        chapters: [{
+          name: "Chapter 1: ...",
+          items: [
+            {
+              type: "section",
+              value: "Section 1: ..."
+            }
+          ]
+        }],
 
         visible: false,
-        selectedItems: []
+        selectedLectures: []
     }
   }
 
   renderRequirements = () => {
-    console.log(this.state.requirements)
     return (
       <ul>
         { this.state.requirements.map((item, index) => <li key={index}>{item}</li>)}
@@ -229,8 +271,11 @@ class CreateCourse extends React.Component {
                         >
                           <SpaceBetween direction="vertical" size="l">
                             <FormField label="Chapter Name">
-                              <Input value={this.state.currentChapter}
-                              onChange={event => this.setState({ currentChapter: event.detail.value })}/>
+                              <Input value={this.state.currentChapter.name}
+                              onChange={event => this.setState({ currentChapter: {
+                                name: event.detail.value,
+                                items: this.state.currentChapter.items
+                              } })}/>
                             </FormField>
                           </SpaceBetween>
                           <Button variant="primary" onClick={() => this.setState({visible: true})}>Add lectures</Button>
@@ -241,8 +286,21 @@ class CreateCourse extends React.Component {
                             footer={
                               <Box float="right">
                                 <SpaceBetween direction="horizontal" size="xs">
-                                  <Button variant="link" onClick={() => this.setState({visible: false})}>Cancel</Button>
-                                  <Button variant="primary">Ok</Button>
+                                  <Button variant="link" onClick={() => {
+                                    const selectedLecturesSize = this.state.selectedLectures.length;
+                                    this.setState({
+                                      selectedLectures: [],
+                                      chapters: [...this.state.chapters, this.state.currentChapter]
+                                    })
+                                    console.log(this.state.currentChapter)
+                                    this.setState({visible: false})
+                                  }}>Cancel</Button>
+                                  <Button variant="primary" onClick={() =>{
+                                    console.log(this.state.selectedLectures)
+                                    
+                                    this.setState({visible: false})
+                                    console.log(this.state.currentChapter)
+                                  }}>Ok</Button>
                                 </SpaceBetween>
                               </Box>
                             }
@@ -250,30 +308,41 @@ class CreateCourse extends React.Component {
                           >
                                 <Cards
                                   onSelectionChange={({ detail }) =>
-                                    this.setState({selectedItems: detail.selectedItems})
+                                    {
+                                      this.setState({selectedLectures: detail.selectedItems})
+                                      const newlySelectedLectures = detail.selectedItems.map((lecture) => {
+                                        return {
+                                          type: lecture.lectureType,
+                                          value: lecture.lectureTitle
+                                        }
+                                      })
+                                      this.setState({currentChapter: {
+                                        items: this.state.currentChapter.items.concat(newlySelectedLectures)
+                                      }})
+                                    }
                                   }
-                                  selectedItems={this.state.selectedItems}
+                                  selectedItems={this.state.selectedLectures}
                                   ariaLabels={{
-                                    itemSelectionLabel: (e, n) => `select ${n.name}`,
+                                    itemSelectionLabel: (e, n) => `select ${n.lectureTitle}`,
                                     selectionGroupLabel: "Item selection"
                                   }}
                                   cardDefinition={{
-                                    header: e => e.name,
+                                    header: e => e.lectureTitle,
                                     sections: [
                                       {
                                         id: "description",
                                         header: "Description",
-                                        content: e => e.description
+                                        content: e => e.lectureDescription
                                       },
                                       {
                                         id: "type",
                                         header: "Type",
-                                        content: e => e.type
+                                        content: e => e.lectureType
                                       },
                                       {
                                         id: "size",
                                         header: "Size",
-                                        content: e => e.size
+                                        content: e => "-"
                                       }
                                     ]
                                   }}
@@ -281,53 +350,10 @@ class CreateCourse extends React.Component {
                                     { cards: 1 },
                                     { minWidth: 500, cards: 2 }
                                   ]}
-                                  items={[
-                                    {
-                                      name: "Item 1",
-                                      alt: "First",
-                                      description: "This is the first item",
-                                      type: "1A",
-                                      size: "Small"
-                                    },
-                                    {
-                                      name: "Item 2",
-                                      alt: "Second",
-                                      description: "This is the second item",
-                                      type: "1B",
-                                      size: "Large"
-                                    },
-                                    {
-                                      name: "Item 3",
-                                      alt: "Third",
-                                      description: "This is the third item",
-                                      type: "1A",
-                                      size: "Large"
-                                    },
-                                    {
-                                      name: "Item 4",
-                                      alt: "Fourth",
-                                      description: "This is the fourth item",
-                                      type: "2A",
-                                      size: "Small"
-                                    },
-                                    {
-                                      name: "Item 5",
-                                      alt: "Fifth",
-                                      description: "This is the fifth item",
-                                      type: "2A",
-                                      size: "Large"
-                                    },
-                                    {
-                                      name: "Item 6",
-                                      alt: "Sixth",
-                                      description: "This is the sixth item",
-                                      type: "1A",
-                                      size: "Small"
-                                    }
-                                  ]}
+                                  items={this.state.existingLectures}
                                   loadingText="Loading resources"
                                   selectionType="multi"
-                                  trackBy="name"
+                                  trackBy="lectureTitle"
                                   visibleSections={["description", "type", "size"]}
                                   empty={
                                     <Box textAlign="center" color="inherit">
@@ -348,8 +374,8 @@ class CreateCourse extends React.Component {
                                   header={
                                     <Header
                                       counter={
-                                        this.state.selectedItems.length
-                                          ? "(" + this.state.selectedItems.length + "/10)"
+                                        this.state.selectedLectures.length
+                                          ? "(" + this.state.selectedLectures.length + "/10)"
                                           : "(10)"
                                       }
                                     >
