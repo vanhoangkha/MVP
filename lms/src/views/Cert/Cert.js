@@ -24,9 +24,10 @@ export default class Cert extends React.Component {
     }
 
     componentDidMount() {
-        this.loadUserId();
-        this.loadCourse();
-        this.loadUserCourse();
+        this.loadUserId(() => {
+            this.loadCourse();
+            this.loadUserCourse();
+        });
     }
     
     async loadUserId(callback) {

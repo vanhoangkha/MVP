@@ -47,13 +47,13 @@ export default class MyLearning extends React.Component {
                     }
 
                     if (!!transformedCourse.lastAccessed) {
-                        if (!mostRecentCourse || mostRecentCourse.lastAccessed > transformedCourse.lastAccessed) {
-                            mostRecentCourse = transformedCourse.id;
+                        if (!mostRecentCourse || mostRecentCourse.lastAccessed < transformedCourse.lastAccessed) {
+                            mostRecentCourse = transformedCourse;
                         }
                     }
                 });
                 this.setState({
-                    mostRecentCourse: mostRecentCourse,
+                    mostRecentCourse: mostRecentCourse.id,
                     assignedCourses: assignedCourses,
                     selfEnrolledCourses: selfEnrolledCourses,
                     loading: false,

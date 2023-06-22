@@ -403,6 +403,41 @@ a.learn-fill-div:hover {
     top: 2px;
 }
 
+.learn-quiz-length {
+    opacity: 0.6;
+}
+
+.learn-lab-quiz-control {
+    border-top: solid 1px #EAEDED;
+    padding-top: 6px;
+}
+
+.learn-lab-quiz-control-left {
+    width: 50%;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.learn-lab-quiz-control-right {
+    width: 50%;
+    display: inline-block;
+    text-align: right;
+}
+
+.learn-lab-content-container-quiz {
+    height: 100%;
+}
+
+.learn-lab-content-quiz {
+    height: calc(100% - 50px);
+}
+
+.learn-lab-content-question {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
 /* This is temporary overwrite Clouscape CSS */
 .awsui_link-active_l0dv0_5p78l_219 {
     font-weight: normal !important;

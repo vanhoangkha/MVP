@@ -4,7 +4,7 @@ import "video-react/dist/video-react.css";
 import { API, Auth } from 'aws-amplify';
 import {Helmet} from "react-helmet";
 import NavBar from '../../components/NavBar/NavBar';
-import { AppLayout, BreadcrumbGroup, SideNavigation, Toggle } from '@cloudscape-design/components';
+import { AppLayout, BreadcrumbGroup, SideNavigation, Toggle, Button, RadioGroup, Alert } from '@cloudscape-design/components';
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import { Player, LoadingSpinner, BigPlayButton, ControlBar, ReplayControl, ForwardControl, PlaybackRateMenuButton, VolumeMenuButton, FullscreenToggle } from 'video-react';
@@ -35,24 +35,34 @@ function PageMetadata(props) {
     </div>;
   }
   
-  function LectureContent(props) {
-    switch (props.lecture.lecture.type) {
-      case "video":
-        return <VideoContent 
-          videoSrc={props.lecture.lecture.content} 
-          setTimeLeft={props.setTimeLeft} 
-          handleFullScreen={props.handleFullScreen}
-          handleVideoEnded={props.handleVideoEnded} />;
-      case "lab":
-        return <LabContent desc={props.lecture.lecture.desc} url={props.lecture.lecture.content} openLink={props.openLink} />;
-      case "document":
-        return <DocumentContent desc={props.lecture.lecture.desc} url={props.lecture.lecture.content} openLink={props.openLink} />;
-      case "survey":
-        return <SurveyContent desc={props.lecture.lecture.desc} url={props.lecture.lecture.content} openLink={props.openLink} name={props.lecture.lecture.name} />;
-      default:
-        return <></>;
-    };
-  }
+    function LectureContent(props) {
+        switch (props.lecture.lecture.type) {
+        case "video":
+            return <VideoContent 
+            videoSrc={props.lecture.lecture.content} 
+            setTimeLeft={props.setTimeLeft} 
+            handleFullScreen={props.handleFullScreen}
+            handleVideoEnded={props.handleVideoEnded} />;
+        case "lab":
+            return <LabContent desc={props.lecture.lecture.desc} url={props.lecture.lecture.content} openLink={props.openLink} />;
+        case "document":
+            return <DocumentContent desc={props.lecture.lecture.desc} url={props.lecture.lecture.content} openLink={props.openLink} />;
+        case "survey":
+            return <SurveyContent desc={props.lecture.lecture.desc} url={props.lecture.lecture.content} openLink={props.openLink} name={props.lecture.lecture.name} />;
+        case "quiz":
+            return <QuizContent 
+                desc={props.lecture.lecture.desc} 
+                url={props.lecture.lecture.content} 
+                openLink={props.openLink} 
+                name={props.lecture.lecture.name} 
+                questions={props.lecture.lecture.questions} 
+                nextLecture={props.nextLecture}
+                markLectureCompleted={props.markLectureCompleted}
+            />;
+        default:
+            return <></>;
+        };
+    }
   
   class VideoContent extends React.Component {  
     componentDidMount() {
@@ -98,7 +108,6 @@ function PageMetadata(props) {
   
   function LabContent(props) {
     return <div className="learn-lab-content-container">
-      {/* <div className="learn-lab-content-header">Bài tập thực hành</div> */}
       <div className="learn-lab-content-desc">{props.desc}</div>
       <div className="learn-lab-content-link">
         <button onClick={() => {props.openLink(props.url)}}>
@@ -110,7 +119,6 @@ function PageMetadata(props) {
   
   function DocumentContent(props) {
     return <div className="learn-lab-content-container">
-      {/* <div className="learn-lab-content-header">Tài liệu tham khảo</div> */}
       <div className="learn-lab-content-desc">{props.desc}</div>
       <div className="learn-lab-content-link">
         <button onClick={() => {props.openLink(props.url)}}>
@@ -122,7 +130,6 @@ function PageMetadata(props) {
   
   function SurveyContent(props) {
     return <div className="learn-lab-content-container">
-      {/* <div className="learn-lab-content-header">{props.name}</div> */}
       <div className="learn-lab-content-desc">{props.desc}</div>
       <div className="learn-lab-content-link">
         <button onClick={() => {props.openLink(props.url)}}>
@@ -131,6 +138,135 @@ function PageMetadata(props) {
       </div>
     </div>;
   }
+  
+    class QuizContent extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                quizStarted: false,
+                quizDone: false,
+                quizPassed: false,
+                currentQuestionAnswered: false,
+                currentQuestion: 0,
+                selectedAnswer: null,
+                correctedAnswer: 0,
+            }
+        }
+
+        render() {
+            let questions = this.props.questions;
+            console.log(!!this.state.selectedAnswer ? questions[this.state.currentQuestion].answers[this.state.selectedAnswer].correct : "Hihi")
+
+            return <div className="learn-lab-content-container learn-lab-content-container-quiz">
+                <div className="learn-lab-content-desc learn-lab-content-quiz">
+                    {!this.state.quizStarted
+                        ? <div className="learn-lab-content-question">{this.props.desc}</div>
+                        : this.state.quizDone
+                            ? this.state.quizPassed
+                                ? <div className="learn-lab-content-question">Congratulation! You passed the quiz.</div>
+                                : <div className="learn-lab-content-question">Unfortunately you didn't pass. Keep trying!</div>
+                            : !this.state.currentQuestionAnswered 
+                                ? <div>
+                                    <div className="learn-lab-content-question">{questions[this.state.currentQuestion].question}</div>
+                                    <RadioGroup
+                                        onChange={({ detail }) => this.setState({selectedAnswer: detail.value})}
+                                        value={this.state.selectedAnswer}
+                                        items={questions[this.state.currentQuestion].answers.map((answer, index) => {
+                                            return {
+                                                value: index,
+                                                label: answer.text
+                                            };
+                                        })}
+                                    />
+                                </div>
+                                : <div>
+                                    <Alert
+                                        statusIconAriaLabel="Success"
+                                        type={questions[this.state.currentQuestion].answers[this.state.selectedAnswer].correct ? "success" : "error"}
+                                    >
+                                        {questions[this.state.currentQuestion].answers[this.state.selectedAnswer].explain}
+                                    </Alert>
+                                    <div className="space-20"/>
+                                    <div className="learn-lab-content-question">{questions[this.state.currentQuestion].question}</div>
+                                    <RadioGroup
+                                        onChange={({ detail }) => this.setState({selectedAnswer: detail.value})}
+                                        value={this.state.selectedAnswer}
+                                        items={questions[this.state.currentQuestion].answers.map((answer, index) => {
+                                            return {
+                                                value: index,
+                                                label: answer.text,
+                                                disabled: true,
+                                            };
+                                        })}
+                                    />
+                                </div>}
+                </div>
+                <div className="learn-lab-quiz-control">
+                    <div className="learn-lab-quiz-control-left">
+                        {this.state.quizStarted && !this.state.quizDone ? "Question " + (this.state.currentQuestion + 1) + "/" + this.props.questions.length : ""}
+                    </div>
+                    <div className="learn-lab-quiz-control-right">
+                        {!this.state.quizStarted
+                            ? <Button variant="primary" className="btn-orange" onClick={
+                                () => this.setState({
+                                    quizStarted: true,
+                                    quizDone: false,
+                                    quizPassed: false,
+                                    currentQuestionAnswered: false,
+                                    currentQuestion: 0,
+                                    selectedAnswer: null,
+                                    correctedAnswer: 0,
+                                })
+                            }>Start Quiz</Button>
+                            : this.state.quizDone
+                                ? this.state.quizPassed
+                                    ? <Button variant="primary" className="btn-orange" 
+                                        onClick={() => {
+                                            this.props.markLectureCompleted()
+                                            this.props.nextLecture();
+                                        }}
+                                    >Finish</Button>
+                                    : <Button variant="primary" className="btn-orange" onClick={() => this.setState({quizStarted: false, quizDone: false})}>Retry</Button>
+                                : !this.state.currentQuestionAnswered 
+                                    ? <Button variant="primary" className="btn-orange" 
+                                        onClick={() => {
+                                            if (this.state.selectedAnswer !== null)
+                                                this.setState({currentQuestionAnswered: true});
+                                        }}
+                                    >
+                                        Answer
+                                    </Button>
+                                    : <Button variant="primary" className="btn-orange" 
+                                        onClick={() => {
+                                            let currentQuestion = this.state.currentQuestion;
+                                            let nextQuestion = this.state.currentQuestion + 1;
+                                            let correctedAnswer = this.state.correctedAnswer + (questions[currentQuestion].answers[this.state.selectedAnswer].correct === true); 
+
+                                            this.setState({correctedAnswer: correctedAnswer});
+
+                                            console.log(correctedAnswer);
+
+                                            if (nextQuestion >= this.props.questions.length) {
+                                                this.setState({
+                                                    quizDone: true,
+                                                    quizPassed: correctedAnswer === questions.length,
+                                                })
+                                            } else {
+                                                this.setState({
+                                                    currentQuestion: nextQuestion,
+                                                    currentQuestionAnswered: false,
+                                                    selectedAnswer: null,
+                                                })
+                                            }
+                                        }}
+                                    >
+                                        Next
+                                    </Button>}
+                    </div>
+                </div>
+            </div>;
+        }
+    }
   
   function MainContent(props) {
     const handle = useFullScreenHandle();
@@ -162,6 +298,8 @@ function PageMetadata(props) {
                   props.nextLecture();
                 }
               }}
+              nextLecture={props.nextLecture}
+              markLectureCompleted={props.markLectureCompleted}
             />
           }
         </div>
@@ -304,7 +442,8 @@ export default class Learn extends React.Component {
                             desc: response.Desc,
                             name: response.Name,
                             type: response.Type,
-                            viewed: response.Viewed
+                            viewed: response.Viewed,
+                            questions: response.Questions,
                         },
                     },
                     loading: false,
@@ -372,12 +511,18 @@ export default class Learn extends React.Component {
                 for (let i = 0; i < chapters.length; i++) {
                     chapters[i].length = 0;
                     chapters[i].lectures[0].realIndex = 0;
-                    chapters[i].length += chapters[i].lectures[0].length;
+
+                    if (chapters[i].lectures[0].type !== "section") 
+                        chapters[i].length += chapters[i].lectures[0].length;
+
                     for (let j = 1; j < chapters[i].lectures.length; j++) {
                         if (chapters[i].lectures[j-1].type === "section") {
                             chapters[i].lectures[j].realIndex = chapters[i].lectures[j-1].realIndex;
                         } else {
                             chapters[i].lectures[j].realIndex = chapters[i].lectures[j-1].realIndex + 1;
+                        }
+
+                        if (chapters[i].lectures[j].type !== "section") {
                             chapters[i].length += chapters[i].lectures[j].length;
                         }
                     }
@@ -428,7 +573,23 @@ export default class Learn extends React.Component {
         
         API.get(apiName, path)
             .then((response) => {
-                // console.log(response);
+                response.LastAccessed = new Date().getTime();
+                
+                const apiName = 'courses';
+                const path = '/users/courses/';
+                const myInit = {
+                    body: response
+                }
+
+                console.log(response);
+                
+                API.put(apiName, path, myInit)
+                    .then((response) => {
+                        console.log(response);
+                    })
+                    .catch((error) => {
+                        console.log(error.response);
+                    });
             })
             .catch((error) => {
                 console.log(error.response);
@@ -537,7 +698,7 @@ export default class Learn extends React.Component {
 
                     API.put(apiName, path, myInit)
                     .then((response) => {
-                        console.log(response);
+                        // console.log(response);
                     })
                     .catch((error) => {
                         console.log(error.response);
@@ -622,9 +783,9 @@ export default class Learn extends React.Component {
                                         items: chapter.lectures.map(lecture => {
                                             return {
                                                 type: "link",
-                                                text: lecture.name,
+                                                text: lecture.type === 'section' ? <div className="text-bold">{lecture.name.toUpperCase()}</div> : lecture.name,
                                                 href: lecture.lectureId,
-                                                info: this.state.completedLectures.includes(lecture.lectureId)
+                                                info: lecture.type === 'section' ? "" :this.state.completedLectures.includes(lecture.lectureId)
                                                     ? <span className="learn-navigation-badge"><IoEllipseSharp/>{this.formatTime(lecture.length)}</span>
                                                     : <span className="learn-navigation-badge">{this.formatTime(lecture.length)}</span>
                                             }
@@ -655,7 +816,13 @@ export default class Learn extends React.Component {
                         <div className='learn-video-player-container'>
                             <div className='learn-board'>
                                 <div className='learn-board-header'>
-                                    {!this.state.lecture.lecture ? "" : this.state.lecture.lecture.name}
+                                    {!this.state.lecture.lecture ? "" : <div>
+                                        {this.state.lecture.lecture.name}
+                                        <span className="learn-quiz-length">
+                                            {this.state.lecture.lecture.type === "quiz" ? " (" + this.state.lecture.lecture.questions.length + " questions)" : ""}
+                                        </span>
+                                    </div>}
+
                                 </div>
                                 <div className='learn-board-content'>
                                     <MainContent loading={this.state.loading}
@@ -665,7 +832,8 @@ export default class Learn extends React.Component {
                                         isLast={this.state.lecture.chapterId === this.state.course.chapters.length - 1 && this.state.lecture.lectureId === this.state.course.chapters[this.state.lecture.chapterId].lectures.length - 1}
                                         markLectureCompleted={() => {this.markLectureCompleted(this.state.lecture.lecture.id)}}
                                         prevLecture={() => {this.prevLecture()}}
-                                        nextLecture={() => {this.nextLecture()}} />
+                                        nextLecture={() => {this.nextLecture()}}
+                                    />
                                 </div>
                             </div>
                         </div>

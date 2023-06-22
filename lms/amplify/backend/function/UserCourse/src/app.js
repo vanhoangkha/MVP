@@ -140,7 +140,7 @@ app.get(path + sortKeyPath, function(req, res) {
         response = params;
         response.Status = "IN_PROGRESS";
       }
-      response.LastAccessed = new Date().getTime();
+    //   response.LastAccessed = new Date().getTime();
 
       let putItemParams = {
         TableName: tableName,

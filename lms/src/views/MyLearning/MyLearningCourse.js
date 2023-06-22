@@ -128,9 +128,9 @@ export default class MyLearningCourse extends React.Component {
                 <div className='mylearning-course-thumbnail'>
                     <img src={courseDefaultThumbnail} alt='Course Thumbnail'/>
                 </div>
-                <div className='mylearning-course-separator' />
+                <div className='mylearning-course-separator'/>
                 <div className='mylearning-progress'>
-                    {!!this.state.completedLectures / this.state.totalLectures 
+                    {this.state.completedLectures != null && !!this.state.totalLectures 
                         ? <ProgressBar
                             value={this.state.completedLectures / this.state.totalLectures * 100}
                         /> : <img src={loadingGif} alt="loading..." className='mylearning-loading-gif' />}
