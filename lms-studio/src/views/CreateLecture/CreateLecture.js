@@ -16,7 +16,6 @@ import Link from "@cloudscape-design/components/link";
 import Textarea from "@cloudscape-design/components/textarea";
 import RadioGroup from "@cloudscape-design/components/radio-group";
 import FileUpload from "@cloudscape-design/components/file-upload";
-import { withAuthenticator } from '@aws-amplify/ui-react';
 import { Storage } from 'aws-amplify';
 import { API } from 'aws-amplify';
 
@@ -525,4 +524,4 @@ class CreateLecture extends React.Component {
     }
 }
 
-export default withAuthenticator(CreateLecture);
+export default (CreateLecture);

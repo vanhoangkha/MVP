@@ -25,6 +25,14 @@
           ],
           "category": "function",
           "resourceName": "studioLectures"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "userOverview"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -77,6 +85,11 @@
       "service": "Lambda"
     },
     "studiousers": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "userOverview": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -159,6 +172,22 @@
         {
           "category": "function",
           "resourceName": "studiousers"
+        }
+      ]
+    },
+    "AMPLIFY_function_userOverview_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "userOverview"
+        }
+      ]
+    },
+    "AMPLIFY_function_userOverview_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "userOverview"
         }
       ]
     },

@@ -21,6 +21,13 @@
       "permissions": {
         "setting": "open"
       }
+    },
+    "/useroverview": {
+      "name": "/useroverview",
+      "lambdaFunction": "userOverview",
+      "permissions": {
+        "setting": "open"
+      }
     }
   }
 }

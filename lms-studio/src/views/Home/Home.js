@@ -3,7 +3,6 @@ import './Home.css';
 import { Navigate } from "react-router-dom";
 import NavBar from '../../components/NavBar/NavBar';
 import Footer from '../../components/Footer/Footer';
-import { withAuthenticator } from '@aws-amplify/ui-react';
 import { API } from 'aws-amplify';
 
 class Home extends React.Component {
@@ -61,4 +60,4 @@ class Home extends React.Component {
     }
 }
 
-export default withAuthenticator(Home);
+export default (Home);

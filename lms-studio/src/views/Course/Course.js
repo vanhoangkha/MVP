@@ -2,7 +2,6 @@ import React from 'react';
 import './Course.css';
 import NavBar from '../../components/NavBar/NavBar';
 import Footer from '../../components/Footer/Footer';
-import { withAuthenticator } from '@aws-amplify/ui-react';
 import { API } from 'aws-amplify';
 
 
@@ -50,4 +49,4 @@ class Course extends React.Component {
     }
 }
 
-export default withAuthenticator(Course);
+export default (Course);

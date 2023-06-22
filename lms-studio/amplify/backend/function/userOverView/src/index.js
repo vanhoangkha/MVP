@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
     // Return a response
     return {
       statusCode: 200,
-      body: 'List of users retrieved successfully.'
+      body: users
     };
   } catch (error) {
     // Handle the error

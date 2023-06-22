@@ -45,12 +45,12 @@
       "function": {
         "studioCourses": {
           "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
-          "s3Key": "amplify-builds/studioCourses-755a416e314178744d79-build.zip",
+          "s3Key": "amplify-builds/studioCourses-76564a4a6e69544b335a-build.zip",
           "tableName": "courses-newenv"
         },
         "studioLectures": {
           "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
-          "s3Key": "amplify-builds/studioLectures-784e36625756646f3949-build.zip"
+          "s3Key": "amplify-builds/studioLectures-414e553572676c545042-build.zip"
         },
         "studioUserCourse": {
           "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
@@ -59,6 +59,10 @@
         "studiousers": {
           "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
           "s3Key": "amplify-builds/studiousers-5131422f4a3856625963-build.zip"
+        },
+        "userOverview": {
+          "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
+          "s3Key": "amplify-builds/userOverview-68775a79514441665178-build.zip"
         }
       },
       "hosting": {
