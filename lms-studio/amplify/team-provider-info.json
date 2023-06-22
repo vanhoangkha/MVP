@@ -40,5 +40,42 @@
         }
       }
     }
+  },
+  "lmsstudio": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lmsstudio-lmsstudio-115238-authRole",
+      "UnauthRoleArn": "arn:aws:iam::644078164615:role/amplify-lmsstudio-lmsstudio-115238-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::644078164615:role/amplify-lmsstudio-lmsstudio-115238-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-lmsstudio-lmsstudio-115238-deployment",
+      "UnauthRoleName": "amplify-lmsstudio-lmsstudio-115238-unauthRole",
+      "StackName": "amplify-lmsstudio-lmsstudio-115238",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:644078164615:stack/amplify-lmsstudio-lmsstudio-115238/133b27d0-0fe7-11ee-a890-0694c0c931c8",
+      "AmplifyAppId": "ddh83c80gzx2"
+    },
+    "categories": {
+      "auth": {
+        "lmsstudioc3fd255f": {}
+      },
+      "function": {
+        "studioCourses": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "ddh83c80gzx2",
+          "type": "manual"
+        }
+      },
+      "storage": {
+        "coursesdev": {
+          "tableName": "courses-lmsmain",
+          "region": "ap-southeast-1",
+          "arn": "arn:aws:dynamodb:ap-southeast-1:644078164615:table/courses-lmsmain",
+          "streamArn": "arn:aws:dynamodb:ap-southeast-1:644078164615:table/courses-lmsmain/stream/2023-06-20T10:02:52.392",
+          "partitionKeyName": "ID",
+          "partitionKeyType": "S"
+        }
+      }
+    }
   }
 }

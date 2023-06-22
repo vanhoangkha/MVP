@@ -1,82 +1,170 @@
 {
-  "hosting": {
-    "amplifyhosting": {
-      "service": "amplifyhosting",
+  "api": {
+    "lmsStudio": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studioCourses"
+        }
+      ],
       "providerPlugin": "awscloudformation",
-      "type": "manual"
+      "service": "API Gateway"
     }
   },
   "auth": {
     "lmsstudioc3fd255f": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
       "customAuth": false,
+      "dependsOn": [],
       "frontendAuthConfig": {
-        "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
-        "signupAttributes": [
-          "EMAIL"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyMinLength": 8,
-          "passwordPolicyCharacters": []
-        },
         "mfaConfiguration": "OFF",
         "mfaTypes": [
           "SMS"
         ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
         "verificationMechanisms": [
           "EMAIL"
         ]
-      }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
     }
   },
   "function": {
     "studioCourses": {
       "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
       "dependsOn": [
         {
-          "category": "storage",
-          "resourceName": "coursesdev",
+          "attributeEnvMap": {
+            "Arn": "TABLE_ARN",
+            "Name": "TABLE_NAME"
+          },
           "attributes": [
             "Name",
             "Arn"
           ],
-          "attributeEnvMap": {
-            "Name": "TABLE_NAME",
-            "Arn": "TABLE_ARN"
-          }
+          "category": "storage",
+          "resourceName": "coursesdev"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "providerPlugin": "awscloudformation",
+      "service": "amplifyhosting",
+      "type": "manual"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_studioCourses_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioCourses"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioCourses_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioCourses"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_storage_coursesdev_arn": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "coursesdev"
+        }
+      ]
+    },
+    "AMPLIFY_storage_coursesdev_partitionKeyName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "coursesdev"
+        }
+      ]
+    },
+    "AMPLIFY_storage_coursesdev_partitionKeyType": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "coursesdev"
+        }
+      ]
+    },
+    "AMPLIFY_storage_coursesdev_region": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "coursesdev"
+        }
+      ]
+    },
+    "AMPLIFY_storage_coursesdev_streamArn": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "coursesdev"
+        }
+      ]
+    },
+    "AMPLIFY_storage_coursesdev_tableName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "coursesdev"
         }
       ]
     }
   },
   "storage": {
     "coursesdev": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
       "service": "DynamoDB",
-      "serviceType": "imported",
+      "serviceType": "imported"
+    },
+    "courseslmsmain": {
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "dependsOn": []
-    }
-  },
-  "api": {
-    "lmsStudio": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "studioCourses",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        }
-      ]
+      "service": "DynamoDB",
+      "serviceType": "imported"
     }
   }
 }

@@ -8,35 +8,45 @@ import { Amplify } from 'aws-amplify';
 import awsExports from './aws-exports';
 
 // Import CloudScape Design
-import "@cloudscape-design/global-styles/index.css"
+import '@cloudscape-design/global-styles/index.css';
 
 // Import React Router
 import {
   createBrowserRouter,
   RouterProvider,
-} from "react-router-dom";
+} from 'react-router-dom';
 
 // Import Views
 import AuthForm from './components/AuthForm/AuthForm';
 import Home from './views/Home/Home';
 import Course from './views/Course/Course';
-
+import Leaderboard from './components/Leaderboard/Leaderboard';
+import AddChapter from './components/CreateCourse/3-addChapter';
 // Configure Amplify
 Amplify.configure(awsExports);
 
 // Configure Router
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Home/>,
+    path: '/',
+    element: <Home />,
   },
   {
-    path: "/auth",
-    element: <AuthForm/>,
+    path: '/auth',
+    element: <AuthForm />,
   },
   {
-    path: "/course/:id",
-    element: <Course/>,
+    path: '/course/:id',
+    element: <Course />,
+  },
+  {
+    path: '/leaderboard',
+    element: <Leaderboard />,
+  },
+
+  {
+    path: '/addChapter',
+    element: <AddChapter />,
   },
 ]);
 
