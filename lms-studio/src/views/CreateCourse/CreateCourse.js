@@ -23,22 +23,49 @@ import { withAuthenticator } from "@aws-amplify/ui-react";
 import SideNavigation from "@cloudscape-design/components/side-navigation";
 import Applayout from "@cloudscape-design/components/app-layout";
 import { useNavigate } from "react-router-dom";
-const CreateCourse = (props) => {
-  const [activeHref, setActiveHref] = useState("myCourses");
-  const navigate = useNavigate();
-  const [activeStepIndex, setActiveStepIndex] = React.useState(0);
-  const [checked, setChecked] = React.useState(false);
-  const [visible, setVisible] = React.useState(false);
-  const [selectedItems,setSelectedItems] = React.useState([{ name: "Item 2" }]);
 
+class CreateCourse extends React.Component {
+  constructor(props) {
+      super(props);
+      this.state = this.getDefaultState();
+  }
+
+  getDefaultState = () => {
+    return {
+        activeHref: "/",
+        activeStepIndex: 0,
+        name: "",
+        description: "",
+        publicity: false,
+        difficulty: false,
+        currentRequirement: "",
+        requirements: [],
+        currentChapter: "",
+        chapters: [],
+
+        visible: false,
+        selectedItems: []
+    }
+  }
+
+  renderRequirements = () => {
+    console.log(this.state.requirements)
+    return (
+      <ul>
+        { this.state.requirements.map((item, index) => <li key={index}>{item}</li>)}
+      </ul>);
+  }
+
+  render = () => {
+    
   return (
     <>
-      <NavBar navigation={props.navigation} title="Cloud Academy" />
+      <NavBar navigation={this.props.navigation} title="Cloud Academy" />
       <div className="dashboard-main">
         <Applayout
           navigation={
             <SideNavigation
-              activeHref={activeHref}
+              activeHref={this.state.activeHref}
               header={{ href: "/", text: "Management" }}
               onFollow={(event) => {
                 if (!event.detail.external) {
@@ -47,8 +74,8 @@ const CreateCourse = (props) => {
                     event.detail.href === "/"
                       ? "myLectures"
                       : event.detail.href;
-                  setActiveHref(href);
-                  navigate(`/management/${href}`);
+                  this.setState({activeHref: href});
+                  this.navigate(`/management/${href}`);
                 }
               }}
               items={[
@@ -116,9 +143,9 @@ const CreateCourse = (props) => {
                     optional: 'optional',
                   }}
                   onNavigate={({ detail }) =>
-                    setActiveStepIndex(detail.requestedStepIndex)
+                    this.setState({activeStepIndex: detail.requestedStepIndex})
                   }
-                  activeStepIndex={activeStepIndex}
+                  activeStepIndex={this.state.activeStepIndex}
                   //allowSkipTo
                   steps={[
                     {
@@ -136,27 +163,29 @@ const CreateCourse = (props) => {
                         >
                           <SpaceBetween direction="vertical" size="l">
                             <FormField label="Course Title">
-                              <Input />
+                              <Input value={this.state.name}
+                              onChange={event => this.setState({ name: event.detail.value })}/>
                             </FormField>
                             <FormField label="Course Description">
-                              <Input />
+                              <Input value={this.state.description}
+                              onChange={event => this.setState({ description: event.detail.value })} />
                             </FormField>
                           </SpaceBetween>
                             <p><strong>Course Publicity</strong></p>
                             <Toggle
                               onChange={({ detail }) =>
-                                setChecked(detail.checked)
+                                this.setState({publicity: detail.checked})
                               }
-                              checked={checked}
+                              checked={this.state.publicity}
                             >
                               Public Course
                             </Toggle>
-                            <p><strong>Course Difficultyy</strong></p>
+                            <p><strong>Course Difficulty</strong></p>
                             <Toggle
                               onChange={({ detail }) =>
-                                setChecked(detail.checked)
+                                this.setState({difficulty: detail.checked})
                               }
-                              checked={checked}
+                              checked={this.state.difficulty}
                             >
                               Flexible
                             </Toggle>
@@ -174,11 +203,16 @@ const CreateCourse = (props) => {
                           }
                         >
                           <SpaceBetween direction="vertical" size="l">
-                            <FormField label="Requirement" id="requirements">
-                              <Input />
+                            <FormField label="Requirement">
+                              <Input  value={this.state.currentRequirement}
+                              onChange={event => this.setState({ currentRequirement: event.detail.value })}/>
                             </FormField>
                           </SpaceBetween>
-                          <Button variant="primary">Add requirements</Button>
+                          <Button variant="primary" onClick={() => {
+                            this.setState({
+                              requirements: [...this.state.requirements, this.state.currentRequirement]});
+                            this.setState({currentRequirement: ""});
+                          }}>Add requirements</Button>
                         </Container>
                       ),
                       isOptional: false,
@@ -195,18 +229,19 @@ const CreateCourse = (props) => {
                         >
                           <SpaceBetween direction="vertical" size="l">
                             <FormField label="Chapter Name">
-                              <Input />
+                              <Input value={this.state.currentChapter}
+                              onChange={event => this.setState({ currentChapter: event.detail.value })}/>
                             </FormField>
                           </SpaceBetween>
-                          <Button variant="primary" onClick={() => setVisible(true)}>Add lectures</Button>
+                          <Button variant="primary" onClick={() => this.setState({visible: true})}>Add lectures</Button>
                           <Modal
-                            onDismiss={() => setVisible(false)}
-                            visible={visible}
+                            onDismiss={() => this.setState({visible: false})}
+                            visible={this.state.visible}
                             size="max"
                             footer={
                               <Box float="right">
                                 <SpaceBetween direction="horizontal" size="xs">
-                                  <Button variant="link" onClick={() => setVisible(false)}>Cancel</Button>
+                                  <Button variant="link" onClick={() => this.setState({visible: false})}>Cancel</Button>
                                   <Button variant="primary">Ok</Button>
                                 </SpaceBetween>
                               </Box>
@@ -215,9 +250,9 @@ const CreateCourse = (props) => {
                           >
                                 <Cards
                                   onSelectionChange={({ detail }) =>
-                                    setSelectedItems(detail.selectedItems)
+                                    this.setState({selectedItems: detail.selectedItems})
                                   }
-                                  selectedItems={selectedItems}
+                                  selectedItems={this.state.selectedItems}
                                   ariaLabels={{
                                     itemSelectionLabel: (e, n) => `select ${n.name}`,
                                     selectionGroupLabel: "Item selection"
@@ -313,8 +348,8 @@ const CreateCourse = (props) => {
                                   header={
                                     <Header
                                       counter={
-                                        selectedItems.length
-                                          ? "(" + selectedItems.length + "/10)"
+                                        this.state.selectedItems.length
+                                          ? "(" + this.state.selectedItems.length + "/10)"
                                           : "(10)"
                                       }
                                     >
@@ -371,38 +406,99 @@ const CreateCourse = (props) => {
                     {
                       title: 'Review and launch',
                       content: (
+                        <div>
                         <SpaceBetween size="xs">
                           <Header
                             variant="h3"
                             actions={
-                              <Button onClick={() => setActiveStepIndex(0)}>
+                              <Button onClick={() => this.setState({activeStepIndex: 0})}>
                                 Edit
                               </Button>
                             }
                           >
-                            Step 1: Instance type
+                            Step 1: Add Course Detail
                           </Header>
                           <Container
                             header={
-                              <Header variant="h2">Container title</Header>
+                              <Header variant="h2">Course Detail</Header>
                             }
                           >
-                            <ColumnLayout columns={2} variant="text-grid">
+                            <ColumnLayout columns={4} variant="text-grid">
                               <div>
                                 <Box variant="awsui-key-label">
-                                  First field
+                                  Course Title
                                 </Box>
-                                <div>Value</div>
+                                <div>{this.state.name}</div>
                               </div>
                               <div>
                                 <Box variant="awsui-key-label">
-                                  Second Field
+                                  Course Description
                                 </Box>
-                                <div>Value</div>
+                                <div>{this.state.description}</div>
+                              </div>
+                              <div>
+                                <Box variant="awsui-key-label">
+                                  Course Publicity
+                                </Box>
+                                <div>{this.state.publicity ? 'yes' : 'no'}</div>
+                              </div>
+                              <div>
+                                <Box variant="awsui-key-label">
+                                  Course Difficulty
+                                </Box>
+                                <div>{this.state.difficulty? 'yes' : 'no'}</div>
                               </div>
                             </ColumnLayout>
                           </Container>
                         </SpaceBetween>
+
+                        <SpaceBetween size="xs">
+                          <Header
+                            variant="h3"
+                          >
+                            Step 2: Add Requirements
+                          </Header>
+                          <Container
+                            header={
+                              <Header variant="h2">Requirement</Header>
+                            }
+                          >
+                            <ColumnLayout columns={4} variant="text-grid">
+                              <div>
+                                <Box variant="awsui-key-label">
+                                  Requirements
+                                </Box>
+                                <div>
+                                <ol>
+                                  { this.renderRequirements()}
+                                </ol> 
+                                </div>
+                              </div>
+                            </ColumnLayout>
+                          </Container>
+                        </SpaceBetween>
+                        <SpaceBetween size="xs">
+                          <Header
+                            variant="h3"
+                            actions={
+                              <Button onClick={() => this.setState({activeStepIndex: 0})}>
+                                Edit
+                              </Button>
+                            }
+                          >
+                            Step 3: Add Chapter
+                          </Header>
+                          <Container
+                            header={
+                              <Header variant="h2">Course Detail</Header>
+                            }
+                          >
+                            <ColumnLayout columns={4} variant="text-grid">
+                            </ColumnLayout>
+                          </Container>
+                        </SpaceBetween>
+                        </div>
+                        
                       ),
                     },
                   ]}
@@ -415,5 +511,16 @@ const CreateCourse = (props) => {
       </div>
     </>
   );
-};
-export default CreateCourse;
+  }
+}
+// const CreateCourse = (props) => {
+//   const [activeHref, setActiveHref] = useState("myCourses");
+//   const navigate = useNavigate();
+//   const [activeStepIndex, setActiveStepIndex] = React.useState(0);
+//   const [checked, setChecked] = React.useState(false);
+//   const [visible, setVisible] = React.useState(false);
+//   const [selectedItems,setSelectedItems] = React.useState([{ name: "Item 2" }]);
+
+// };
+
+export default withAuthenticator(CreateCourse);
