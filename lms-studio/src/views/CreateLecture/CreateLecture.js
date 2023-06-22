@@ -18,11 +18,16 @@ import RadioGroup from "@cloudscape-design/components/radio-group";
 import FileUpload from "@cloudscape-design/components/file-upload";
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import { Storage } from 'aws-amplify';
+import { API } from 'aws-amplify';
 
 class CreateLecture extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = this.getDefaultState();
+    }
+
+    getDefaultState = () => {
+        return {
             activeStepIndex: 0,
             lectureTitle: "",
             lectureDescription: "",
@@ -36,7 +41,7 @@ class CreateLecture extends React.Component {
             randomId: Math.floor(Math.random() * 1000000),
             quiz: [],
             quizS3Key: ""
-        };
+        }
     }
 
     ReviewAddContent = () => {
@@ -92,6 +97,31 @@ class CreateLecture extends React.Component {
         }
     }
 
+    resetQuiz = async () => {
+        if(this.state.quizS3Key !== "") {
+            await Storage.remove(this.state.quizS3Key, {
+                level: "protected"
+            });
+            this.setState({quizS3Key: ""});
+        }
+    }
+    resetArchitectureDiagram = async () => {
+        if(this.state.architectureDiagramS3Key !== "") {
+            await Storage.remove(this.state.architectureDiagramS3Key, {
+                level: "protected"
+            });
+            this.setState({architectureDiagramS3Key: ""});
+        }
+    }
+    resetLectureVideo = async () => {
+        if(this.state.lectureVideoS3Key !== "") {
+            await Storage.remove(this.state.lectureVideoS3Key, {
+                level: "protected"
+            });
+            this.setState({lectureVideoS3Key: ""});
+        }
+    }
+
 
     AddContent = () => {
         if (this.state.lectureType === "Video") {
@@ -102,15 +132,10 @@ class CreateLecture extends React.Component {
                         async ({ detail }) => {
                             this.setState({ lectureVideo: detail.value });
                             if(detail.value.length === 0) {
-                                if(this.state.lectureVideoS3Key !== "") {
-                                    await Storage.remove(this.state.lectureVideoS3Key, {
-                                        level: "protected"
-                                    });
-                                    this.setState({lectureVideoS3Key: ""});
-                                }
+                                this.resetLectureVideo();
                             } else {
                                 const file = detail.value[0];
-                                if(!file.type in ['video/mp4', 'video/mov']) {
+                                if(!(file.type in ['video/mp4', 'video/mov'])) {
                                     console.log("TODO: lecture video content validation");
                                 }
                                 try {
@@ -181,15 +206,10 @@ class CreateLecture extends React.Component {
                             async ({ detail }) => {
                                 this.setState({ architectureDiagram: detail.value });
                                 if(detail.value.length === 0) {
-                                    if(this.state.architectureDiagramS3Key !== "") {
-                                        await Storage.remove(this.state.architectureDiagramS3Key, {
-                                            level: "protected"
-                                        });
-                                        this.setState({architectureDiagramS3Key: ""});
-                                    }
+                                    this.resetArchitectureDiagram();
                                 } else {
                                     const file = detail.value[0];
-                                    if(!file.type in ['image/jpeg', 'image/png']) {
+                                    if(!(file.type in ['image/jpeg', 'image/png'])) {
                                         console.log("TODO: architecture diagram validation");
                                     }
                                     try {
@@ -236,15 +256,10 @@ class CreateLecture extends React.Component {
                         async ({ detail }) => {
                             this.setState({ quiz: detail.value });
                             if(detail.value.length === 0) {
-                                if(this.state.quizS3Key !== "") {
-                                    await Storage.remove(this.state.quizS3Key, {
-                                        level: "protected"
-                                    });
-                                    this.setState({quizS3Key: ""});
-                                }
+                                this.resetQuiz();
                             } else {
                                 const file = detail.value[0];
-                                if(!file.type in ['text/json']) {
+                                if(!(file.type in ['text/json'])) {
                                     console.log("TODO: quiz content validation");
                                 }
                                 try {
@@ -310,6 +325,33 @@ class CreateLecture extends React.Component {
                             nextButton: "Next",
                             submitButton: "Submit",
                             optional: "optional"
+                        }}
+                        onSubmit={() => {
+                            const jsonData = {
+                                lectureTitle: this.state.lectureTitle,
+                                lectureDescription: this.state.lectureDescription,
+                                lectureType: this.state.lectureType,
+                                lectureVideoS3Key: this.state.lectureVideoS3Key,
+                                workshopUrl: this.state.workshopUrl,
+                                workshopDescription: this.state.workshopDescription,
+                                architectureDiagramS3Key: this.state.architectureDiagramS3Key,
+                                quizS3Key: this.state.quizS3Key
+                            }
+                            const apiName = 'lmsStudio';
+                            const path = '/lectures';
+                            API.post(apiName, path, { body: jsonData})
+                            .then((response) => {
+                                console.log(`TODO: handle submission response. ID: ${response.ID}`)
+                            })
+                            .catch((error) => {
+                                console.log(error.response);
+                            });
+                        }}
+                        onCancel={() => {
+                            this.resetQuiz();
+                            this.resetArchitectureDiagram();
+                            this.resetLectureVideo();
+                            this.setState(this.getDefaultState());
                         }}
                         onNavigate={({ detail }) =>
                             this.setState({ activeStepIndex: detail.requestedStepIndex })
