@@ -1,4 +1,28 @@
 {
+  "api": {
+    "usermng": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "usermng"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "userOverView"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
   "auth": {
     "lmsstudioc3fd255f": {
       "customAuth": false,
@@ -27,7 +51,18 @@
       "service": "Cognito"
     }
   },
-  "function": {},
+  "function": {
+    "userOverView": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "usermng": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
   "hosting": {
     "amplifyhosting": {
       "providerPlugin": "awscloudformation",
@@ -36,6 +71,38 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_userOverView_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "userOverView"
+        }
+      ]
+    },
+    "AMPLIFY_function_userOverView_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "userOverView"
+        }
+      ]
+    },
+    "AMPLIFY_function_usermng_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "usermng"
+        }
+      ]
+    },
+    "AMPLIFY_function_usermng_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "usermng"
+        }
+      ]
+    },
     "AMPLIFY_hosting_amplifyhosting_appId": {
       "usedBy": [
         {

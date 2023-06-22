@@ -26,6 +26,9 @@ import MyLectures from './views/Management/MyLectures/MyLectures';
 import PublicLectures from './views/Management/PublicLectures/PublicLectures';
 import MyCourses from './views/Management/MyCourses/MyCourses';
 import PublicCourses from './views/Management/PublicCourses/PublicCourses';
+import User          from './views/Management/User/User';
+import CreateLecture from './views/CreateLecture/CreateLecture';
+
 
 // Configure Amplify
 Amplify.configure(awsExports);
@@ -43,6 +46,10 @@ const router = createBrowserRouter([
   {
     path: "/course/:id",
     element: <Course/>,
+  },
+  {
+    path: '/createLecture',
+    element: <CreateLecture />,
   },
   {
     path: "/management",
@@ -67,9 +74,46 @@ const router = createBrowserRouter([
       {
         path: 'publicCourses',
         element: <PublicCourses />
-      }
+      },
+      {
+        path: 'user',
+        element: <User />
+      },
+
     ]
   },
+
+  // {
+  //   path: "/managementhang",
+  //   element: <Managementhang />,
+  //   children: [
+  //     {
+  //       path: '',
+  //       element: <Navigate to="/managementhang/myLectures" replace />
+  //     },
+  //     // {
+  //     //   path: 'myLectures',
+  //     //   element: <MyLectures />
+  //     // },
+  //     // {
+  //     //   path: 'publicLectures',
+  //     //   element: <PublicLectures />
+  //     // },
+  //     {
+  //       path: 'myCourses',
+  //       element: <MyCourseshang />
+  //     },
+  //     // {
+  //     //   path: 'publicCourses',
+  //     //   element: <PublicCourses />
+  //     // },
+  //     // {
+  //     //   path: 'publicCourses',
+  //     //   element: <PublicCourses />
+  //     // }
+  //   ]
+  // },  
+
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
