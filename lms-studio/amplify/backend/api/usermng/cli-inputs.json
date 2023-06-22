@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "paths": {
+    "/usermng": {
+      "name": "/usermng",
+      "lambdaFunction": "usermng",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    },
+    "/usermng/overview": {
+      "name": "/usermng/overview",
+      "lambdaFunction": "userOverView",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

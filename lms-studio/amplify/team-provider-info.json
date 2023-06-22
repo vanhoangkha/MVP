@@ -24,5 +24,67 @@
         "lmsstudioc3fd255f": {}
       }
     }
+  },
+  "devtest": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lmsstudio-devtest-213350-authRole",
+      "UnauthRoleArn": "arn:aws:iam::542128326873:role/amplify-lmsstudio-devtest-213350-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::542128326873:role/amplify-lmsstudio-devtest-213350-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-lmsstudio-devtest-213350-deployment",
+      "UnauthRoleName": "amplify-lmsstudio-devtest-213350-unauthRole",
+      "StackName": "amplify-lmsstudio-devtest-213350",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:542128326873:stack/amplify-lmsstudio-devtest-213350/7c3e3300-0f77-11ee-89d7-0a6dbb70df8e",
+      "AmplifyAppId": "d3bx92spacazya"
+    },
+    "categories": {
+      "auth": {
+        "lmsstudioc3fd255f": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3bx92spacazya",
+          "type": "manual"
+        }
+      }
+    }
+  },
+  "devlead": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lmsstudio-devlead-103635-authRole",
+      "UnauthRoleArn": "arn:aws:iam::697944894855:role/amplify-lmsstudio-devlead-103635-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::697944894855:role/amplify-lmsstudio-devlead-103635-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-lmsstudio-devlead-103635-deployment",
+      "UnauthRoleName": "amplify-lmsstudio-devlead-103635-unauthRole",
+      "StackName": "amplify-lmsstudio-devlead-103635",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:697944894855:stack/amplify-lmsstudio-devlead-103635/d5b1e630-0fe4-11ee-8e83-024e6d02a714",
+      "AmplifyAppId": "dlagr4s52f7k0",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-lmsstudio-devlead-103635-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "auth": {
+        "lmsstudioc3fd255f": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dlagr4s52f7k0",
+          "type": "manual"
+        }
+      },
+      "function": {
+        "usermng": {
+          "deploymentBucketName": "amplify-lmsstudio-devlead-103635-deployment",
+          "s3Key": "amplify-builds/usermng-5741552f4e416d486f59-build.zip"
+        },
+        "userOverView": {
+          "deploymentBucketName": "amplify-lmsstudio-devlead-103635-deployment",
+          "s3Key": "amplify-builds/userOverView-6e3056446a335170444d-build.zip"
+        }
+      },
+      "api": {
+        "usermng": {}
+      }
+    }
   }
 }

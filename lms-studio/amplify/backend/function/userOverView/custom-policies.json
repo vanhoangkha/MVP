@@ -1,0 +1,18 @@
+[
+  {
+    "Action": [       
+      "dynamodb:Scan"
+    ],
+    "Resource": [
+      "arn:aws:dynamodb:*:*:table:*"
+    ]
+  },
+  {
+    "Action": [       
+      "cognito-idp:*"
+    ],
+    "Resource": [
+      "arn:aws:cognito-idp:ap-southeast-1:697944894855:userpool/*"
+    ]
+  }  
+]
