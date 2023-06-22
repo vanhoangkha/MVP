@@ -25,6 +25,53 @@
       }
     }
   },
+  "newenv": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lmsstudio-newenv-114107-authRole",
+      "UnauthRoleArn": "arn:aws:iam::319679907444:role/amplify-lmsstudio-newenv-114107-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::319679907444:role/amplify-lmsstudio-newenv-114107-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
+      "UnauthRoleName": "amplify-lmsstudio-newenv-114107-unauthRole",
+      "StackName": "amplify-lmsstudio-newenv-114107",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:319679907444:stack/amplify-lmsstudio-newenv-114107/d7676f50-0fed-11ee-994f-064a081b6fb6",
+      "AmplifyAppId": "d3m5mm9dftjy7a",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-lmsstudio-newenv-114107-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "auth": {
+        "lmsstudioc3fd255f": {}
+      },
+      "function": {
+        "studioCourses": {
+          "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
+          "s3Key": "amplify-builds/studioCourses-356f5445756c414d3455-build.zip",
+          "tableName": "courses-newenv"
+        },
+        "studioLectures": {
+          "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
+          "s3Key": "amplify-builds/studioLectures-784e36625756646f3949-build.zip"
+        },
+        "studioUserCourse": {
+          "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
+          "s3Key": "amplify-builds/studioUserCourse-3975784e585a5a756f45-build.zip"
+        },
+        "studiousers": {
+          "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
+          "s3Key": "amplify-builds/studiousers-5131422f4a3856625963-build.zip"
+        }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3m5mm9dftjy7a",
+          "type": "manual"
+        }
+      },
+      "api": {
+        "lmsStudio": {}
+      }
+    }
+  },
   "devtest": {
     "awscloudformation": {
       "AuthRoleName": "amplify-lmsstudio-devtest-213350-authRole",

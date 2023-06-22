@@ -9,6 +9,22 @@
           ],
           "category": "function",
           "resourceName": "studioCourses"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studioUserCourse"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studioLectures"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -46,6 +62,22 @@
   "function": {
     "studioCourses": {
       "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studioLectures": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studioUserCourse": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studiousers": {
+      "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
@@ -71,6 +103,62 @@
         {
           "category": "function",
           "resourceName": "studioCourses"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioCourses_tableName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioCourses"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioLectures_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioLectures"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioLectures_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioLectures"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioUserCourse_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioUserCourse"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioUserCourse_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioUserCourse"
+        }
+      ]
+    },
+    "AMPLIFY_function_studiousers_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studiousers"
+        }
+      ]
+    },
+    "AMPLIFY_function_studiousers_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studiousers"
         }
       ]
     },

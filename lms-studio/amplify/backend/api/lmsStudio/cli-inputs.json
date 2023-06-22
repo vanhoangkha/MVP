@@ -5,13 +5,21 @@
       "name": "/courses",
       "lambdaFunction": "studioCourses",
       "permissions": {
-        "setting": "private",
-        "auth": [
-          "create",
-          "read",
-          "update",
-          "delete"
-        ]
+        "setting": "open"
+      }
+    },
+    "/usercourse": {
+      "name": "/usercourse",
+      "lambdaFunction": "studioUserCourse",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/lectures": {
+      "name": "/lectures",
+      "lambdaFunction": "studioLectures",
+      "permissions": {
+        "setting": "open"
       }
     }
   }

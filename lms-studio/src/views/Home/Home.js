@@ -45,7 +45,6 @@ class Home extends React.Component {
     redirectToCourse(courseId) {
         this.setState({courseToRedirect: courseId});
     }
-
     render() {
         return !!this.state.courseToRedirect ?
             <Navigate to={'/course/' + this.state.courseToRedirect} /> :

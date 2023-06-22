@@ -15,9 +15,6 @@
     },
     "s3Key": {
       "Type": "String"
-    },
-    "tableName": {
-      "Type": "String"
     }
   },
   "Conditions": {
@@ -50,12 +47,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "studioCourses",
+            "studioUserCourse",
             {
               "Fn::Join": [
                 "",
                 [
-                  "studioCourses",
+                  "studioUserCourse",
                   "-",
                   {
                     "Ref": "env"
@@ -72,9 +69,6 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
-            },
-            "tableName": {
-              "Ref": "tableName"
             }
           }
         },
@@ -95,12 +89,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "lmsstudioLambdaRole6f8dabf8",
+            "lmsstudioLambdaRole7065f59c",
             {
               "Fn::Join": [
                 "",
                 [
-                  "lmsstudioLambdaRole6f8dabf8",
+                  "lmsstudioLambdaRole7065f59c",
                   "-",
                   {
                     "Ref": "env"
