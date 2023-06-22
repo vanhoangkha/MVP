@@ -20,6 +20,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import NavBar from "../../../components/NavBar/NavBar";
 import Footer from "../../../components/Footer/Footer";
+import { putAssignCourseService } from "../services/assigncourse";
 
 const ValueWithLabel = ({ label, children }) => (
   <div>
@@ -31,9 +32,40 @@ const ValueWithLabel = ({ label, children }) => (
 const AssignCourse = (props) => {
   const [activeHref, setActiveHref] = useState("myLectures");
   const [checked, setChecked] = useState(false);
-  const [oppValue, setOppValue] = useState("");
+  const [oppId, setOppId] = React.useState("");
+  const [oppValue, setOppValue] = React.useState("");
   const [selectedUsers, setSelectedUsers] = useState([{}]);
   const navigate = useNavigate();
+
+  const handlePutAssignCourse = async (
+    course,
+    selectedUsers,
+    oppId,
+    oppValue,
+    checked
+  ) => {
+    const staticData = {
+      courseId: course.Id,
+      oppId: oppId,
+      oppValue: oppValue,
+      flexible: checked,
+      userStatus: "Assigned",
+    };
+    var userCourseArray = [];
+
+    selectedUsers.forEach((user) => {
+      const dynamicData = { ...staticData, user };
+      userCourseArray.push(dynamicData);
+    });
+    try {
+      const response = await putAssignCourseService(userCourseArray);
+
+      console.log(response);
+      // business logic goes here
+    } catch (error) {
+      console.error(error); // from creation or business logic
+    }
+  };
   return (
     <>
       <NavBar navigation={props.navigation} title="Cloud Academy" />
@@ -128,17 +160,20 @@ const AssignCourse = (props) => {
                     <SpaceBetween size="l">
                       <ValueWithLabel label="Description">Value</ValueWithLabel>
                       <ValueWithLabel label="Opportunity ID">
-                        <Input>
-                          {" "}
-                          onChange={({ detail }) =>
-                            setOppValue(detail.value)
-                          }{" "}
-                          value={oppValue}
-                        </Input>
+                        <Input
+                          onChange={({ detail }) => setOppId(detail.value)}
+                          value={oppId}
+                        />
                       </ValueWithLabel>
                     </SpaceBetween>
                     <SpaceBetween size="l">
                       <ValueWithLabel label="Owner">Value</ValueWithLabel>
+                      <ValueWithLabel label="Opportunity Value">
+                        <Input
+                          onChange={({ detail }) => setOppValue(detail.value)}
+                          value={oppValue}
+                        />
+                      </ValueWithLabel>
                     </SpaceBetween>
                   </ColumnLayout>
                 </Container>
@@ -282,7 +317,18 @@ const AssignCourse = (props) => {
                     {" "}
                     Cancel{" "}
                   </Button>{" "}
-                  <Button variant="primary">Assign</Button>{" "}
+                  <Button
+                    variant="primary"
+                    //onClick={handlePutAssignCourse(
+                    //  props.course,
+                    //  selectedUsers,
+                    //  oppId,
+                    //  oppValue,
+                    //  checked
+                    //)}
+                  >
+                    Assign
+                  </Button>{" "}
                 </SpaceBetween>
               </div>
             </div>
