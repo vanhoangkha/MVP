@@ -117,9 +117,9 @@ const Leaderboard = (props) => {
                       variant="h1"
                       info={<Link>Info</Link>}
                       description="View the top courses for this week!"
-                      actions={
-                        <Button variant="primary">Button</Button>
-                      }
+                      // actions={
+                      //   <Button variant="primary">Button</Button>
+                      // }
                     >
                       Top Contributors
                     </Header>
