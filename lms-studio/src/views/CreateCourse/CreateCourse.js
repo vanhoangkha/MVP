@@ -174,7 +174,7 @@ const CreateCourse = (props) => {
                           }
                         >
                           <SpaceBetween direction="vertical" size="l">
-                            <FormField label="Requirement">
+                            <FormField label="Requirement" id="requirements">
                               <Input />
                             </FormField>
                           </SpaceBetween>
@@ -198,7 +198,7 @@ const CreateCourse = (props) => {
                               <Input />
                             </FormField>
                           </SpaceBetween>
-                          <Button variant="primary" onClick={() => setVisible(true)}>Add Chapter</Button>
+                          <Button variant="primary" onClick={() => setVisible(true)}>Add lectures</Button>
                           <Modal
                             onDismiss={() => setVisible(false)}
                             visible={visible}
