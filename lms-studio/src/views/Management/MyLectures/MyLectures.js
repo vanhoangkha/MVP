@@ -9,24 +9,24 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import ButtonDropdown from "@cloudscape-design/components/button-dropdown";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import Title from "../../../components/Title";
-import { getCoursesService } from "../services/course";
+import { getMyLecturesService } from "../services/lecture";
 
 
 
 const MyLectures = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
 
-  const [courses, setCourses] = useState([])
+  const [lectures, setLectures] = useState([])
 
-  const handleGetCouses = async () => {
-    const {data} = await getCoursesService()
+  const handleGetLectures = async () => {
+    const {data} = await getMyLecturesService()
 
     console.log(data)
-    setCourses(data)
+    setLectures(data)
   }
 
   useEffect(() => {
-    handleGetCouses()
+    handleGetLectures()
   },[])
 
   return (
@@ -82,7 +82,7 @@ const MyLectures = () => {
           { id: "updatedAt", visible: true },
           { id: "state", visible: true },
         ]}
-        items={courses}
+        items={lectures}
         loadingText="Loading resources"
         selectionType="multi"
         trackBy="Name"
@@ -102,33 +102,13 @@ const MyLectures = () => {
           <Header
             counter={
               selectedItems.length
-                ? "(" + selectedItems.length + `/${courses.length})`
-                : `(${courses.length})`
+                ? "(" + selectedItems.length + `/${lectures.length})`
+                : `(${lectures.length})`
             }
             actions={
               <SpaceBetween direction="horizontal" size="xs">
                 <ButtonDropdown
                   items={[
-                    {
-                      text: "Deactivate",
-                      id: "rm",
-                      disabled: false,
-                    },
-                    {
-                      text: "Activate",
-                      id: "mv",
-                      disabled: false,
-                    },
-                    {
-                      text: "Status 3",
-                      id: "rn",
-                      disabled: false,
-                    },
-                    {
-                      text: "View details",
-                      id: "rm",
-                      disabled: false,
-                    },
                     {
                       text: "Edit",
                       id: "mv",

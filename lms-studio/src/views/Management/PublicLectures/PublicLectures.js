@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@cloudscape-design/components/table";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
@@ -7,32 +7,46 @@ import Header from "@cloudscape-design/components/header";
 import Pagination from "@cloudscape-design/components/pagination";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import Title from "../../../components/Title";
+import { getPublicLecturesService } from "../services/lecture";
 
-const items = [
-  {
-    name: "AWS Lecture 1",
-    updatedAt: "2023/6",
-    state: "Enabled",
-  },
-  {
-    name: "AWS Lecture 2",
-    updatedAt: "2023/6",
-    state: "Disabled",
-  },
-  {
-    name: "AWS Lecture 3",
-    updatedAt: "2023/6",
-    state: "Enabled",
-  },
-  {
-    name: "AWS Lecture 4",
-    updatedAt: "2023/6",
-    state: "Enabled",
-  },
-];
+// const items = [
+//   {
+//     name: "AWS Lecture 1",
+//     updatedAt: "2023/6",
+//     state: "Enabled",
+//   },
+//   {
+//     name: "AWS Lecture 2",
+//     updatedAt: "2023/6",
+//     state: "Disabled",
+//   },
+//   {
+//     name: "AWS Lecture 3",
+//     updatedAt: "2023/6",
+//     state: "Enabled",
+//   },
+//   {
+//     name: "AWS Lecture 4",
+//     updatedAt: "2023/6",
+//     state: "Enabled",
+//   },
+// ];
 
 const PublicLectures = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
+
+  const [lectures, setLectures] = useState([])
+
+  const handleGetLectures = async () => {
+    const {data} = await getPublicLecturesService()
+
+    console.log(data)
+    setLectures(data)
+  }
+
+  useEffect(() => {
+    handleGetLectures()
+  },[])
 
   return (
     <>
@@ -50,16 +64,16 @@ const PublicLectures = () => {
             } selected`,
           itemSelectionLabel: ({ selectedItems }, item) => {
             const isItemSelected = selectedItems.filter(
-              (i) => i.name === item.name
+              (i) => i.Name === item.Name
             ).length;
-            return `${item.name} is ${isItemSelected ? "" : "not"} selected`;
+            return `${item.Name} is ${isItemSelected ? "" : "not"} selected`;
           },
         }}
         columnDefinitions={[
           {
-            id: "name",
+            id: "Name",
             header: "Lecture name",
-            cell: (e) => e.name,
+            cell: (e) => e.Name,
             sortingField: "name",
             isRowHeader: true,
           },
@@ -82,14 +96,14 @@ const PublicLectures = () => {
           },
         ]}
         columnDisplay={[
-          { id: "name", visible: true },
+          { id: "Name", visible: true },
           { id: "updatedAt", visible: true },
           { id: "state", visible: true },
         ]}
-        items={items}
+        items={lectures}
         loadingText="Loading resources"
         selectionType="multi"
-        trackBy="name"
+        trackBy="Name"
         empty={
           <Box textAlign="center" color="inherit">
             <b>No resources</b>
@@ -106,8 +120,8 @@ const PublicLectures = () => {
           <Header
             counter={
               selectedItems.length
-                ? "(" + selectedItems.length + `/${items.length})`
-                : `(${items.length})`
+                ? "(" + selectedItems.length + `/${lectures.length})`
+                : `(${lectures.length})`
             }
           >
             Public Lectures

@@ -94,20 +94,15 @@ const Leaderboard = (props) => {
             <div>
               <ContentLayout
                 header={
-                  <SpaceBetween size="m">
-                    <Header
-                      variant="h1"
-                      info={<Link>Info</Link>}
-                      description="This is a generic description used in the header."
-                      actions={
-                        <Button variant="primary">Button</Button>
-                      }
-                    >
-                      Top Contributors
-                    </Header>
-
-                    <Alert>This is a generic alert.</Alert>
-                  </SpaceBetween>
+                  <Header
+                  variant="h1"
+                  actions={
+                    <SpaceBetween direction="horizontal" size="xs">
+                    </SpaceBetween>
+                  }
+                >
+                  Top Contributors
+                </Header>
                 }
               >
                 <Grid
