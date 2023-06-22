@@ -97,6 +97,45 @@ app.get(path, function(req, res) {
   });
 });
 
+//PUBLIC
+app.get(path+"/public", function(req, res) {
+  const condition = {}
+  condition[sortKeyName] = {
+    ComparisonOperator: 'EQ'
+  }
+  // condition[sortKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
+  // condition[partitionKeyName] = {
+  //   ComparisonOperator: 'EQ'
+  // }
+
+  // if (userIdPresent && req.apiGateway) {
+  //   condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
+  // } else {
+  //   try {
+  //     condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
+  //   } catch(err) {
+  //     res.statusCode = 500;
+  //     res.json({error: 'Wrong column type ' + err});
+  //   }
+  // }
+
+  let queryParams = {
+    TableName: tableName,
+    // KeyConditions: condition,
+    // IndexName:"CreatorID-index"
+  }
+  console.log(queryParams)
+
+  dynamodb.scan(queryParams, (err, data) => {
+    if (err) {
+      res.statusCode = 500;
+      res.json({error: 'Could not load items: ' + err});
+    } else {
+      res.json(data.Items);
+    }
+  });
+});
+
 /*****************************************
  * HTTP Get method for get single object *
  *****************************************/
