@@ -6,6 +6,7 @@ import { withAuthenticator } from "@aws-amplify/ui-react";
 import SideNavigation from "@cloudscape-design/components/side-navigation";
 import Applayout from "@cloudscape-design/components/app-layout";
 import { useNavigate } from "react-router-dom";
+import { BreadcrumbGroup } from "@cloudscape-design/components";
 
 const Management = (props) => {
   const [activeHref, setActiveHref] = useState("myLectures");
@@ -16,6 +17,14 @@ const Management = (props) => {
       <NavBar navigation={props.navigation} title="Cloud Academy" />
       <div className="dashboard-main">
         <Applayout
+        breadcrumbs={
+          <BreadcrumbGroup
+            items={[
+              { text: "Home", href: "/management" },
+            ]}
+            ariaLabel="Breadcrumbs"
+          />
+        }
           navigation={
             <SideNavigation
               activeHref={activeHref}

@@ -152,6 +152,88 @@
       "type": "manual"
     }
   },
+  "parameters": {
+    "AMPLIFY_function_UserCourse_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "UserCourse"
+        }
+      ]
+    },
+    "AMPLIFY_function_UserCourse_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "UserCourse"
+        }
+      ]
+    },
+    "AMPLIFY_function_categories_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "categories"
+        }
+      ]
+    },
+    "AMPLIFY_function_categories_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "categories"
+        }
+      ]
+    },
+    "AMPLIFY_function_courses_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "courses"
+        }
+      ]
+    },
+    "AMPLIFY_function_courses_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "courses"
+        }
+      ]
+    },
+    "AMPLIFY_function_lectures_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "lectures"
+        }
+      ]
+    },
+    "AMPLIFY_function_lectures_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "lectures"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    }
+  },
   "storage": {
     "Categories": {
       "providerPlugin": "awscloudformation",

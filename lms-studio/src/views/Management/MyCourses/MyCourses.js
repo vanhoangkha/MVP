@@ -121,21 +121,7 @@ const MyCourses = () => {
                 
                 <ButtonDropdown
                   items={[
-                    {
-                      text: "Deactivate",
-                      id: "rm",
-                      disabled: false,
-                    },
-                    {
-                      text: "Activate",
-                      id: "mv",
-                      disabled: false,
-                    },
-                    {
-                      text: "View details",
-                      id: "rm",
-                      disabled: false,
-                    },
+                    
                     {
                       text: "Edit",
                       id: "mv",
@@ -150,7 +136,7 @@ const MyCourses = () => {
                 >
                   Actions
                 </ButtonDropdown>
-                <Button variant="primary">Create Course</Button>
+                <Button variant="primary" href="">Create Course</Button>
               </SpaceBetween>
             }
           >

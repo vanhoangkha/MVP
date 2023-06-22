@@ -38,7 +38,33 @@ Amplify.configure(awsExports);
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <Management />,
+    children: [
+      {
+        path: "",
+        element: <Navigate to="/management/myLectures" replace />,
+      },
+      {
+        path: "myLectures",
+        element: <MyLectures />,
+      },
+      {
+        path: "publicLectures",
+        element: <PublicLectures />,
+      },
+      {
+        path: "myCourses",
+        element: <MyCourses />,
+      },
+      {
+        path: "publicCourses",
+        element: <PublicCourses />,
+      },
+      {
+        path: "user",
+        element: <User />
+      },
+    ],
   },
   {
     path: "/auth",
@@ -89,6 +115,10 @@ const router = createBrowserRouter([
   {
     path: '/course/:id',
     element: <Course />,
+  },
+  {
+    path: '/management/leaderboard',
+    element: <Leaderboard />
   },
   {
     path: '/leaderboard',
