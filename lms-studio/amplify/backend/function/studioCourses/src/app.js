@@ -28,7 +28,7 @@ if (process.env.ENV && process.env.ENV !== "NONE") {
 const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "ID";
 const partitionKeyType = "S";
-const sortKeyName = "";
+const sortKeyName = "CreatorID";
 const sortKeyType = "";
 const hasSortKey = sortKeyName !== "";
 const path = "/courses";
@@ -64,6 +64,10 @@ const convertUrlType = (param, type) => {
 
 app.get(path, function(req, res) {
   const condition = {}
+  condition[sortKeyName] = {
+    ComparisonOperator: 'EQ'
+  }
+  condition[sortKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
   // condition[partitionKeyName] = {
   //   ComparisonOperator: 'EQ'
   // }
@@ -81,10 +85,12 @@ app.get(path, function(req, res) {
 
   let queryParams = {
     TableName: tableName,
-    // KeyConditions: condition
+    KeyConditions: condition,
+    IndexName:"CreatorID-index"
   }
+  console.log(queryParams)
 
-  dynamodb.scan(queryParams, (err, data) => {
+  dynamodb.query(queryParams, (err, data) => {
     if (err) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err});
