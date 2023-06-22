@@ -29,7 +29,8 @@ import PublicCourses from "./views/Management/PublicCourses/PublicCourses";
 import AssignCourse from "./views/Management/AssignCourse/AssignCourse";
 import User from "./views/Management/User/User";
 import CreateLecture from './views/CreateLecture/CreateLecture';
-
+import Leaderboard from './components/Leaderboard/Leaderboard';
+import AddChapter from './components/CreateCourse/3-addChapter';
 // Configure Amplify
 Amplify.configure(awsExports);
 
@@ -84,6 +85,19 @@ const router = createBrowserRouter([
   {
     path: "/createLecture",
     element: <CreateLecture/>,
+  },
+  {
+    path: '/course/:id',
+    element: <Course />,
+  },
+  {
+    path: '/leaderboard',
+    element: <Leaderboard />,
+  },
+
+  {
+    path: '/addChapter',
+    element: <AddChapter />,
   },
 ]);
 
