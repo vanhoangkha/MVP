@@ -19,9 +19,9 @@ import {
   Flashbar,
 } from "@cloudscape-design/components";
 import { useNavigate, useLocation } from "react-router-dom";
+import { API } from 'aws-amplify';
 import NavBar from "../../../components/NavBar/NavBar";
 import Footer from "../../../components/Footer/Footer";
-import { putAssignCourseService } from "../services/assigncourse";
 
 const ValueWithLabel = ({ label, children }) => (
   <div>
@@ -36,22 +36,35 @@ const AssignCourse = (props) => {
   const [oppId, setOppId] = React.useState("");
   const [oppValue, setOppValue] = React.useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [items, setItems] = useState([]);
   const navigate = useNavigate();
+  const {state} = useLocation();
+  // console.log("passed vars: " + JSON.stringify(prevState))
 
-  const [items, setItems] = React.useState([]);
 
-  const { state } = useLocation();
-
-  const handlePutAssignCourse = async () => {
-    const data = selectedUsers.map((e) => ({
+  const handlePutAssignCourse = async (
+  ) => {
+    const staticData = {
       CourseID: state.ID,
-      UserID: e.ID,
-      CreatorID: state.CreatorID,
+      OppID: oppId,
+      OppValue: oppValue,
+      flexible: checked,
       Status: "ASSIGNED",
-    }));
-    try {
-      await putAssignCourseService(data);
+      CreatorID: state.CreatorID,
+    };
+    var userCourseArray = [];
 
+    selectedUsers.forEach((user) => {
+      if(user?.ID){
+        const dynamicData = { ...staticData, UserID: user.ID };
+        userCourseArray.push(dynamicData);
+      }
+    });
+
+    const apiName = 'lmsStudio';
+    const path = '/usercourse';
+    API.put(apiName, path, { body: userCourseArray })
+    .then((response) => {
       setItems([{
         type: "success",
         content: "Assign course successfully!",
@@ -60,8 +73,8 @@ const AssignCourse = (props) => {
         onDismiss: () => setItems([]),
       }])
       setTimeout(() => setItems([]),3000)
-      // business logic goes here
-    } catch (error) {
+    })
+    .catch((error) => {
       console.error(error); // from creation or business logic
       setItems([{
         type: "error",
@@ -69,10 +82,11 @@ const AssignCourse = (props) => {
         dismissible: true,
         dismissLabel: "Dismiss message",
         onDismiss: () => setItems([]),
-      }])
-      setTimeout(() => setItems([]),3000)
-    }
-  };
+      }])    
+    })
+  }
+    
+    // business logic goes here
   return (
     <>
       <NavBar navigation={props.navigation} title="Cloud Academy" />

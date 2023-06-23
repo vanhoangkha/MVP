@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 exports.handler = async (event, context) => {
   // Specify your AWS Cognito user pool ID
-  const userPoolId = 'ap-southeast-1_GuupqukBI';
+  const userPoolId = 'ap-southeast-1_MDYWuz44c';
   
   // Create a Cognito service object
   const cognito = new AWS.CognitoIdentityServiceProvider();

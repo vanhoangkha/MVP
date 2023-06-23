@@ -62,7 +62,7 @@
         },
         "userOverview": {
           "deploymentBucketName": "amplify-lmsstudio-newenv-114107-deployment",
-          "s3Key": "amplify-builds/userOverview-68775a79514441665178-build.zip"
+          "s3Key": "amplify-builds/userOverview-3134644b67795a58674c-build.zip"
         }
       },
       "hosting": {
