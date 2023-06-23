@@ -260,6 +260,15 @@ class CreateCourse extends React.Component {
                               requirements: [...this.state.requirements, this.state.currentRequirement]});
                             this.setState({currentRequirement: ""});
                           }}>Add requirements</Button>
+                          <ColumnLayout columns={4} variant="text-grid">
+                              <div>
+                                <div>
+                                <ol>
+                                  { this.renderRequirements()}
+                                </ol> 
+                                </div>
+                              </div>
+                            </ColumnLayout>
                         </Container>
                       ),
                       isOptional: false,
@@ -284,6 +293,9 @@ class CreateCourse extends React.Component {
                             </FormField>
                           </SpaceBetween>
                           <Button variant="primary" onClick={() => this.setState({visible: true})}>Add lectures</Button>
+                          <ColumnLayout columns={1} variant="text-grid">
+                              {this.renderChapters()}
+                            </ColumnLayout>
                           <Modal
                             onDismiss={() => this.setState({visible: false})}
                             visible={this.state.visible}
@@ -516,14 +528,7 @@ class CreateCourse extends React.Component {
                           </Container>
                         </SpaceBetween>
                         <SpaceBetween size="xs">
-                          <Header
-                            variant="h3"
-                            actions={
-                              <Button onClick={() => this.setState({activeStepIndex: 0})}>
-                                Edit
-                              </Button>
-                            }
-                          >
+                          <Header>
                             Step 3: Add Chapter
                           </Header>
                           <Container
