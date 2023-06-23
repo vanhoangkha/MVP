@@ -552,14 +552,5 @@ class CreateCourse extends React.Component {
   );
   }
 }
-// const CreateCourse = (props) => {
-//   const [activeHref, setActiveHref] = useState("myCourses");
-//   const navigate = useNavigate();
-//   const [activeStepIndex, setActiveStepIndex] = React.useState(0);
-//   const [checked, setChecked] = React.useState(false);
-//   const [visible, setVisible] = React.useState(false);
-//   const [selectedItems,setSelectedItems] = React.useState([{ name: "Item 2" }]);
-
-// };
 
 export default withAuthenticator(CreateCourse);
