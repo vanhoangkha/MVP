@@ -17,7 +17,7 @@ import Textarea from "@cloudscape-design/components/textarea";
 import RadioGroup from "@cloudscape-design/components/radio-group";
 import FileUpload from "@cloudscape-design/components/file-upload";
 import { Storage } from 'aws-amplify';
-import { API } from 'aws-amplify';
+import { putContentService } from "../Management/services/content";
 import {v4 as uuid} from 'uuid'
 
 class CreateContent extends React.Component {
@@ -42,7 +42,7 @@ class CreateContent extends React.Component {
         const apiName = 'lmsStudio';
         // TODO: change to /contents
         const path = '/lectures';
-        API.put(apiName, path, { body: jsonData })
+        putContentService(jsonData)
             .then((response) => {
                 console.log(`TODO: handle submission response. ID: ${response.ID}`)
             })
