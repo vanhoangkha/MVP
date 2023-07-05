@@ -1,9 +1,5 @@
 import React from 'react';
-import './CreateContent.css';
-import NavBar from '../../components/NavBar/NavBar';
-import Footer from '../../components/Footer/Footer';
 import ColumnLayout from "@cloudscape-design/components/column-layout";
-import BreadcrumbGroup from "@cloudscape-design/components/breadcrumb-group";
 import Wizard from "@cloudscape-design/components/wizard";
 import Container from "@cloudscape-design/components/container";
 import Header from "@cloudscape-design/components/header";
@@ -17,8 +13,8 @@ import Textarea from "@cloudscape-design/components/textarea";
 import RadioGroup from "@cloudscape-design/components/radio-group";
 import FileUpload from "@cloudscape-design/components/file-upload";
 import { Storage } from 'aws-amplify';
-import { putContentService } from "../Management/services/content";
-import {v4 as uuid} from 'uuid'
+import { putContentService } from "../services/content";
+import { v4 as uuid } from 'uuid'
 
 class CreateContent extends React.Component {
     constructor(props) {
@@ -39,12 +35,10 @@ class CreateContent extends React.Component {
             architectureDiagramS3Key: this.state.architectureDiagramS3Key,
             quizS3Key: this.state.quizS3Key
         }
-        const apiName = 'lmsStudio';
-        // TODO: change to /contents
-        const path = '/lectures';
         putContentService(jsonData)
             .then((response) => {
-                console.log(`TODO: handle submission response. ID: ${response.ID}`)
+                console.log(`TODO: handle submission response. ID: ${response.ID}`);
+                this.setState(this.getDefaultState());
             })
             .catch((error) => {
                 console.log(error.response);
@@ -337,195 +331,172 @@ class CreateContent extends React.Component {
 
     render() {
         return (
-            <div>
-                <NavBar navigation={this.props.navigation} title="Cloud Academy" />
-                <div className='create-content-main'>
-                    <BreadcrumbGroup
-                        items={[
-                            { text: "Home", href: "#" },
-                            { text: "Content", href: "#contents" }
-                        ]}
-                        ariaLabel="Breadcrumbs"
-                    />
-                    <Wizard
-                        i18nStrings={{
-                            stepNumberLabel: stepNumber =>
-                                `Step ${stepNumber}`,
-                            collapsedStepsLabel: (stepNumber, stepsCount) =>
-                                `Step ${stepNumber} of ${stepsCount}`,
-                            skipToButtonLabel: (step, stepNumber) =>
-                                `Skip to ${step.title}`,
-                            navigationAriaLabel: "Steps",
-                            cancelButton: "Cancel",
-                            previousButton: "Previous",
-                            nextButton: "Next",
-                            submitButton: "Submit",
-                            optional: "optional"
-                        }}
-                        onSubmit={this.submitRequest}
-                        onCancel={() => {
-                            this.resetQuiz();
-                            this.resetArchitectureDiagram();
-                            this.resetContentVideo();
-                            this.setState(this.getDefaultState());
-                        }}
-                        onNavigate={({ detail }) =>
-                            this.setState({ activeStepIndex: detail.requestedStepIndex })
-                        }
-                        activeStepIndex={this.state.activeStepIndex}
-                        steps={[
-                            {
-                                title: "Add Content Detail",
-                                info: <Link variant="info">Info</Link>,
-                                description:
-                                    "Each instance type includes one or more instance sizes, allowing you to scale your resources to the requirements of your target workload.",
-                                content: (
-                                    <Container
-                                        header={
-                                            <Header variant="h2">
-                                                Content Detail
-                                            </Header>
-                                        }
-                                    >
-                                        <SpaceBetween direction="vertical" size="l">
-                                            <FormField label="Content Title">
-                                                <Input
-                                                    value={this.state.contentTitle}
-                                                    onChange={event =>
-                                                        this.setState({ contentTitle: event.detail.value })
-                                                    }
-                                                />
-                                            </FormField>
-                                            <FormField label="Content Description">
-                                                <Input
-                                                    value={this.state.contentDescription}
-                                                    onChange={event =>
-                                                        this.setState({ contentDescription: event.detail.value })
-                                                    } />
-                                            </FormField>
-                                            <FormField label="Content Type">
-                                                <RadioGroup value={this.state.contentType}
-                                                    onChange={event => this.setState({ contentType: event.detail.value })}
-                                                    items={[
-                                                        {
-                                                            value: "Video",
-                                                            label: "Video"
-                                                        },
-                                                        {
-                                                            value: "Workshop",
-                                                            label: "Workshop"
-                                                        },
-                                                        { value: "Quiz", label: "Quiz" }
-                                                    ]}
-                                                />
-                                            </FormField>
-                                        </SpaceBetween>
-                                    </Container>
-                                )
-                            },
-                            {
-                                title: "Add Content",
-                                content: (
-                                    <Container
-                                        header={
-                                            <Header variant="h2">
-                                                Content
-                                            </Header>
-                                        }
-                                    >
-                                        <SpaceBetween direction="vertical" size="l">
-                                            {this.renderAddContent()}
-
-
-
-
-
-
-
-
-
-
-
-
-                                        </SpaceBetween>
-                                    </Container>
-                                ),
-                                isOptional: false
-                            },
-                            {
-                                title: "Review and launch",
-                                content: (
-                                    <div>
-                                        <SpaceBetween size="xs">
-                                            <Header
-                                                variant="h3"
-                                                actions={
-                                                    <Button
-                                                        onClick={() => this.setState({ activeStepIndex: 0 })}
-                                                    >
-                                                        Edit
-                                                    </Button>
+            <>
+                <Wizard
+                    i18nStrings={{
+                        stepNumberLabel: stepNumber =>
+                            `Step ${stepNumber}`,
+                        collapsedStepsLabel: (stepNumber, stepsCount) =>
+                            `Step ${stepNumber} of ${stepsCount}`,
+                        skipToButtonLabel: (step, stepNumber) =>
+                            `Skip to ${step.title}`,
+                        navigationAriaLabel: "Steps",
+                        cancelButton: "Cancel",
+                        previousButton: "Previous",
+                        nextButton: "Next",
+                        submitButton: "Submit",
+                        optional: "optional"
+                    }}
+                    onSubmit={this.submitRequest}
+                    onCancel={() => {
+                        this.resetQuiz();
+                        this.resetArchitectureDiagram();
+                        this.resetContentVideo();
+                        this.setState(this.getDefaultState());
+                    }}
+                    onNavigate={({ detail }) =>
+                        this.setState({ activeStepIndex: detail.requestedStepIndex })
+                    }
+                    activeStepIndex={this.state.activeStepIndex}
+                    steps={[
+                        {
+                            title: "Add Content Detail",
+                            info: <Link variant="info">Info</Link>,
+                            description:
+                                "",
+                            content: (
+                                <Container
+                                    // header={
+                                    //     <Header variant="h2">
+                                    //         Content Detail
+                                    //     </Header>
+                                    // }
+                                >
+                                    <SpaceBetween direction="vertical" size="l">
+                                        <FormField label="Content Title">
+                                            <Input
+                                                value={this.state.contentTitle}
+                                                onChange={event =>
+                                                    this.setState({ contentTitle: event.detail.value })
                                                 }
-                                            >
-                                                Step 1: Add Content Detail
-                                            </Header>
-                                            <Container
-                                                header={
-                                                    <Header variant="h2">
-                                                        Content Detail
-                                                    </Header>
-                                                }
-                                            >
-                                                <ColumnLayout
-                                                    columns={3}
-                                                    variant="text-grid"
+                                            />
+                                        </FormField>
+                                        <FormField label="Content Description">
+                                            <Input
+                                                value={this.state.contentDescription}
+                                                onChange={event =>
+                                                    this.setState({ contentDescription: event.detail.value })
+                                                } />
+                                        </FormField>
+                                        <FormField label="Content Type">
+                                            <RadioGroup value={this.state.contentType}
+                                                onChange={event => this.setState({ contentType: event.detail.value })}
+                                                items={[
+                                                    {
+                                                        value: "Video",
+                                                        label: "Video"
+                                                    },
+                                                    {
+                                                        value: "Workshop",
+                                                        label: "Workshop"
+                                                    },
+                                                    { value: "Quiz", label: "Quiz" }
+                                                ]}
+                                            />
+                                        </FormField>
+                                    </SpaceBetween>
+                                </Container>
+                            )
+                        },
+                        {
+                            title: "Upload Content",
+                            content: (
+                                <Container
+                                    // header={
+                                    //     <Header variant="h2">
+                                    //         Content
+                                    //     </Header>
+                                    // }
+                                >
+                                    <SpaceBetween direction="vertical" size="l">
+                                        {this.renderAddContent()}
+                                    </SpaceBetween>
+                                </Container>
+                            ),
+                            isOptional: false
+                        },
+                        {
+                            title: "Review and launch",
+                            content: (
+                                <div>
+                                    <SpaceBetween size="xs">
+                                        <Header
+                                            variant="h3"
+                                            actions={
+                                                <Button
+                                                    onClick={() => this.setState({ activeStepIndex: 0 })}
                                                 >
-                                                    <div>
-                                                        <Box variant="awsui-key-label">
-                                                            Content title
-                                                        </Box>
-                                                        <div>{this.state.contentTitle}</div>
-                                                    </div>
-                                                    <div>
-                                                        <Box variant="awsui-key-label">
-                                                            Description
-                                                        </Box>
-                                                        <div>{this.state.contentDescription}</div>
-                                                    </div>
-                                                    <div>
-                                                        <Box variant="awsui-key-label">
-                                                            Content Type
-                                                        </Box>
-                                                        <div>{this.state.contentType}</div>
-                                                    </div>
-                                                </ColumnLayout>
-                                            </Container>
-                                        </SpaceBetween>
-                                        <SpaceBetween size="xs">
-                                            <Header
-                                                variant="h3"
+                                                    Edit
+                                                </Button>
+                                            }
+                                        >
+                                            Step 1: Add Content Detail
+                                        </Header>
+                                        <Container
+                                            header={
+                                                <Header variant="h2">
+                                                    Content Detail
+                                                </Header>
+                                            }
+                                        >
+                                            <ColumnLayout
+                                                columns={3}
+                                                variant="text-grid"
                                             >
-                                                Step 2: Add Content
-                                            </Header>
-                                            <Container
-                                                header={
-                                                    <Header variant="h2">
-                                                        Content Content
-                                                    </Header>
-                                                }
-                                            >
-                                                {this.renderReviewSection()}
+                                                <div>
+                                                    <Box variant="awsui-key-label">
+                                                        Content title
+                                                    </Box>
+                                                    <div>{this.state.contentTitle}</div>
+                                                </div>
+                                                <div>
+                                                    <Box variant="awsui-key-label">
+                                                        Description
+                                                    </Box>
+                                                    <div>{this.state.contentDescription}</div>
+                                                </div>
+                                                <div>
+                                                    <Box variant="awsui-key-label">
+                                                        Content Type
+                                                    </Box>
+                                                    <div>{this.state.contentType}</div>
+                                                </div>
+                                            </ColumnLayout>
+                                        </Container>
+                                    </SpaceBetween>
+                                    <SpaceBetween size="xs">
+                                        <Header
+                                            variant="h3"
+                                        >
+                                            Step 2: Upload Content
+                                        </Header>
+                                        <Container
+                                            header={
+                                                <Header variant="h2">
+                                                    Content File
+                                                </Header>
+                                            }
+                                        >
+                                            {this.renderReviewSection()}
 
-                                            </Container>
-                                        </SpaceBetween>
-                                    </div>
-                                )
-                            }
-                        ]}
-                    />
-                </div>
-                <Footer />
-            </div>
+                                        </Container>
+                                    </SpaceBetween>
+                                </div>
+                            )
+                        }
+                    ]}
+                />
+            </>
         );
     }
 }

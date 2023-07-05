@@ -130,7 +130,7 @@ const MyContents = () => {
                 >
                   Actions
                 </ButtonDropdown>
-                <Button variant="primary" href="/createContent">Create Content</Button>
+                <Button variant="primary" href="/management/createContent">Create Content</Button>
               </SpaceBetween>
             }
           >

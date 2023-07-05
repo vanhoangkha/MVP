@@ -28,7 +28,7 @@ import MyCourses from "./views/Management/MyCourses/MyCourses";
 import PublicCourses from "./views/Management/PublicCourses/PublicCourses";
 import AssignCourse from "./views/Management/AssignCourse/AssignCourse";
 import User from "./views/Management/User/User";
-import CreateContent from './views/CreateContent/CreateContent';
+import CreateContent from './views/Management/MyContents/CreateContent';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import AddChapter from './components/CreateCourse/3-addChapter';
 import CreateCourse from './views/CreateCourse/CreateCourse';
@@ -49,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: "myContents",
         element: <MyContents />,
+      },
+      {
+        path: "createContent",
+        element: <CreateContent />,
       },
       {
         path: "contentCatalog",
@@ -93,6 +97,10 @@ const router = createBrowserRouter([
         element: <MyContents />,
       },
       {
+        path: "createContent",
+        element: <CreateContent />,
+      },
+      {
         path: "contentCatalog",
         element: <ContentCatalog />,
       },
@@ -109,10 +117,6 @@ const router = createBrowserRouter([
         element: <User />
       }
     ],
-  },
-  {
-    path: "/createContent",
-    element: <CreateContent/>,
   },
   {
     path: "/course/CreateCourse",
