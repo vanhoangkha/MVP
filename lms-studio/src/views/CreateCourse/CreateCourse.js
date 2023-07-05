@@ -35,11 +35,11 @@ class CreateCourse extends React.Component {
   }
   componentDidMount() {
     const apiName = 'lmsStudio'
-    const path = '/lectures/public'
+    const path = '/contents/public'
     
     API.get(apiName, path)
     .then((response) => {
-        this.setState({existingLectures: response});
+        this.setState({existingContents: response});
     })
     .catch((error) => {
         console.log(error.response);
@@ -56,7 +56,7 @@ class CreateCourse extends React.Component {
   //     ],
   //     "Chapters": [
   //      {
-  //       "lectures": [
+  //       "contents": [
   //        {
   //         "lectureId": "course-intro-aws-fundamental",
   //         "length": 200,
@@ -73,7 +73,7 @@ class CreateCourse extends React.Component {
   //       "name": "Introduction"
   //      },
   //      {
-  //       "lectures": [
+  //       "contents": [
   //        {
   //         "lectureId": "ec2",
   //         "length": 15,
@@ -137,11 +137,11 @@ class CreateCourse extends React.Component {
           name: "",
           items: []
         },
-        existingLectures: [
+        existingContents: [
         ],
         chapters: [],
         visible: false,
-        selectedLectures: []
+        selectedContents: []
     }
   }
 
@@ -182,7 +182,7 @@ class CreateCourse extends React.Component {
                   event.preventDefault();
                   const href =
                     event.detail.href === "/"
-                      ? "myLectures"
+                      ? "myContents"
                       : event.detail.href;
                   this.setState({activeHref: href});
                   this.navigate(`/management/${href}`);
@@ -191,17 +191,17 @@ class CreateCourse extends React.Component {
               items={[
                 {
                   type: "section",
-                  text: "Lectures",
+                  text: "Contents",
                   items: [
                     {
                       type: "link",
-                      text: "My Lectures",
-                      href: "myLectures",
+                      text: "My Contents",
+                      href: "myContents",
                     },
                     {
                       type: "link",
-                      text: "Public Lectures",
-                      href: "publicLectures",
+                      text: "Content Catalog",
+                      href: "contentCatalog",
                     },
                   ],
                 },
@@ -356,7 +356,7 @@ class CreateCourse extends React.Component {
                               } })}/>
                             </FormField>
                           </SpaceBetween>
-                          <Button variant="primary" onClick={() => this.setState({visible: true})}>Add lectures</Button>
+                          <Button variant="primary" onClick={() => this.setState({visible: true})}>Add contents</Button>
                           <ColumnLayout columns={1} variant="text-grid">
                               {this.renderChapters()}
                             </ColumnLayout>
@@ -368,17 +368,17 @@ class CreateCourse extends React.Component {
                               <Box float="right">
                                 <SpaceBetween direction="horizontal" size="xs">
                                   <Button variant="link" onClick={() => {
-                                    const selectedLecturesSize = this.state.selectedLectures.length;
+                                    const selectedContentsSize = this.state.selectedContents.length;
                                     this.setState({
-                                      selectedLectures: [],
+                                      selectedContents: [],
                                       currentChapter: {
                                       name: this.state.currentChapter.name,
-                                      items: this.state.currentChapter.items.slice(0, this.state.currentChapter.items.length - selectedLecturesSize)
+                                      items: this.state.currentChapter.items.slice(0, this.state.currentChapter.items.length - selectedContentsSize)
                                     }})
                                     this.setState({visible: false})
                                   }}>Cancel</Button>
                                   <Button variant="primary" onClick={() =>{
-                                    const newlySelectedLectures = this.state.selectedLectures.map((lecture) => {
+                                    const newlySelectedContents = this.state.selectedContents.map((lecture) => {
                                       return {
                                         type: lecture.Type,
                                         value: lecture.Name
@@ -386,10 +386,10 @@ class CreateCourse extends React.Component {
                                     })
                                     const updatedCurrChapter = {
                                       name: this.state.currentChapter.name,
-                                      items: this.state.currentChapter.items.concat(newlySelectedLectures)
+                                      items: this.state.currentChapter.items.concat(newlySelectedContents)
                                     }
                                     this.setState({
-                                      selectedLectures: [],
+                                      selectedContents: [],
                                       currentChapter: {
                                         name: "",
                                         items: []
@@ -406,10 +406,10 @@ class CreateCourse extends React.Component {
                                 <Cards
                                   onSelectionChange={({ detail }) =>
                                     {
-                                      this.setState({selectedLectures: detail.selectedItems})
+                                      this.setState({selectedContents: detail.selectedItems})
                                     }
                                   }
-                                  selectedItems={this.state.selectedLectures}
+                                  selectedItems={this.state.selectedContents}
                                   ariaLabels={{
                                     itemSelectionLabel: (e, n) => `select ${n.Name}`,
                                     selectionGroupLabel: "Item selection"
@@ -438,7 +438,7 @@ class CreateCourse extends React.Component {
                                     { cards: 1 },
                                     { minWidth: 500, cards: 2 }
                                   ]}
-                                  items={this.state.existingLectures}
+                                  items={this.state.existingContents}
                                   loadingText="Loading resources"
                                   selectionType="multi"
                                   trackBy="Name"
@@ -457,13 +457,13 @@ class CreateCourse extends React.Component {
                                     </Box>
                                   }
                                   filter={
-                                    <TextFilter filteringPlaceholder="Find lectures" />
+                                    <TextFilter filteringPlaceholder="Find contents" />
                                   }
                                   header={
                                     <Header
                                       counter={
-                                        this.state.selectedLectures.length
-                                          ? "(" + this.state.selectedLectures.length + "/10)"
+                                        this.state.selectedContents.length
+                                          ? "(" + this.state.selectedContents.length + "/10)"
                                           : "(10)"
                                       }
                                     >
