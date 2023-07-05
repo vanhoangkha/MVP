@@ -50,7 +50,7 @@ class Home extends React.Component {
             <div>
                 <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
                 <div className='dashboard-main'>
-                    Home Page Here<br/>
+                    Home Page Here :)<br/>
                     {this.state.courses.map(course => 
                         <a onClick={() => {this.redirectToCourse(course.id)}}>Click here to redirect to course <b>{course.name}</b><br/></a>
                     )}
