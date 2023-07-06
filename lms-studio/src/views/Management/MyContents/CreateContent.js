@@ -59,7 +59,9 @@ class CreateContent extends React.Component {
             architectureDiagramS3Key: "",
             randomId: Math.floor(Math.random() * 1000000),
             quiz: [],
-            quizS3Key: ""
+            quizS3Key: "",
+            customContent: [],
+            customContentS3Key: ""
         }
     }
 
@@ -108,12 +110,36 @@ class CreateContent extends React.Component {
         }
     }
 
+    uploadCustomContent = async (file) => {
+        if (!(file.type in ['text/plain'])) {
+            console.log("TODO: custom content validation");
+        }
+        try {
+            const s3Key = `custom-contents/${this.state.randomId}-${file.name.replace(/ /g, "_")}`;
+            await Storage.put(s3Key, file, {
+                level: "protected",
+            });
+            this.setState({ customContentS3Key: s3Key })
+        } catch (error) {
+            console.log("Error uploading file: ", error);
+        }
+    }
+
     resetQuiz = async () => {
         if (this.state.quizS3Key !== "") {
             await Storage.remove(this.state.quizS3Key, {
                 level: "protected"
             });
             this.setState({ quizS3Key: "" });
+        }
+    }
+
+    resetCustomContent = async () => {
+        if (this.state.customContentS3Key !== "") {
+            await Storage.remove(this.state.customContentS3Key, {
+                level: "protected"
+            });
+            this.setState({ customContentS3Key: "" });
         }
     }
 
@@ -236,10 +262,10 @@ class CreateContent extends React.Component {
                     />
                 </FormField>
             </div>
-        } else {
+        } else if (this.state.contentType === "Quiz") {
             return <FormField
                 label="Quiz"
-                description="Add this.state.quiz questions"
+                description="Add quiz questions"
             >
                 <FileUpload
                     onChange={
@@ -271,6 +297,43 @@ class CreateContent extends React.Component {
                     showFileThumbnail
                     tokenLimit={3}
                     constraintText=".json"
+                />
+            </FormField>
+        } else {
+            return <FormField
+                label="Customized"
+                description="Add custom content"
+            >
+                <FileUpload
+                    onChange={
+                        async ({ detail }) => {
+                            this.setState({ customContent: detail.value });
+                            if (detail.value.length === 0) {
+                                this.resetCustomContent();
+                            } else {
+                                this.uploadCustomContent(detail.value[0]);
+                            }
+                        }
+                    }
+                    value={this.state.customContent}
+                    i18nStrings={{
+                        uploadButtonText: e =>
+                            e ? "Choose files" : "Choose file",
+                        dropzoneText: e =>
+                            e
+                                ? "Drop files to upload"
+                                : "Drop file to upload",
+                        removeFileAriaLabel: e =>
+                            `Remove file ${e + 1}`,
+                        limitShowFewer: "Show fewer files",
+                        limitShowMore: "Show more files",
+                        errorIconAriaLabel: "Error"
+                    }}
+                    showFileLastModified
+                    showFileSize
+                    showFileThumbnail
+                    tokenLimit={3}
+                    constraintText=".md"
                 />
             </FormField>
         }
@@ -314,7 +377,7 @@ class CreateContent extends React.Component {
                     <div>{this.state.architectureDiagramS3Key}</div>
                 </div>
             </ColumnLayout>
-        } else {
+        } else if (this.state.contentType === "Quiz") {
             return <ColumnLayout
                 columns={3}
                 variant="text-grid"
@@ -324,6 +387,18 @@ class CreateContent extends React.Component {
                         File name
                     </Box>
                     <div>{this.state.quizS3Key}</div>
+                </div>
+            </ColumnLayout>
+        } else {
+            return <ColumnLayout
+                columns={3}
+                variant="text-grid"
+            >
+                <div>
+                    <Box variant="awsui-key-label">
+                        File name
+                    </Box>
+                    <div>{this.state.customContentS3Key}</div>
                 </div>
             </ColumnLayout>
         }
@@ -366,11 +441,11 @@ class CreateContent extends React.Component {
                                 "",
                             content: (
                                 <Container
-                                    // header={
-                                    //     <Header variant="h2">
-                                    //         Content Detail
-                                    //     </Header>
-                                    // }
+                                // header={
+                                //     <Header variant="h2">
+                                //         Content Detail
+                                //     </Header>
+                                // }
                                 >
                                     <SpaceBetween direction="vertical" size="l">
                                         <FormField label="Content Title">
@@ -400,7 +475,8 @@ class CreateContent extends React.Component {
                                                         value: "Workshop",
                                                         label: "Workshop"
                                                     },
-                                                    { value: "Quiz", label: "Quiz" }
+                                                    { value: "Quiz", label: "Quiz" },
+                                                    { value: "Customized", label: "Customized" }
                                                 ]}
                                             />
                                         </FormField>
@@ -412,11 +488,11 @@ class CreateContent extends React.Component {
                             title: "Upload Content",
                             content: (
                                 <Container
-                                    // header={
-                                    //     <Header variant="h2">
-                                    //         Content
-                                    //     </Header>
-                                    // }
+                                // header={
+                                //     <Header variant="h2">
+                                //         Content
+                                //     </Header>
+                                // }
                                 >
                                     <SpaceBetween direction="vertical" size="l">
                                         {this.renderAddContent()}
@@ -488,7 +564,6 @@ class CreateContent extends React.Component {
                                             }
                                         >
                                             {this.renderReviewSection()}
-
                                         </Container>
                                     </SpaceBetween>
                                 </div>
