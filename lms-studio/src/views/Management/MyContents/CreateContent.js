@@ -33,7 +33,8 @@ class CreateContent extends React.Component {
             workshopUrl: this.state.workshopUrl,
             workshopDescription: this.state.workshopDescription,
             architectureDiagramS3Key: this.state.architectureDiagramS3Key,
-            quizS3Key: this.state.quizS3Key
+            quizS3Key: this.state.quizS3Key,
+            customContentS3Key: this.state.customContentS3Key,
         }
         putContentService(jsonData)
             .then((response) => {
@@ -66,9 +67,6 @@ class CreateContent extends React.Component {
     }
 
     uploadContentVideo = async (file) => {
-        if (!(file.type in ['video/mp4', 'video/mov'])) {
-            console.log("TODO: content video content validation");
-        }
         try {
             const s3Key = `lecture-videos/${this.state.randomId}-${file.name.replace(/ /g, "_")}`;
             await Storage.put(s3Key, file, {
@@ -81,9 +79,6 @@ class CreateContent extends React.Component {
     }
 
     uploadArchitectureDiagram = async (file) => {
-        if (!(file.type in ['image/jpeg', 'image/png'])) {
-            console.log("TODO: architecture diagram validation");
-        }
         try {
             const s3Key = `architecture-diagrams/${this.state.randomId}-${file.name.replace(/ /g, "_")}`;
             await Storage.put(s3Key, file, {
@@ -96,9 +91,6 @@ class CreateContent extends React.Component {
     }
 
     uploadQuiz = async (file) => {
-        if (!(file.type in ['application/json'])) {
-            console.log("TODO: quiz content validation");
-        }
         try {
             const s3Key = `quizzes/${this.state.randomId}-${file.name.replace(/ /g, "_")}`;
             await Storage.put(s3Key, file, {
@@ -111,9 +103,8 @@ class CreateContent extends React.Component {
     }
 
     uploadCustomContent = async (file) => {
-        if (!(file.type in ['text/plain'])) {
-            console.log("TODO: custom content validation");
-        }
+        console.log(`file type: [${file.type}]`)
+
         try {
             const s3Key = `custom-contents/${this.state.randomId}-${file.name.replace(/ /g, "_")}`;
             await Storage.put(s3Key, file, {
@@ -130,7 +121,7 @@ class CreateContent extends React.Component {
             await Storage.remove(this.state.quizS3Key, {
                 level: "protected"
             });
-            this.setState({ quizS3Key: "" });
+            this.setState({ quizS3Key: "", quiz: [] });
         }
     }
 
@@ -139,7 +130,7 @@ class CreateContent extends React.Component {
             await Storage.remove(this.state.customContentS3Key, {
                 level: "protected"
             });
-            this.setState({ customContentS3Key: "" });
+            this.setState({ customContentS3Key: "", customContent: [] });
         }
     }
 
@@ -148,7 +139,7 @@ class CreateContent extends React.Component {
             await Storage.remove(this.state.architectureDiagramS3Key, {
                 level: "protected"
             });
-            this.setState({ architectureDiagramS3Key: "" });
+            this.setState({ architectureDiagramS3Key: "", architectureDiagram: [] });
         }
     }
 
@@ -157,7 +148,7 @@ class CreateContent extends React.Component {
             await Storage.remove(this.state.contentVideoS3Key, {
                 level: "protected"
             });
-            this.setState({ contentVideoS3Key: "" });
+            this.setState({ contentVideoS3Key: "", contentVideo: [] });
         }
     }
 
@@ -196,6 +187,7 @@ class CreateContent extends React.Component {
                     showFileSize
                     showFileThumbnail
                     tokenLimit={3}
+                    accept='video/mov,video/mp4'
                     constraintText=".mov, .mp4"
                 />
             </FormField>
@@ -258,6 +250,7 @@ class CreateContent extends React.Component {
                         showFileSize
                         showFileThumbnail
                         tokenLimit={3}
+                        accept='image/jpeg,image/png'
                         constraintText=".jpeg, .png"
                     />
                 </FormField>
@@ -296,6 +289,7 @@ class CreateContent extends React.Component {
                     showFileSize
                     showFileThumbnail
                     tokenLimit={3}
+                    accept='application/json,text/json'
                     constraintText=".json"
                 />
             </FormField>
@@ -333,6 +327,8 @@ class CreateContent extends React.Component {
                     showFileSize
                     showFileThumbnail
                     tokenLimit={3}
+                    //TODO: file type is empty if we upload .md file.
+                    accept=''
                     constraintText=".md"
                 />
             </FormField>
