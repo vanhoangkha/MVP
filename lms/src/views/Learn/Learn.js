@@ -279,7 +279,7 @@ function PageMetadata(props) {
         <div className='learn-content-main'>
           {props.loading ? 
             <ContentLoading /> : 
-            <LectureContent lecture={props.lecture} 
+            <LectureContent lecture={props.lecture}
               openLink={url => {
                 setFullscreen(false);
                 window.open(url, '_blank').focus();
@@ -749,7 +749,7 @@ export default class Learn extends React.Component {
         return this.state.loggedIn === false 
             ? <Navigate to="/auth" />
             : <div>
-                <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
+                <NavBar navigation={this.props.navigation} title="Cloud Solutions Journey"/>
                 <AppLayout headerSelector="#h"
                     navigation={<SideNavigation
                         activeHref={!this.state.lecture || !this.state.lecture.lecture ? "" : this.state.lecture.lecture.id}

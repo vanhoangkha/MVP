@@ -57,12 +57,12 @@ export default class Home extends React.Component {
         return !!this.state.courseToRedirect ?
             <Navigate to={'/course/' + this.state.courseToRedirect} /> :
             <div>
-                <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
+                <NavBar navigation={this.props.navigation} title="Cloud Solutions Journey"/>
                 <div className='dashboard-main'>
                     <div className='dashboard-banner'>
                         <Grid gridDefinition={[{ colspan: 10 }, { colspan: 2 }]}>
                             <div>
-                                <p className='dashboard-banner-title'>AWS Cloud Academy</p>
+                                <p className='dashboard-banner-title'>AWS Cloud Solutions Journey</p>
                                 <p className='dashboard-banner-desc'>This website lists all courses created by teams at Amazon Web Services (AWS). Each course provides theory lessons with interactive quiz to test your knowledge as you complete each module. You can see the course assigned to you by signing in.</p>
                             </div>
                             <div className='dashboard-banner-icon-container'>

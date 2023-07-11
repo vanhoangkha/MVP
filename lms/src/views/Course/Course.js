@@ -75,7 +75,7 @@ export default class Course extends React.Component {
         return this.state.redirectToLearn ?
             <Navigate to={'/learn/' + course.id} /> :
             <div>
-                <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
+                <NavBar navigation={this.props.navigation} title="Cloud Solutions Journey"/>
                 {!course ? <div className='course-main'>
                     <img src={loadingGif} alt="loading..." className='course-loading-gif' />
                 </div>
