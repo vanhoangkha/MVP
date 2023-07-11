@@ -67,7 +67,7 @@ export default class NavBar extends React.Component {
                 <TopNavigation
                     identity={{
                         href: "/",
-                        title: "AWS Cloud Academy",
+                        title: "Cloud Solutions Journey",
                         logo: {
                             src: AWSLogo,
                             alt: "AWS Logo"
