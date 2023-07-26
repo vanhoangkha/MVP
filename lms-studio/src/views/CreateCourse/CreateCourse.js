@@ -25,7 +25,7 @@ import Applayout from "@cloudscape-design/components/app-layout";
 import { useNavigate } from "react-router-dom";
 import ExpandableSection from "@cloudscape-design/components/expandable-section";
 import { createElement } from 'react';
-// import {v4 as uuid} from uuid;
+import {v4 as uuid} from 'uuid';
 import {API} from 'aws-amplify'
 
 class CreateCourse extends React.Component {
@@ -45,6 +45,7 @@ class CreateCourse extends React.Component {
         console.log(error.response);
     });
 }
+<<<<<<< HEAD
   // createCourseSubmission = () => {
   //   const apiName = 'lmsStudio';
   //   const path = '/courses';
@@ -122,6 +123,158 @@ class CreateCourse extends React.Component {
   //           console.log(error.response);
   //       });
   // }
+||||||| acc8d4a
+  // createCourseSubmission = () => {
+  //   const apiName = 'lmsStudio';
+  //   const path = '/courses';
+  //   const jsonData = {
+  //     "ID": "SAA",
+  //     "Categories": [
+  //      "Networking",
+  //      "Storage"
+  //     ],
+  //     "Chapters": [
+  //      {
+  //       "lectures": [
+  //        {
+  //         "lectureId": "course-intro-aws-fundamental",
+  //         "length": 200,
+  //         "name": "What is AWS?",
+  //         "type": "video"
+  //        },
+  //        {
+  //         "lectureId": "aws-account",
+  //         "length": 95,
+  //         "name": "Create AWS account",
+  //         "type": "lab"
+  //        }
+  //       ],
+  //       "name": "Introduction"
+  //      },
+  //      {
+  //       "lectures": [
+  //        {
+  //         "lectureId": "ec2",
+  //         "length": 15,
+  //         "name": "EC2 introduction",
+  //         "type": "video"
+  //        },
+  //        {
+  //         "lectureId": "ec2-deep-dive",
+  //         "length": 15,
+  //         "name": "EC2 deep dive",
+  //         "type": "video"
+  //        },
+  //        {
+  //         "lectureId": "s3",
+  //         "length": 15,
+  //         "name": "Amazon S3 introduction",
+  //         "type": "video"
+  //        }
+  //       ],
+  //       "name": "Compute Services"
+  //      }
+  //     ],
+  //     "Description": "In this lab, users will programmatically deploy Cisco Secure Firewall Threat Defence (FTDv) and Firewall Management Center (FMC) using Infrastructure as Code (Terraform). The firewalls will be placed behind a network load balancer. User will also programmatically configure the firewalls once onboarded to ensure it allows required traffic flow from internet to the test machine setup in the AWS environment.",
+  //     "Last Updated": 1686760629,
+  //     "Length": 15,
+  //     "Level": "300",
+  //     "Name": "AWS Solution Architect Associate",
+  //     "Requirements": this.state.requirements,
+  //     "Tags": [
+  //      "EC2",
+  //      "Marketplace"
+  //     ],
+  //     "Difficulty: this.state.difficulty,
+  //     "WhatToLearn": [
+  //      "FULLY UPDATED FOR ANS-C00: Pass the AWS Certified Networking Specialty Certification",
+  //      "Learn networking on AWS in depth",
+  //      "All 700+ slides available as downloadable PDF",
+  //      "Practice alongside several advanced hands-on"
+  //     ]
+  //    }
+  //   API.put(apiName, path, { body: jsonData })
+  //       .then((response) => {
+  //           console.log(`TODO: handle submission response. ID: ${response.ID}`)
+  //       })
+  //       .catch((error) => {
+  //           console.log(error.response);
+  //       });
+  // }
+=======
+  createCourseSubmission = () => {
+    console.log(this.state)
+    const apiName = 'lmsStudio';
+    const path = '/courses';
+    const jsonData = {
+      "ID": uuid(),
+      // "Categories": [
+      //  "Networking",
+      //  "Storage"
+      // ],
+      "Chapters": [
+       {
+        "lectures": [
+         {
+          "lectureId": "course-intro-aws-fundamental",
+          "length": 200,
+          "name": "What is AWS?",
+          "type": "video"
+         },
+         {
+          "lectureId": "aws-account",
+          "length": 95,
+          "name": "Create AWS account",
+          "type": "lab"
+         }
+        ],
+        "name": "Introduction"
+       },
+       {
+        "lectures": [
+         {
+          "lectureId": "ec2",
+          "length": 15,
+          "name": "EC2 introduction",
+          "type": "video"
+         },
+         {
+          "lectureId": "ec2-deep-dive",
+          "length": 15,
+          "name": "EC2 deep dive",
+          "type": "video"
+         },
+         {
+          "lectureId": "s3",
+          "length": 15,
+          "name": "Amazon S3 introduction",
+          "type": "video"
+         }
+        ],
+        "name": "Compute Services"
+       }
+      ],
+      "Description": this.state.description,
+      "Last Updated": Date.now(),
+      // "Length": 15,
+      // "Level": "300",
+      "Name": "AWS Solution Architect Associate",
+      "Requirements": this.state.requirements,
+      // "Tags": [
+      //  "EC2",
+      //  "Marketplace"
+      // ],
+      "Difficulty": this.state.difficulty,
+     }
+    // API.put(apiName, path, { body: jsonData })
+    //     .then((response) => {
+    //         console.log(`TODO: handle submission response. ID: ${response.ID}`)
+    //     })
+    //     .catch((error) => {
+    //         console.log(error.response);
+    //     });
+  }
+>>>>>>> fix/create_courses
 
   getDefaultState = () => {
     return {
@@ -378,15 +531,31 @@ class CreateCourse extends React.Component {
                                     this.setState({visible: false})
                                   }}>Cancel</Button>
                                   <Button variant="primary" onClick={() =>{
+<<<<<<< HEAD
                                     const newlySelectedContents = this.state.selectedContents.map((lecture) => {
                                       return {
                                         type: lecture.Type,
                                         value: lecture.Name
                                       }
                                     })
+||||||| acc8d4a
+                                    const newlySelectedLectures = this.state.selectedLectures.map((lecture) => {
+                                      return {
+                                        type: lecture.Type,
+                                        value: lecture.Name
+                                      }
+                                    })
+=======
+>>>>>>> fix/create_courses
                                     const updatedCurrChapter = {
                                       name: this.state.currentChapter.name,
+<<<<<<< HEAD
                                       items: this.state.currentChapter.items.concat(newlySelectedContents)
+||||||| acc8d4a
+                                      items: this.state.currentChapter.items.concat(newlySelectedLectures)
+=======
+                                      lectures: this.state.currentChapter.items.concat(this.state.selectedLectures)
+>>>>>>> fix/create_courses
                                     }
                                     this.setState({
                                       selectedContents: [],
@@ -406,7 +575,14 @@ class CreateCourse extends React.Component {
                                 <Cards
                                   onSelectionChange={({ detail }) =>
                                     {
+<<<<<<< HEAD
                                       this.setState({selectedContents: detail.selectedItems})
+||||||| acc8d4a
+                                      this.setState({selectedLectures: detail.selectedItems})
+=======
+                                      console.log(detail)
+                                      this.setState({selectedLectures: detail.selectedItems})
+>>>>>>> fix/create_courses
                                     }
                                   }
                                   selectedItems={this.state.selectedContents}
@@ -428,9 +604,9 @@ class CreateCourse extends React.Component {
                                         content: e => e.Type
                                       },
                                       {
-                                        id: "size",
-                                        header: "Size",
-                                        content: e => "-"
+                                        id: "Views",
+                                        header: "Views",
+                                        content: e => e.Viewed
                                       }
                                     ]
                                   }}
@@ -438,11 +614,19 @@ class CreateCourse extends React.Component {
                                     { cards: 1 },
                                     { minWidth: 500, cards: 2 }
                                   ]}
+<<<<<<< HEAD
                                   items={this.state.existingContents}
                                   loadingText="Loading resources"
+||||||| acc8d4a
+                                  items={this.state.existingLectures}
+                                  loadingText="Loading resources"
+=======
+                                  items={this.state.existingLectures}
+                                  loadingText="Loading Lectures"
+>>>>>>> fix/create_courses
                                   selectionType="multi"
                                   trackBy="Name"
-                                  visibleSections={["description", "type", "size"]}
+                                  visibleSections={["description", "type", "Views"]}
                                   empty={
                                     <Box textAlign="center" color="inherit">
                                       <b>No resources</b>
