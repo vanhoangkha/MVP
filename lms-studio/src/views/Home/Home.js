@@ -3,7 +3,6 @@ import './Home.css';
 import { Navigate } from "react-router-dom";
 import NavBar from '../../components/NavBar/NavBar';
 import Footer from '../../components/Footer/Footer';
-import { withAuthenticator } from '@aws-amplify/ui-react';
 import { API } from 'aws-amplify';
 
 class Home extends React.Component {
@@ -45,14 +44,13 @@ class Home extends React.Component {
     redirectToCourse(courseId) {
         this.setState({courseToRedirect: courseId});
     }
-
     render() {
         return !!this.state.courseToRedirect ?
             <Navigate to={'/course/' + this.state.courseToRedirect} /> :
             <div>
                 <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
                 <div className='dashboard-main'>
-                    Home Page Here<br/>
+                    Home Page Here :)<br/>
                     {this.state.courses.map(course => 
                         <a onClick={() => {this.redirectToCourse(course.id)}}>Click here to redirect to course <b>{course.name}</b><br/></a>
                     )}
@@ -62,4 +60,4 @@ class Home extends React.Component {
     }
 }
 
-export default withAuthenticator(Home);
+export default (Home);

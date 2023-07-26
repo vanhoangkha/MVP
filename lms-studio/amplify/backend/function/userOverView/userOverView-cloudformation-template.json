@@ -164,41 +164,6 @@
           ]
         }
       }
-    },
-    "CustomLambdaExecutionPolicy": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "custom-lambda-execution-policy",
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Action": [
-                "dynamodb:Scan"
-              ],
-              "Resource": [
-                "arn:aws:dynamodb:*:*:table:*"
-              ],
-              "Effect": "Allow"
-            },
-            {
-              "Action": [
-                "cognito-idp:*"
-              ],
-              "Resource": [
-                "arn:aws:cognito-idp:ap-southeast-1:697944894855:userpool/*"
-              ],
-              "Effect": "Allow"
-            }
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ]
-      },
-      "DependsOn": "LambdaExecutionRole"
     }
   },
   "Outputs": {

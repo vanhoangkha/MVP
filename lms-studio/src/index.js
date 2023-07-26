@@ -31,6 +31,8 @@ import User from "./views/Management/User/User";
 import CreateLecture from './views/CreateLecture/CreateLecture';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import AddChapter from './components/CreateCourse/3-addChapter';
+import CreateCourse from './views/CreateCourse/CreateCourse';
+
 // Configure Amplify
 Amplify.configure(awsExports);
 
@@ -113,6 +115,10 @@ const router = createBrowserRouter([
     element: <CreateLecture/>,
   },
   {
+    path: "/course/CreateCourse",
+    element: <CreateCourse/>,
+  },
+  {
     path: '/course/:id',
     element: <Course />,
   },
@@ -129,6 +135,7 @@ const router = createBrowserRouter([
     path: '/addChapter',
     element: <AddChapter />,
   },
+
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

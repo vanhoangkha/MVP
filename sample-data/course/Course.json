@@ -14,6 +14,12 @@
         "type": "video"
        },
        {
+        "lectureId": "Some UUID",
+        "length": 0,
+        "name": "AWS Account Setup Segment",
+        "type": "segment"
+       },
+       {
         "lectureId": "aws-account",
         "length": 95,
         "name": "Create AWS account",

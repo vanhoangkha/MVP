@@ -16,11 +16,12 @@ import {
   Pagination,
   CollectionPreferences,
   Button,
+  Flashbar,
 } from "@cloudscape-design/components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { API } from 'aws-amplify';
 import NavBar from "../../../components/NavBar/NavBar";
 import Footer from "../../../components/Footer/Footer";
-import { putAssignCourseService } from "../services/assigncourse";
 
 const ValueWithLabel = ({ label, children }) => (
   <div>
@@ -34,38 +35,58 @@ const AssignCourse = (props) => {
   const [checked, setChecked] = useState(false);
   const [oppId, setOppId] = React.useState("");
   const [oppValue, setOppValue] = React.useState("");
-  const [selectedUsers, setSelectedUsers] = useState([{}]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [items, setItems] = useState([]);
   const navigate = useNavigate();
+  const {state} = useLocation();
+  // console.log("passed vars: " + JSON.stringify(prevState))
+
 
   const handlePutAssignCourse = async (
-    course,
-    selectedUsers,
-    oppId,
-    oppValue,
-    checked
   ) => {
     const staticData = {
-      courseId: course.Id,
-      oppId: oppId,
-      oppValue: oppValue,
+      CourseID: state.ID,
+      OppID: oppId,
+      OppValue: oppValue,
       flexible: checked,
-      userStatus: "Assigned",
+      Status: "ASSIGNED",
+      CreatorID: state.CreatorID,
     };
     var userCourseArray = [];
 
     selectedUsers.forEach((user) => {
-      const dynamicData = { ...staticData, user };
-      userCourseArray.push(dynamicData);
+      if(user?.ID){
+        const dynamicData = { ...staticData, UserID: user.ID };
+        userCourseArray.push(dynamicData);
+      }
     });
-    try {
-      const response = await putAssignCourseService(userCourseArray);
 
-      console.log(response);
-      // business logic goes here
-    } catch (error) {
+    const apiName = 'lmsStudio';
+    const path = '/usercourse';
+    API.put(apiName, path, { body: userCourseArray })
+    .then((response) => {
+      setItems([{
+        type: "success",
+        content: "Assign course successfully!",
+        dismissible: true,
+        dismissLabel: "Dismiss message",
+        onDismiss: () => setItems([]),
+      }])
+      setTimeout(() => setItems([]),3000)
+    })
+    .catch((error) => {
       console.error(error); // from creation or business logic
-    }
-  };
+      setItems([{
+        type: "error",
+        content: "Error",
+        dismissible: true,
+        dismissLabel: "Dismiss message",
+        onDismiss: () => setItems([]),
+      }])    
+    })
+  }
+    
+    // business logic goes here
   return (
     <>
       <NavBar navigation={props.navigation} title="Cloud Academy" />
@@ -145,7 +166,7 @@ const AssignCourse = (props) => {
                   <ColumnLayout columns={3} variant="text-grid">
                     <SpaceBetween size="l">
                       <ValueWithLabel label="Course title">
-                        Value
+                        {state.Name}
                       </ValueWithLabel>
                       <ValueWithLabel label="Course Difficulty">
                         <Toggle
@@ -158,7 +179,7 @@ const AssignCourse = (props) => {
                       </ValueWithLabel>
                     </SpaceBetween>
                     <SpaceBetween size="l">
-                      <ValueWithLabel label="Description">Value</ValueWithLabel>
+                      <ValueWithLabel label="Description">{state.Description}</ValueWithLabel>
                       <ValueWithLabel label="Opportunity ID">
                         <Input
                           onChange={({ detail }) => setOppId(detail.value)}
@@ -167,7 +188,7 @@ const AssignCourse = (props) => {
                       </ValueWithLabel>
                     </SpaceBetween>
                     <SpaceBetween size="l">
-                      <ValueWithLabel label="Owner">Value</ValueWithLabel>
+                      <ValueWithLabel label="Owner">{state.CreatorID}</ValueWithLabel>
                       <ValueWithLabel label="Opportunity Value">
                         <Input
                           onChange={({ detail }) => setOppValue(detail.value)}
@@ -213,9 +234,11 @@ const AssignCourse = (props) => {
                   items={[
                     {
                       name: "user1@amazon.com",
+                      ID: "ap-southeast-1:2eda97e7-1bb8-4c4d-9484-f2a24be62312",
                     },
                     {
                       name: "user2@amazon.com",
+                      ID: "ap-southeast-1:2eda97e7-1bb8-4c4d-9484-f2a24be62304",
                     },
                   ]}
                   loadingText="Loading users"
@@ -318,19 +341,16 @@ const AssignCourse = (props) => {
                     Cancel{" "}
                   </Button>{" "}
                   <Button
+                    disabled={!selectedUsers.length}
                     variant="primary"
-                    //onClick={handlePutAssignCourse(
-                    //  props.course,
-                    //  selectedUsers,
-                    //  oppId,
-                    //  oppValue,
-                    //  checked
-                    //)}
+                    onClick={() => handlePutAssignCourse()}
                   >
                     Assign
                   </Button>{" "}
                 </SpaceBetween>
               </div>
+              <br></br>
+              <Flashbar items={items} />
             </div>
           }
         />

@@ -9,24 +9,36 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import ButtonDropdown from "@cloudscape-design/components/button-dropdown";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import Title from "../../../components/Title";
-import { getCoursesService } from "../services/course";
-import { Link } from "react-router-dom";
+import { getMyCoursesService } from "../services/course";
+import { Link, useNavigate } from "react-router-dom";
 
 const MyCourses = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
 
   const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  const navigate  = useNavigate()
 
   const handleGetCouses = async () => {
-    const {data} = await getCoursesService()
+    setLoading(true)
 
-    console.log(data)
+    try {
+    const {data} = await getMyCoursesService()
     setCourses(data)
+    setLoading(false)
+    } catch(_) {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
     handleGetCouses()
   },[])
+
+  const handleOpenAssignCoures = () => {
+    navigate(`/assignCourse/${selectedItems[0]?.ID}`, {state: selectedItems[0]})
+  }
 
   return (
     <>
@@ -50,9 +62,6 @@ const MyCourses = () => {
             const isItem = selectedItems.filter(
               (i) => i.Name === item.Name
             )
-            //console.log(`selected item is: ${JSON.stringify(selectedItems.selectedItems[0].Name)}`)
-            //console.log(`selected name is: ${JSON.parse(JSON.stringify(selectedItems))[0].Name}`)
-            console.log(`isItemSelected is: ${JSON.stringify(selectedItems)}`)
             return `${item.Name} is ${isItemSelected ? "" : "not"} selected`;
           },
         }}
@@ -88,8 +97,9 @@ const MyCourses = () => {
           { id: "state", visible: true },
         ]}
         items={courses}
+        loading={loading}
         loadingText="Loading resources"
-        selectionType="multi"
+        selectionType="single"
         trackBy="Name"
         empty={
           <Box textAlign="center" color="inherit">
@@ -113,11 +123,7 @@ const MyCourses = () => {
             actions={
               
               <SpaceBetween direction="horizontal" size="xs">
-                <Link
-                  to={{ pathname: `/assignCourse/${selectedItems.Name}`, state: {selectedItems} }}
-                >
-                  <Button>Assign Course</Button>
-                </Link>
+                  <Button disabled={!selectedItems.length} onClick={handleOpenAssignCoures} >Assign Course</Button>
                 
                 <ButtonDropdown
                   items={[
@@ -136,7 +142,7 @@ const MyCourses = () => {
                 >
                   Actions
                 </ButtonDropdown>
-                <Button variant="primary" href="">Create Course</Button>
+                <Button variant="primary" href="/course/createCourse">Create Course</Button>
               </SpaceBetween>
             }
           >

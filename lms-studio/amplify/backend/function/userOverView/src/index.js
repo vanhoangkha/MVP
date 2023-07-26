@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 exports.handler = async (event, context) => {
   // Specify your AWS Cognito user pool ID
-  const userPoolId = 'ap-southeast-1_GuupqukBI';
+  const userPoolId = 'ap-southeast-1_MDYWuz44c';
   
   // Create a Cognito service object
   const cognito = new AWS.CognitoIdentityServiceProvider();
@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
     // Return a response
     return {
       statusCode: 200,
-      body: 'List of users retrieved successfully.'
+      body: users
     };
   } catch (error) {
     // Handle the error
