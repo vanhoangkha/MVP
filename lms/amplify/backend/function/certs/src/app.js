@@ -17,18 +17,18 @@ AWS.config.update({ region: process.env.TABLE_REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-let tableName = "UserCourse";
+let tableName = "Cert";
 if (process.env.ENV && process.env.ENV !== "NONE") {
   tableName = tableName + '-' + process.env.ENV;
 }
 
-const userIdPresent = true; // TODO: update in case is required to use that definition
-const partitionKeyName = "UserID";
+const userIdPresent = false; // TODO: update in case is required to use that definition
+const partitionKeyName = "ID";
 const partitionKeyType = "S";
-const sortKeyName = "CourseID";
-const sortKeyType = "S";
+const sortKeyName = "";
+const sortKeyType = "";
 const hasSortKey = sortKeyName !== "";
-const path = "/users/courses";
+const path = "/certs";
 const UNAUTH = 'UNAUTH';
 const hashKeyPath = '/:' + partitionKeyName;
 const sortKeyPath = hasSortKey ? '/:' + sortKeyName : '';
@@ -55,51 +55,50 @@ const convertUrlType = (param, type) => {
   }
 }
 
-/********************************
- * HTTP Get method for list objects *
- ********************************/
+// /********************************
+//  * HTTP Get method for list objects *
+//  ********************************/
 
-app.get(path, function(req, res) {
-  const condition = {}
-  condition[partitionKeyName] = {
-    ComparisonOperator: 'EQ'
-  }
+// app.get(path + hashKeyPath, function(req, res) {
+//   const condition = {}
+//   condition[partitionKeyName] = {
+//     ComparisonOperator: 'EQ'
+//   }
 
-  if (userIdPresent && req.apiGateway) {
-    condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
-  } else {
-    try {
-      condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
-    } catch(err) {
-      res.statusCode = 500;
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
+//   if (userIdPresent && req.apiGateway) {
+//     condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
+//   } else {
+//     try {
+//       condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
+//     } catch(err) {
+//       res.statusCode = 500;
+//       res.json({error: 'Wrong column type ' + err});
+//     }
+//   }
 
-  let queryParams = {
-    TableName: tableName,
-    KeyConditions: condition
-  }
+//   let queryParams = {
+//     TableName: tableName,
+//     KeyConditions: condition
+//   }
 
-  dynamodb.query(queryParams, (err, data) => {
-    if (err) {
-      res.statusCode = 500;
-      res.json({error: 'Could not load items: ' + err});
-    } else {
-      res.json(data.Items);
-    }
-  });
-});
+//   dynamodb.query(queryParams, (err, data) => {
+//     if (err) {
+//       res.statusCode = 500;
+//       res.json({error: 'Could not load items: ' + err});
+//     } else {
+//       res.json(data.Items);
+//     }
+//   });
+// });
 
 /*****************************************
  * HTTP Get method for get single object *
  *****************************************/
 
-app.get(path + sortKeyPath, function(req, res) {
+app.get(path + hashKeyPath + sortKeyPath, function(req, res) {
   const params = {};
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-    console.log(params[partitionKeyName]);
   } else {
     params[partitionKeyName] = req.params[partitionKeyName];
     try {
@@ -128,33 +127,11 @@ app.get(path + sortKeyPath, function(req, res) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err.message});
     } else {
-      let response;
       if (data.Item) {
-        response = data.Item;
+        res.json(data.Item);
       } else {
-        response = data;
+        res.json(data) ;
       }
-
-      //If this is the first time user access course, then enroll them to the course, else just save the last accessed time
-      if (Object.keys(response).length === 0) {
-        response = params;
-        response.Status = "IN_PROGRESS";
-      }
-    //   response.LastAccessed = new Date().getTime();
-
-      let putItemParams = {
-        TableName: tableName,
-        Item: response
-      }
-
-      dynamodb.put(putItemParams, (err, data) => {
-        if (err) {
-          res.statusCode = 500;
-          res.json({ error: err, url: req.url, body: req.body });
-        } else{
-          res.json(response);
-        }
-      });
     }
   });
 });

@@ -69,7 +69,7 @@
 .dashboard-courses-header-decor {
     border-top: solid 3px #ec7211;
     width: 200px;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 }
 
 .dashboard-courses-list-item {
@@ -133,4 +133,8 @@
 .dashboard-courses-list-item-thumbnail img {
     max-width: 100%;
     border-radius: 5px;
+}
+
+.dashboard-loading-gif {
+    height: 16px;
 }

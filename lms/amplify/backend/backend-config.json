@@ -241,7 +241,40 @@
     },
     "Lectures": {
       "providerPlugin": "awscloudformation",
+<<<<<<< HEAD
       "service": "DynamoDB"
+=======
+      "dependsOn": []
+    },
+    "UserLecture": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation"
+    },
+    "Cert": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation"
+    }
+  },
+  "function": {
+    "courses": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "storage",
+          "resourceName": "courses",
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "attributeEnvMap": {
+            "Name": "TABLE_NAME",
+            "Arn": "TABLE_ARN"
+          }
+        }
+      ]
+>>>>>>> d_learning_portal
     },
     "UserCourse": {
       "providerPlugin": "awscloudformation",
@@ -252,9 +285,124 @@
       "providerPlugin": "awscloudformation",
       "service": "S3"
     },
+<<<<<<< HEAD
+=======
+    "categories": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "storage",
+          "resourceName": "Categories",
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "attributeEnvMap": {
+            "Name": "TABLE_NAME",
+            "Arn": "TABLE_ARN"
+          }
+        }
+      ]
+    },
+    "usersLectures": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "storage",
+          "resourceName": "UserLecture",
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "attributeEnvMap": {
+            "Name": "TABLE_NAME",
+            "Arn": "TABLE_ARN"
+          }
+        }
+      ]
+    },
+    "certs": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "storage",
+          "resourceName": "Cert",
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "attributeEnvMap": {
+            "Name": "TABLE_NAME",
+            "Arn": "TABLE_ARN"
+          }
+        }
+      ]
+    }
+  },
+  "api": {
+>>>>>>> d_learning_portal
     "courses": {
       "providerPlugin": "awscloudformation",
+<<<<<<< HEAD
       "service": "DynamoDB"
+=======
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "courses",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "UserCourse",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "lectures",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "categories",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "usersLectures",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "certs",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        }
+      ]
+>>>>>>> d_learning_portal
     }
   }
 }

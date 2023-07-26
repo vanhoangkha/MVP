@@ -11,6 +11,8 @@ export default class NavBar extends React.Component {
             authChecked: false,
             authenticated: false,
             redirectAuth: false,
+            redirectHome: false,
+            redirectMyLearning: false,
             user: null,
         };
     }
@@ -57,11 +59,15 @@ export default class NavBar extends React.Component {
     render() {
         return this.state.redirectAuth ?
             <Navigate to="/auth" /> :
+            this.state.redirectHome ? 
+            <Navigate to="/" /> :
+            this.state.redirectMyLearning ? 
+            <Navigate to="/mylearning" /> :
             <div id="h" style={{ position: 'sticky', top: 0, zIndex: 1002 }}>
                 <TopNavigation
                     identity={{
                         href: "/",
-                        title: "AWS Cloud Academy",
+                        title: "Cloud Solutions Journey",
                         logo: {
                             src: AWSLogo,
                             alt: "AWS Logo"
@@ -98,13 +104,24 @@ export default class NavBar extends React.Component {
                             iconName: "user-profile",
                             items: [
                                 { 
+                                    id: "mylearning", 
+                                    text: "My learning",
+                                },
+                                { 
                                     id: "signout", 
                                     text: "Sign out",
                                 }
                             ],
                             onItemClick: (e) => {
-                                if (e.detail.id === 'signout') {
+                                if (e.detail.id === 'mylearning') {
+                                    this.setState({
+                                        redirectMyLearning: true,
+                                    })
+                                } else if (e.detail.id === 'signout') {
                                     this.startSignOut();
+                                    this.setState({
+                                        redirectHome: true,
+                                    })
                                 }
                             }
                         },

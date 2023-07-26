@@ -1,0 +1,10 @@
+{
+  "resourceName": "Cert",
+  "tableName": "Cert",
+  "partitionKey": {
+    "fieldName": "ID",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

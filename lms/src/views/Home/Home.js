@@ -11,6 +11,7 @@ import hightlightIcon1 from '../../assets/images/dashboard-highlight-1.png';
 import hightlightIcon2 from '../../assets/images/dashboard-highlight-2.png';
 import hightlightIcon3 from '../../assets/images/dashboard-highlight-3.png';
 import courseDefaultThumbnail from '../../assets/images/course-default-thumbnail.png';
+import loadingGif from '../../assets/images/loading.gif';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -56,12 +57,12 @@ export default class Home extends React.Component {
         return !!this.state.courseToRedirect ?
             <Navigate to={'/course/' + this.state.courseToRedirect} /> :
             <div>
-                <NavBar navigation={this.props.navigation} title="Cloud Academy"/>
+                <NavBar navigation={this.props.navigation} title="Cloud Solutions Journey"/>
                 <div className='dashboard-main'>
                     <div className='dashboard-banner'>
                         <Grid gridDefinition={[{ colspan: 10 }, { colspan: 2 }]}>
                             <div>
-                                <p className='dashboard-banner-title'>AWS Cloud Academy</p>
+                                <p className='dashboard-banner-title'>AWS Cloud Solutions Journey</p>
                                 <p className='dashboard-banner-desc'>This website lists all courses created by teams at Amazon Web Services (AWS). Each course provides theory lessons with interactive quiz to test your knowledge as you complete each module. You can see the course assigned to you by signing in.</p>
                             </div>
                             <div className='dashboard-banner-icon-container'>
@@ -98,7 +99,7 @@ export default class Home extends React.Component {
                         <p className='dashboard-courses-header'>Available courses</p>
                         <div className='dashboard-courses-header-decor' />
                         <div className='dashboard-courses-list'>
-                            {this.state.courses.map(course => 
+                            {this.state.courses.length === 0 ? <img src={loadingGif} alt="loading..." className='dashboard-loading-gif' /> : this.state.courses.map(course => 
                                 <div className='dashboard-courses-list-item' key={course.id}>
                                     <div className='dashboard-courses-list-item-info'>
                                         <div className='dashboard-courses-list-item-title'>

@@ -29,7 +29,7 @@
         },
         "UserCourse": {
           "deploymentBucketName": "amplify-lms-dev-120646-deployment",
-          "s3Key": "amplify-builds/UserCourse-4339554956334d694341-build.zip"
+          "s3Key": "amplify-builds/UserCourse-5a623763436c7837785a-build.zip"
         },
         "lectures": {
           "deploymentBucketName": "amplify-lms-dev-120646-deployment",
@@ -38,6 +38,14 @@
         "categories": {
           "deploymentBucketName": "amplify-lms-dev-120646-deployment",
           "s3Key": "amplify-builds/categories-666d6e6e7833766f4977-build.zip"
+        },
+        "usersLectures": {
+          "deploymentBucketName": "amplify-lms-dev-120646-deployment",
+          "s3Key": "amplify-builds/usersLectures-304d5a43397376554453-build.zip"
+        },
+        "certs": {
+          "deploymentBucketName": "amplify-lms-dev-120646-deployment",
+          "s3Key": "amplify-builds/certs-303178534470514d512b-build.zip"
         }
       }
     }

@@ -12,7 +12,7 @@ import "@cloudscape-design/global-styles/index.css"
 
 // Import React Router
 import {
-  createBrowserRouter,
+  createHashRouter,
   RouterProvider,
 } from "react-router-dom";
 
@@ -22,12 +22,14 @@ import Home from './views/Home/Home';
 import Course from './views/Course/Course';
 import Learn from './views/Learn/Learn';
 import MyLearning from './views/MyLearning/MyLearning';
+import Cert from './views/Cert/Cert';
+import CertPublic from './views/CertPublic/CertPublic';
 
 // Configure Amplify
 Amplify.configure(awsExports);
 
 // Configure Router
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <Home/>,
@@ -45,8 +47,20 @@ const router = createBrowserRouter([
     element: <Learn/>,
   },
   {
+    path: "/learn/:id/lecture/:lectureId",
+    element: <Learn/>,
+  },
+  {
     path: "/mylearning",
     element: <MyLearning/>,
+  },
+  {
+    path: "/cert/:id",
+    element: <Cert/>,
+  },
+  {
+    path: "/certPublic/:id",
+    element: <CertPublic/>,
   },
 ]);
 
