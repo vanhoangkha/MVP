@@ -22,13 +22,13 @@ import AuthForm from "./components/AuthForm/AuthForm";
 import Home from "./views/Home/Home";
 import Course from "./views/Course/Course";
 import Management from "./views/Management/Management";
-import MyLectures from "./views/Management/MyLectures/MyLectures";
-import PublicLectures from "./views/Management/PublicLectures/PublicLectures";
+import MyContents from "./views/Management/MyContents/MyContents";
+import ContentCatalog from "./views/Management/ContentCatalog/ContentCatalog";
 import MyCourses from "./views/Management/MyCourses/MyCourses";
 import PublicCourses from "./views/Management/PublicCourses/PublicCourses";
 import AssignCourse from "./views/Management/AssignCourse/AssignCourse";
 import User from "./views/Management/User/User";
-import CreateLecture from './views/CreateLecture/CreateLecture';
+import CreateContent from './views/Management/MyContents/CreateContent';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import AddChapter from './components/CreateCourse/3-addChapter';
 import CreateCourse from './views/CreateCourse/CreateCourse';
@@ -44,15 +44,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Navigate to="/management/myLectures" replace />,
+        element: <Navigate to="/management/myContents" replace />,
       },
       {
-        path: "myLectures",
-        element: <MyLectures />,
+        path: "myContents",
+        element: <MyContents />,
       },
       {
-        path: "publicLectures",
-        element: <PublicLectures />,
+        path: "createContent",
+        element: <CreateContent />,
+      },
+      {
+        path: "contentCatalog",
+        element: <ContentCatalog />,
       },
       {
         path: "myCourses",
@@ -86,15 +90,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Navigate to="/management/myLectures" replace />,
+        element: <Navigate to="/management/myContents" replace />,
       },
       {
-        path: "myLectures",
-        element: <MyLectures />,
+        path: "myContents",
+        element: <MyContents />,
       },
       {
-        path: "publicLectures",
-        element: <PublicLectures />,
+        path: "createContent",
+        element: <CreateContent />,
+      },
+      {
+        path: "contentCatalog",
+        element: <ContentCatalog />,
       },
       {
         path: "myCourses",
@@ -109,10 +117,6 @@ const router = createBrowserRouter([
         element: <User />
       }
     ],
-  },
-  {
-    path: "/createLecture",
-    element: <CreateLecture/>,
   },
   {
     path: "/course/CreateCourse",

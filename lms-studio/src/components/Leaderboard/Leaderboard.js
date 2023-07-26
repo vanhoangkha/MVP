@@ -69,17 +69,17 @@ const Leaderboard = (props) => {
               items={[
                 {
                   type: 'section',
-                  text: 'Lectures',
+                  text: 'Contents',
                   items: [
                     {
                       type: 'link',
-                      text: 'My Lectures',
-                      href: 'myLectures',
+                      text: 'My Contents',
+                      href: 'myContents',
                     },
                     {
                       type: 'link',
-                      text: 'Public Lectures',
-                      href: 'publicLectures',
+                      text: 'Content Catalog',
+                      href: 'contentCatalogs',
                     },
                   ],
                 },

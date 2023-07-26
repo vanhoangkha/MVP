@@ -31,7 +31,7 @@ const ValueWithLabel = ({ label, children }) => (
 );
 
 const AssignCourse = (props) => {
-  const [activeHref, setActiveHref] = useState("myLectures");
+  const [activeHref, setActiveHref] = useState("myContents");
   const [checked, setChecked] = useState(false);
   const [oppId, setOppId] = React.useState("");
   const [oppValue, setOppValue] = React.useState("");
@@ -110,7 +110,7 @@ const AssignCourse = (props) => {
                   event.preventDefault();
                   const href =
                     event.detail.href === "/"
-                      ? "myLectures"
+                      ? "myContents"
                       : event.detail.href;
                   setActiveHref(href);
                   navigate(`/management/${href}`);
@@ -119,17 +119,17 @@ const AssignCourse = (props) => {
               items={[
                 {
                   type: "section",
-                  text: "Lectures",
+                  text: "Contents",
                   items: [
                     {
                       type: "link",
-                      text: "My Lectures",
-                      href: "myLectures",
+                      text: "My Contents",
+                      href: "myContents",
                     },
                     {
                       type: "link",
-                      text: "Public Lectures",
-                      href: "publicLectures",
+                      text: "Content Catalog",
+                      href: "contentCatalog",
                     },
                   ],
                 },
