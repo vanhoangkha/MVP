@@ -18,6 +18,7 @@ import {
 } from "react-router-dom";
 
 // Import Views
+<<<<<<< HEAD
 import AuthForm from "./components/AuthForm/AuthForm";
 import Home from "./views/Home/Home";
 import Course from "./views/Course/Course";
@@ -32,6 +33,22 @@ import CreateContent from './views/Management/MyContents/CreateContent';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import AddChapter from './components/CreateCourse/3-addChapter';
 import CreateCourse from './views/CreateCourse/CreateCourse';
+||||||| 33fbbd1
+import AuthForm from './components/AuthForm/AuthForm';
+import Home from './views/Home/Home';
+import Course from './views/Course/Course';
+=======
+import AuthForm from "./components/AuthForm/AuthForm";
+import Home from "./views/Home/Home";
+import Course from "./views/Course/Course";
+import Management from "./views/Management/Management";
+import MyLectures from "./views/Management/MyLectures/MyLectures";
+import PublicLectures from "./views/Management/PublicLectures/PublicLectures";
+import MyCourses from "./views/Management/MyCourses/MyCourses";
+import PublicCourses from "./views/Management/PublicCourses/PublicCourses";
+import AssignCourse from "./views/Management/AssignCourse/AssignCourse";
+import User from "./views/Management/User/User";
+>>>>>>> features/managements
 
 // Configure Amplify
 Amplify.configure(awsExports);
@@ -40,6 +57,7 @@ Amplify.configure(awsExports);
 const router = createBrowserRouter([
   {
     path: "/",
+<<<<<<< HEAD
     element: <Management />,
     children: [
       {
@@ -71,6 +89,11 @@ const router = createBrowserRouter([
         element: <User />
       },
     ],
+||||||| 33fbbd1
+    element: <Home/>,
+=======
+    element: <Home />,
+>>>>>>> features/managements
   },
   {
     path: "/auth",
@@ -78,7 +101,47 @@ const router = createBrowserRouter([
   },
   {
     path: "/course/:id",
+<<<<<<< HEAD
     element: <Course />,
+||||||| 33fbbd1
+    element: <Course/>,
+=======
+    element: <Course />,
+  },
+  {
+    path: "/assignCourse/:id",
+    element: <AssignCourse />,
+  },
+  {
+    path: "/management",
+    element: <Management />,
+    children: [
+      {
+        path: "",
+        element: <Navigate to="/management/myLectures" replace />,
+      },
+      {
+        path: "myLectures",
+        element: <MyLectures />,
+      },
+      {
+        path: "publicLectures",
+        element: <PublicLectures />,
+      },
+      {
+        path: "myCourses",
+        element: <MyCourses />,
+      },
+      {
+        path: "publicCourses",
+        element: <PublicCourses />,
+      },
+      {
+        path: "user",
+        element: <User />
+      }
+    ],
+>>>>>>> features/managements
   },
   {
     path: "/assignCourse/:id",

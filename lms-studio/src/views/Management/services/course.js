@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import api from '../../../utils/api'
 
 const getPublicCoursesService = () => {
@@ -9,3 +10,11 @@ const getMyCoursesService = () => {
 }
 
 export {getPublicCoursesService, getMyCoursesService}
+||||||| 33fbbd1
+=======
+import api from '../../../utils/api'
+
+export const getCoursesService = () => {
+  return api.get('/courses')
+}
+>>>>>>> features/managements
