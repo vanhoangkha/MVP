@@ -2,15 +2,18 @@ import React from 'react';
 import { Auth } from 'aws-amplify';
 import { Navigate } from "react-router-dom";
 import { TopNavigation, Input } from "@cloudscape-design/components";
+import { withTranslation } from 'react-i18next';
 import AWSLogo from "./Logo"
 
-export default class NavBar extends React.Component {
+export class NavBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = { 
             authChecked: false,
             authenticated: false,
             redirectAuth: false,
+            redirectHome: false,
+            redirectMyLearning: false,
             user: null,
         };
     }
@@ -53,15 +56,25 @@ export default class NavBar extends React.Component {
             authenticated: false,
         })
     }
+
+    onLanguageHandle = (event) => {
+        let newLang = event.detail.id;
+        this.props.i18n.changeLanguage(newLang)
+    }
     
     render() {
+        const {t} = this.props
         return this.state.redirectAuth ?
             <Navigate to="/auth" /> :
+            this.state.redirectHome ? 
+            <Navigate to="/" /> :
+            this.state.redirectMyLearning ? 
+            <Navigate to="/mylearning" /> :
             <div id="h" style={{ position: 'sticky', top: 0, zIndex: 1002 }}>
                 <TopNavigation
                     identity={{
                         href: "/",
-                        title: "AWS Cloud Academy",
+                        title: "Cloud Solutions Journey",
                         logo: {
                             src: AWSLogo,
                             alt: "AWS Logo"
@@ -70,15 +83,30 @@ export default class NavBar extends React.Component {
                     search={
                         <Input
                             type="search"
-                            placeholder="Search"
+                            placeholder={t('nav.search')}
                             ariaLabel="Search"
                             onChange={() => {}}
                         />
                     }
                     utilities = {!this.state.authChecked ? [] : !this.state.authenticated ? [
                         {
+                            type: "menu-dropdown",
+                            text: t('nav.language.title'),
+                            items: [
+                                { 
+                                    id: "vn", 
+                                    text: t('nav.language.item-vn'),
+                                },
+                                { 
+                                    id: "en", 
+                                    text: t('nav.language.item-en'),
+                                }
+                            ],
+                            onItemClick: (e) => this.onLanguageHandle(e)
+                        },
+                        {
                             type: "button",
-                            text: "Sign in",
+                            text: t('nav.signIn'),
                             onClick: () => {
                                 this.startAuthentication()
                             },
@@ -86,30 +114,58 @@ export default class NavBar extends React.Component {
                         {
                             type: "button",
                             variant: "primary-button",
-                            text: "Sign up",
+                            text: t('nav.signUp'),
                             onClick: () => {
                                 this.startAuthentication()
                             },
-                        },
+                        }
                     ] : [
+                        {
+                            type: "menu-dropdown",
+                            text: t('nav.language.title'),
+                            items: [
+                                { 
+                                    id: "vn", 
+                                    text: t('nav.language.item-vn'),
+                                },
+                                { 
+                                    id: "eng", 
+                                    text: t('nav.language.item-en'),
+                                }
+                            ],
+                            onItemClick: (e) => this.onLanguageHandle(e)
+                        },
                         {
                             type: "menu-dropdown",
                             text: this.state.user.attributes.email,
                             iconName: "user-profile",
                             items: [
                                 { 
+                                    id: "mylearning", 
+                                    text: t('nav.user.learning'),
+                                },
+                                { 
                                     id: "signout", 
-                                    text: "Sign out",
+                                    text: t('nav.user.signOut'),
                                 }
                             ],
                             onItemClick: (e) => {
-                                if (e.detail.id === 'signout') {
+                                if (e.detail.id === 'mylearning') {
+                                    this.setState({
+                                        redirectMyLearning: true,
+                                    })
+                                } else if (e.detail.id === 'signout') {
                                     this.startSignOut();
+                                    this.setState({
+                                        redirectHome: true,
+                                    })
                                 }
                             }
-                        },
+                        }
                     ]}
                 />
             </div>
     }
 }
+
+export default withTranslation()(NavBar)

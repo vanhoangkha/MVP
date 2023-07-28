@@ -1,6 +1,12 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
+<<<<<<< HEAD
   "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"12.1.1\",\"stackType\":\"hosting-amplifyhosting\",\"metadata\":{}}",
+||||||| ef4cf25
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"10.0.0\",\"stackType\":\"hosting-amplifyhosting\",\"metadata\":{}}",
+=======
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"12.2.0\",\"stackType\":\"hosting-amplifyhosting\",\"metadata\":{}}",
+>>>>>>> dbbfc950ffdcefa1af5b96be19cd8a390cecc131
   "Parameters": {
     "env": {
       "Type": "String"

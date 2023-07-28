@@ -1,0 +1,16 @@
+{
+  "resourceName": "lectureresource",
+  "policyUUID": "2bfd6f19",
+  "bucketName": "lecture-resource",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

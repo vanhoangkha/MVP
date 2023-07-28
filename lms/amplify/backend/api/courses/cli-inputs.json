@@ -40,6 +40,26 @@
       "permissions": {
         "setting": "open"
       }
+    },
+    "/users/lectures": {
+      "name": "/users/lectures",
+      "lambdaFunction": "usersLectures",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    },
+    "/certs": {
+      "name": "/certs",
+      "lambdaFunction": "certs",
+      "permissions": {
+        "setting": "open"
+      }
     }
   }
 }

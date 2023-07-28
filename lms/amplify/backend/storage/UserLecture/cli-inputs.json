@@ -1,0 +1,14 @@
+{
+  "resourceName": "UserLecture",
+  "tableName": "UserLecture",
+  "partitionKey": {
+    "fieldName": "UserID",
+    "fieldType": "string"
+  },
+  "sortKey": {
+    "fieldName": "LectureID",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

@@ -1,0 +1,42 @@
+{
+  "translation": {
+    "nav": {
+      "search": "Search",
+      "signIn": "Sign in",
+      "signUp": "Sign up",
+      "language": {
+        "title": "Language",
+        "item-vn": "Vietnamese",
+        "item-en": "English"
+      },
+      "user": {
+        "title": "",
+        "learning": "My learning",
+        "signOut": "Sign out"
+      }
+    },
+    "home": {
+      "search": "Search",
+      "signIn": "Sign in",
+      "signUp": "Sign up",
+      "language": "Language",
+      "title": "AWS Cloud Solutions Journey",
+      "des": "This website lists all courses created by teams at Amazon Web Services (AWS). Each course provides theory lessons with interactive quiz to test your knowledge as you complete each module. You can see the course assigned to you by signing in.",
+      "highlight": [
+        {
+          "title": "100 courses and growing",
+          "desc": "New courses and content added and updated all the time."
+        },
+        {
+          "title": "Interactive quiz",
+          "desc": "Test your knowledge with interactive quiz after theory lessons."
+        },
+        {
+          "title": "Certification of completion",
+          "desc": "Receive a certification once complete a course."
+        }
+      ],
+      "list_title": "Available courses"
+    }
+  }
+}

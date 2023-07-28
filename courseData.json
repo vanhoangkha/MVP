@@ -1,0 +1,193 @@
+{
+  "courses-devabc": [
+    {
+      "PutRequest": {
+        "Item": {
+          "ID": {
+            "S": "1"
+          },
+          "Categories": {
+            "L": [
+              {
+                "S": "Networking"
+              },
+              {
+                "S": "Storage"
+              }
+            ]
+          },
+          "Chapters": {
+            "L": [
+              {
+                "M": {
+                  "lectures": {
+                    "L": [
+                      {
+                        "M": {
+                          "lectureId": {
+                            "S": "1"
+                          },
+                          "length": {
+                            "N": "490"
+                          },
+                          "name": {
+                            "S": "VPC - Virtual Private Cloud"
+                          },
+                          "type": {
+                            "S": "video"
+                          }
+                        }
+                      },
+                      {
+                        "M": {
+                          "lectureId": {
+                            "S": "2"
+                          },
+                          "length": {
+                            "N": "302"
+                          },
+                          "name": {
+                            "S": "Subnet"
+                          },
+                          "type": {
+                            "S": "video"
+                          }
+                        }
+                      },
+                      {
+                        "M": {
+                          "lectureId": {
+                            "S": "3"
+                          },
+                          "length": {
+                            "N": "333"
+                          },
+                          "name": {
+                            "S": "Availability Zones"
+                          },
+                          "type": {
+                            "S": "video"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "name": {
+                    "S": "Networking"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "lectures": {
+                    "L": [
+                      {
+                        "M": {
+                          "lectureId": {
+                            "S": "20"
+                          },
+                          "length": {
+                            "N": "36"
+                          },
+                          "name": {
+                            "S": "Container"
+                          },
+                          "type": {
+                            "S": "video"
+                          }
+                        }
+                      },
+                      {
+                        "M": {
+                          "lectureId": {
+                            "S": "22"
+                          },
+                          "length": {
+                            "N": "91"
+                          },
+                          "name": {
+                            "S": "AWS Fargate"
+                          },
+                          "type": {
+                            "S": "video"
+                          }
+                        }
+                      },
+                      {
+                        "M": {
+                          "lectureId": {
+                            "S": "23"
+                          },
+                          "length": {
+                            "N": "44"
+                          },
+                          "name": {
+                            "S": "Elastic Container Registry"
+                          },
+                          "type": {
+                            "S": "video"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "name": {
+                    "S": "Container"
+                  }
+                }
+              }
+            ]
+          },
+          "Description": {
+            "S": "Full Practice Exam | Learn Cloud Computing | Pass the AWS Certified Solutions Architect Associate Certification SAA-C03!"
+          },
+          "Length": {
+            "N": "115"
+          },
+          "Level": {
+            "S": "300"
+          },
+          "Name": {
+            "S": "First Cloud Journey"
+          },
+          "Requirements": {
+            "L": [
+              {
+                "S": "Know the basics of IT"
+              },
+              {
+                "S": "No AWS Cloud experience is necessary, we'll use the AWS Free Tier"
+              }
+            ]
+          },
+          "Tags": {
+            "L": [
+              {
+                "S": "EC2"
+              },
+              {
+                "S": "Marketplace"
+              }
+            ]
+          },
+          "WhatToLearn": {
+            "L": [
+              {
+                "S": "FULLY UPDATED FOR SAA-C03: Pass the AWS Certified Solutions Architect Associate Certification"
+              },
+              {
+                "S": "All 800+ slides available as downloadable PDF"
+              },
+              {
+                "S": "Learn the AWS Fundamentals (EC2, ELB, ASG, RDS, ElastiCache, S3)"
+              },
+              {
+                "S": "Analyze 10+ Solution Architectures (traditional & serverless)"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
