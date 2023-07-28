@@ -1,0 +1,38 @@
+{
+  "translation": {
+    "nav": {
+        "search": "Tìm kiếm",
+        "signIn": "Đăng nhập",
+        "signUp": "Đăng ký",
+        "language": {
+          "title": "Ngôn ngữ",
+          "item-vn": "Tiếng Việt",
+          "item-en": "Tiếng Anh"
+        },
+        "user": {
+          "title": "",
+          "learning": "Quá trình học",
+          "signOut": "Đăng xuất"
+        }
+    },
+    "home": {
+      "title": "Hành trình lên mây AWS",
+      "des": "Đây là website với tất cả các khoá học được tạo bởi nhóm Amazon Web Services (AWS). Mỗi khoá học cung cấp các bài học lý thuyết và các câu hỏi để kiểm tra kiến thức của bạn sau khi hoàn thành một Module. Bạn có thể xem các khoá học mà bạn đã đăng ký bằng cách đăng nhập",
+      "highlight": [
+        {
+          "title": "100 khoá học sẵn và đang phát triển",
+          "desc": "Nhiều khoá học và nội dung mới được thêm vào và cập nhật liên tục."
+        },
+        {
+          "title": "Bài kiểm tra tương tác",
+          "desc": "Kiểm tra kiến thức của bạn với các bài kiểm tra tương tác sau các bài lý thuyết."
+        },
+        {
+          "title": "Chứng nhận hoàn thành",
+          "desc": "Nhận chứng chỉ sau khi hoàn thành khoá học."
+        }
+      ],
+      "list_title": "Các khoá học có sẵn"
+    }
+  }
+}

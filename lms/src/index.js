@@ -1,29 +1,31 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
 
 // Import Amplify
-import { Amplify } from 'aws-amplify';
-import awsExports from './aws-exports';
+import { Amplify } from "aws-amplify";
+import awsExports from "./aws-exports";
 
 // Import CloudScape Design
-import "@cloudscape-design/global-styles/index.css"
+import "@cloudscape-design/global-styles/index.css";
 
 // Import React Router
-import {
-  createHashRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
+
+// Import locale context
+import { I18nextProvider } from 'react-i18next';
+import i18n from './views/i18n'
+// import { I18nProvider } from '@cloudscape-design/components/i18n';
 
 // Import Views
-import AuthForm from './components/AuthForm/AuthForm';
-import Home from './views/Home/Home';
-import Course from './views/Course/Course';
-import Learn from './views/Learn/Learn';
-import MyLearning from './views/MyLearning/MyLearning';
-import Cert from './views/Cert/Cert';
-import CertPublic from './views/CertPublic/CertPublic';
+import AuthForm from "./components/AuthForm/AuthForm";
+import Home from "./views/Home/Home";
+import Course from "./views/Course/Course";
+import Learn from "./views/Learn/Learn";
+import MyLearning from "./views/MyLearning/MyLearning";
+import Cert from "./views/Cert/Cert";
+import CertPublic from "./views/CertPublic/CertPublic";
 
 // Configure Amplify
 Amplify.configure(awsExports);
@@ -32,42 +34,44 @@ Amplify.configure(awsExports);
 const router = createHashRouter([
   {
     path: "/",
-    element: <Home/>,
+    element: <Home />,
   },
   {
     path: "/auth",
-    element: <AuthForm/>,
+    element: <AuthForm />,
   },
   {
     path: "/course/:id",
-    element: <Course/>,
+    element: <Course />,
   },
   {
     path: "/learn/:id",
-    element: <Learn/>,
+    element: <Learn />,
   },
   {
     path: "/learn/:id/lecture/:lectureId",
-    element: <Learn/>,
+    element: <Learn />,
   },
   {
     path: "/mylearning",
-    element: <MyLearning/>,
+    element: <MyLearning />,
   },
   {
     path: "/cert/:id",
-    element: <Cert/>,
+    element: <Cert />,
   },
   {
     path: "/certPublic/:id",
-    element: <CertPublic/>,
+    element: <CertPublic />,
   },
 ]);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <I18nextProvider i18n={i18n}>
+      <RouterProvider router={router} />
+    </I18nextProvider>
   </React.StrictMode>
 );
 

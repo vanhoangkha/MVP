@@ -1,6 +1,8 @@
 import React from 'react';
 import './Home.css';
 import { Navigate } from "react-router-dom";
+// import { useLocale } from "./context/locale";
+// import { REGIONS } from "./context/locale/constants";
 import { API } from 'aws-amplify';
 import { Grid, Button, Icon } from '@cloudscape-design/components';
 import NavBar from '../../components/NavBar/NavBar';
@@ -12,14 +14,17 @@ import hightlightIcon2 from '../../assets/images/dashboard-highlight-2.png';
 import hightlightIcon3 from '../../assets/images/dashboard-highlight-3.png';
 import courseDefaultThumbnail from '../../assets/images/course-default-thumbnail.png';
 import loadingGif from '../../assets/images/loading.gif';
+import { withTranslation } from 'react-i18next';
 
-export default class Home extends React.Component {
+export class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = { 
             courseToRedirect: null,
             courses: [],
+            language: "en"
         };
+        
     }
 
     componentDidMount() {
@@ -29,7 +34,7 @@ export default class Home extends React.Component {
         API.get(apiName, path)
           .then((response) => {
             let transformedCourses = [];
-
+            console.log(response);
             response.forEach(course => {
                 transformedCourses.push({
                     id: course.ID,
@@ -54,6 +59,10 @@ export default class Home extends React.Component {
     }
 
     render() {
+        const {t} = this.props
+        console.log("props ", this.props)
+        const hightLight = t("home.highlight", { returnObjects: true })
+        console.log(hightLight)
         return !!this.state.courseToRedirect ?
             <Navigate to={'/course/' + this.state.courseToRedirect} /> :
             <div>
@@ -62,8 +71,8 @@ export default class Home extends React.Component {
                     <div className='dashboard-banner'>
                         <Grid gridDefinition={[{ colspan: 10 }, { colspan: 2 }]}>
                             <div>
-                                <p className='dashboard-banner-title'>AWS Cloud Solutions Journey</p>
-                                <p className='dashboard-banner-desc'>This website lists all courses created by teams at Amazon Web Services (AWS). Each course provides theory lessons with interactive quiz to test your knowledge as you complete each module. You can see the course assigned to you by signing in.</p>
+                                <p className='dashboard-banner-title'>{t('home.title')}</p>
+                                <p className='dashboard-banner-desc'>{t('home.des')}</p>
                             </div>
                             <div className='dashboard-banner-icon-container'>
                                 <img className='dashboard-banner-icon' src={bannerIcon} alt="Banner Icon"/>
@@ -75,28 +84,28 @@ export default class Home extends React.Component {
                             <div>
                                 <img className='dashboard-highlight-icon' src={hightlightIcon1} alt="Highlight Icon 1"/>
                                 <div className='dashboard-highlight-text-container'>
-                                    <div className='dashboard-highlight-title'>100 courses and growing</div>
-                                    <div className='dashboard-highlight-desc'>New courses and content added and updated all the time.</div>
+                                    <div className='dashboard-highlight-title'>{hightLight[0].title}</div>
+                                    <div className='dashboard-highlight-desc'>{hightLight[0].desc}</div>
                                 </div>
                             </div>
                             <div>
                                 <img className='dashboard-highlight-icon' src={hightlightIcon2} alt="Highlight Icon 2"/>
                                 <div className='dashboard-highlight-text-container'>
-                                    <div className='dashboard-highlight-title'>Interactive quiz</div>
-                                    <div className='dashboard-highlight-desc'>Test your knowledge with interactive quiz after theory lessons.</div>
+                                <div className='dashboard-highlight-title'>{hightLight[1].title}</div>
+                                    <div className='dashboard-highlight-desc'>{hightLight[1].desc}</div>
                                 </div>
                             </div>
                             <div>
                                 <img className='dashboard-highlight-icon' src={hightlightIcon3} alt="Highlight Icon 3"/>
                                 <div className='dashboard-highlight-text-container'>
-                                    <div className='dashboard-highlight-title'>Certification of completion</div>
-                                    <div className='dashboard-highlight-desc'>Receive a certification once complete a course.</div>
+                                <div className='dashboard-highlight-title'>{hightLight[2].title}</div>
+                                    <div className='dashboard-highlight-desc'>{hightLight[2].desc}</div>
                                 </div>
                             </div>
                         </Grid>
                     </div>
                     <div className='dashboard-courses'>
-                        <p className='dashboard-courses-header'>Available courses</p>
+                        <p className='dashboard-courses-header'>{t('home.list_title')}</p>
                         <div className='dashboard-courses-header-decor' />
                         <div className='dashboard-courses-list'>
                             {this.state.courses.length === 0 ? <img src={loadingGif} alt="loading..." className='dashboard-loading-gif' /> : this.state.courses.map(course => 
@@ -145,3 +154,5 @@ export default class Home extends React.Component {
             </div>;
     }
 }
+
+export default withTranslation()(Home);

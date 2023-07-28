@@ -19,6 +19,7 @@ export default class Cert extends React.Component {
             cert: null,
             userId: "",
             userEmail: "",
+            userName: "",
             redirectToCourse: null,
         };
     }
@@ -44,6 +45,7 @@ export default class Cert extends React.Component {
         }).then((user) => {
             this.setState({
                 userEmail: user.attributes.email,
+                userName: user.attributes.family_name + " " + user.attributes.preferred_username,
             })
         });
     }
@@ -73,6 +75,7 @@ export default class Cert extends React.Component {
                 this.setState({
                     userCourse: response,
                 }, () => {
+                    console.log(response)
                     if (!response.CertificateID) {
                         this.generateCert();
                     } else {
@@ -108,11 +111,12 @@ export default class Cert extends React.Component {
                 ID: this.generateUUID(),
                 UserID: this.state.userId,
                 UserEmail: this.state.userEmail,
+                UserName: this.state.userName,
                 CourseID: this.state.course.id,
                 CompletedTime: Date.now(),
             }
         };
-
+        console.log("generateCert")
         API.put(apiName, path, myInit)
         .then((response) => {
             this.setState({cert: myInit.body});
@@ -222,7 +226,8 @@ export default class Cert extends React.Component {
                             {!this.state.cert 
                                 ? <img src={loadingGif} alt="loading..." className='cert-view-loading-gif' />
                                 : <div className='cert-view-container'>
-                                    <div>{this.state.cert.UserEmail}</div>
+                                    {/* <div>{this.state.cert.UserEmail}</div> */}
+                                    <div>{this.state.cert.UserName}</div>
                                 </div>}
                         </div>
                     </div>}

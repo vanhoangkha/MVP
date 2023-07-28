@@ -1,0 +1,317 @@
+{
+  "Lectures-devabc": [
+    {
+      "PutRequest": {
+        "Item": {
+          "ID": {
+            "S": "1"
+          },
+          "Content": {
+            "S": "https://studio-lecture-videos.s3.ap-southeast-1.amazonaws.com/lecture-videos/1.vpc.mp4"
+          },
+          "Desc": {
+            "S": "It's about VPC basic"
+          },
+          "Name": {
+            "S": "VPC - Virtual Private Cloud"
+          },
+          "Questions": {
+            "S": ""
+          },
+          "Type": {
+            "S": "video"
+          },
+          "Viewed": {
+            "S": "0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "ID": {
+            "S": "2"
+          },
+          "Content": {
+            "S": "https://studio-lecture-videos.s3.ap-southeast-1.amazonaws.com/lecture-videos/2.subnet.mp4"
+          },
+          "Desc": {
+            "S": "A subnet is a range of IP addresses in your VPC"
+          },
+          "Name": {
+            "S": "Subnet - Virtual Private Cloud"
+          },
+          "Questions": {
+            "S": ""
+          },
+          "Type": {
+            "S": "video"
+          },
+          "Viewed": {
+            "S": "0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "ID": {
+            "S": "3"
+          },
+          "Content": {
+            "S": "https://studio-lecture-videos.s3.ap-southeast-1.amazonaws.com/lecture-videos/3.az.mp4"
+          },
+          "Desc": {
+            "S": "These locations are categorized by regions and Availability Zones"
+          },
+          "Name": {
+            "S": "Availability Zones"
+          },
+          "Questions": {
+            "S": ""
+          },
+          "Type": {
+            "S": "video"
+          },
+          "Viewed": {
+            "S": "0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "ID": {
+            "S": "4"
+          },
+          "Content": {
+            "S": ""
+          },
+          "Desc": {
+            "S": "Quiz covers Networking knowledge"
+          },
+          "Name": {
+            "S": "Networking quiz"
+          },
+          "Questions": {
+            "L": [
+              {
+                "M": {
+                  "answers": {
+                    "L": [
+                      {
+                        "M": {
+                          "correct": {
+                            "BOOL": true
+                          },
+                          "explain": {
+                            "S": "Gateway VPC endpoint can connect to S3 bucket privately without additional cost"
+                          },
+                          "text": {
+                            "S": "Create a gateway VPC endpoint to the S3 bucket."
+                          }
+                        }
+                      },
+                      {
+                        "M": {
+                          "correct": {
+                            "BOOL": false
+                          },
+                          "explain": {
+                            "S": "You can set up interface VPC endpoint for CloudWatch Logs for private network from EC2 to CloudWatch. But from CloudWatch to S3 bucket: Log data can take up to 12 hours to become available for export and the requirement only need EC2 to S3"
+                          },
+                          "text": {
+                            "S": "Stream the logs to Amazon CloudWatch Logs. Export the logs to the S3 bucket."
+                          }
+                        }
+                      },
+                      {
+                        "M": {
+                          "correct": {
+                            "BOOL": false
+                          },
+                          "explain": {
+                            "S": "Create an instance profile just grant access but not help EC2 connect to S3 privately"
+                          },
+                          "text": {
+                            "S": "Create an instance profile on Amazon EC2 to allow S3 access."
+                          }
+                        }
+                      },
+                      {
+                        "M": {
+                          "correct": {
+                            "BOOL": false
+                          },
+                          "explain": {
+                            "S": "API Gateway like the proxy which receive network from out site and it forward request to AWS Lambda, Amazon EC2, Elastic Load Balancing products such as Application Load Balancers or Classic Load Balancers, Amazon DynamoDB, Amazon Kinesis, or any publicly available HTTPS-based endpoint. But not S3"
+                          },
+                          "text": {
+                            "S": "Create an Amazon API Gateway API with a private link to access the S3 endpoint."
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "question": {
+                    "S": "An application runs on an Amazon EC2 instance in a VPC. The application processes logs that are stored in an Amazon S3 bucket. The EC2 instance needs to access the S3 bucket without connectivity to the internet.\nWhich solution will provide private network connectivity to Amazon S3?"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "answers": {
+                    "L": [
+                      {
+                        "M": {
+                          "correct": {
+                            "BOOL": false
+                          },
+                          "explain": {
+                            "S": "You cannot create a DynamoDB table in a VPC, to connect securely using private addresses you should use a gateway endpoint instead."
+                          },
+                          "text": {
+                            "S": "Create the Amazon DynamoDB table in the VPC."
+                          }
+                        }
+                      },
+                      {
+                        "M": {
+                          "correct": {
+                            "BOOL": true
+                          },
+                          "explain": {
+                            "S": "There are two different types of VPC endpoint: interface endpoint, and gateway endpoint. With an interface endpoint you use an ENI in the VPC. With a gateway endpoint you configure your route table to point to the endpoint. Amazon S3 and DynamoDB use gateway endpoints. This solution means that all traffic will go through the VPC endpoint straight to DynamoDB using private IP addresses."
+                          },
+                          "text": {
+                            "S": "Stream the logs to Amazon CloudWatch Logs. Export the logs to the S3 bucket."
+                          }
+                        }
+                      },
+                      {
+                        "M": {
+                          "correct": {
+                            "BOOL": false
+                          },
+                          "explain": {
+                            "S": "An interface endpoint is not used for DynamoDB, you must use a gateway endpoint."
+                          },
+                          "text": {
+                            "S": "Create an interface VPC endpoint in the VPC with an Elastic Network Interface (ENI)."
+                          }
+                        }
+                      },
+                      {
+                        "M": {
+                          "correct": {
+                            "BOOL": false
+                          },
+                          "explain": {
+                            "S": "You cannot create an AWS VPN connection to the Amazon DynamoDB endpoint."
+                          },
+                          "text": {
+                            "S": "Create an AWS VPN connection to the Amazon DynamoDB endpoint."
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "question": {
+                    "S": "A company wishes to restrict access to their Amazon DynamoDB table to specific, private source IP addresses from their VPC. What should be done to secure access to the table?"
+                  }
+                }
+              }
+            ]
+          },
+          "Type": {
+            "S": "quiz"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "ID": {
+            "S": "20"
+          },
+          "Content": {
+            "S": "https://studio-lecture-videos.s3.ap-southeast-1.amazonaws.com/lecture-videos/20-container.mp4"
+          },
+          "Desc": {
+            "S": ""
+          },
+          "Name": {
+            "S": "Container"
+          },
+          "Questions": {
+            "S": ""
+          },
+          "Type": {
+            "S": "video"
+          },
+          "Viewed": {
+            "S": "0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "ID": {
+            "S": "22"
+          },
+          "Content": {
+            "S": "https://studio-lecture-videos.s3.ap-southeast-1.amazonaws.com/lecture-videos/22.fargate.mp4"
+          },
+          "Desc": {
+            "S": ""
+          },
+          "Name": {
+            "S": "AWS Fargate"
+          },
+          "Questions": {
+            "S": ""
+          },
+          "Type": {
+            "S": "video"
+          },
+          "Viewed": {
+            "S": "0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "ID": {
+            "S": "23"
+          },
+          "Content": {
+            "S": "https://studio-lecture-videos.s3.ap-southeast-1.amazonaws.com/lecture-videos/23-ecr.mp4"
+          },
+          "Desc": {
+            "S": ""
+          },
+          "Name": {
+            "S": "Elastic Container Registry"
+          },
+          "Questions": {
+            "S": ""
+          },
+          "Type": {
+            "S": "video"
+          },
+          "Viewed": {
+            "S": "0"
+          }
+        }
+      }
+    }
+  ]
+}
