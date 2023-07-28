@@ -8,7 +8,7 @@ export default class Footer extends React.Component {
                 <a href='/'>Feedback</a>
             </div>
             <div className='footer-div footer-div-right'>
-                <span>©2022, Amazon Web Services, Inc. or its affilites</span>
+                <span>©2023, Amazon Web Services, Inc. or its affilites</span>
                 <a href='/'>Privacy</a>
                 <a href='/'>Term</a>
                 <a href='/'>Cookies preferences</a>
