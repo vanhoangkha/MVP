@@ -206,13 +206,30 @@
           "resourceName": "amplifyhosting"
         }
       ]
+    },
+    "AMPLIFY_storage_lmsstudiof4e07fec_bucketName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "lmsstudiof4e07fec"
+        }
+      ]
+    },
+    "AMPLIFY_storage_lmsstudiof4e07fec_region": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "lmsstudiof4e07fec"
+        }
+      ]
     }
   },
   "storage": {
-    "studioLectureVideos": {
+    "lmsstudiof4e07fec": {
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "service": "S3"
+      "service": "S3",
+      "serviceType": "imported"
     }
   }
 }

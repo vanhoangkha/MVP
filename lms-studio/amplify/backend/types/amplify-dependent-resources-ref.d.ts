@@ -53,11 +53,5 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     }
-  },
-  "storage": {
-    "studioLectureVideos": {
-      "BucketName": "string",
-      "Region": "string"
-    }
   }
 }

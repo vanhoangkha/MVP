@@ -295,7 +295,10 @@
         "lmsStudio": {}
       },
       "storage": {
-        "studioLectureVideos": {}
+        "lmsstudiof4e07fec": {
+          "bucketName": "lecture-resource142735-test",
+          "region": "ap-southeast-1"
+        }
       }
     }
   }

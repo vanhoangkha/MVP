@@ -147,12 +147,16 @@ class CreateCourse extends React.Component {
 
   renderRequirements = () => {
     return (
-      <ul>
-        { this.state.requirements.map((item, index) => <li key={index}>{item}</li>)}
-      </ul>);
+      // <ul>
+      //   { this.state.requirements.map((item, index) => <li key={index}>{item}</li>)}
+      // </ul>
+      <>
+      { this.state.requirements.map((item, index) => <div key={index}>– {item}</div>)}
+      </>
+      );
   }
 
-  renderChapters = () => {
+  renderChapters1 = () => {
     return (<div>
       {this.state.chapters.map((chapter, cIndex) =>
       <ExpandableSection key={cIndex} headerText={chapter.name}>
@@ -164,6 +168,24 @@ class CreateCourse extends React.Component {
     </div>)
   }
 
+  renderChapters = () => {
+    return (
+      <div>
+        {this.state.chapters.map((chapter, cIndex) => (
+          <ExpandableSection key={cIndex} 
+          headerText={chapter.name}
+          variant="container"
+          headerActions={<Button>Add segment</Button>}>
+            <ul>
+              {chapter.items.map((item, index) => (
+                <li key={index}>{item.value}</li>
+              ))}
+            </ul>
+          </ExpandableSection>
+        ))}
+      </div>
+    );
+  };
   render = () => {
 
 
@@ -318,21 +340,17 @@ class CreateCourse extends React.Component {
                               <Input  value={this.state.currentRequirement}
                               onChange={event => this.setState({ currentRequirement: event.detail.value })}/>
                             </FormField>
-                          </SpaceBetween>
                           <Button variant="primary" onClick={() => {
                             this.setState({
                               requirements: [...this.state.requirements, this.state.currentRequirement]});
                             this.setState({currentRequirement: ""});
                           }}>Add requirements</Button>
-                          <ColumnLayout columns={4} variant="text-grid">
-                              <div>
-                                <div>
-                                <ol>
+                           <ColumnLayout columns={2} variant="text-grid">
+                                
                                   { this.renderRequirements()}
-                                </ol> 
-                                </div>
-                              </div>
+                              
                             </ColumnLayout>
+                            </SpaceBetween>
                         </Container>
                       ),
                       isOptional: false,
@@ -340,12 +358,16 @@ class CreateCourse extends React.Component {
                     {
                       title: 'Add Chapter',
                       content: (
+                        <>
+                        <SpaceBetween direction="vertical" size="l">
                         <Container
                           header={
-                            <Header variant="h2">
-                              Add Chapter
+                            <Header variant="h2"
+                            >
+                              Chapter
                             </Header>
                           }
+                          action={this.state.currentChapter.name ? <Button>Add segment</Button> : <></>}
                         >
                           <SpaceBetween direction="vertical" size="l">
                             <FormField label="Chapter Name">
@@ -355,11 +377,12 @@ class CreateCourse extends React.Component {
                                 items: this.state.currentChapter.items
                               } })}/>
                             </FormField>
-                          </SpaceBetween>
-                          <Button variant="primary" onClick={() => this.setState({visible: true})}>Add lectures</Button>
+                            <Button variant="primary" onClick={() => this.setState({visible: true})}>Add</Button>
+                          
                           <ColumnLayout columns={1} variant="text-grid">
                               {this.renderChapters()}
-                            </ColumnLayout>
+                          </ColumnLayout>
+                          
                           <Modal
                             onDismiss={() => this.setState({visible: false})}
                             visible={this.state.visible}
@@ -513,7 +536,13 @@ class CreateCourse extends React.Component {
                                   }
                                 />
                           </Modal>
+                          </SpaceBetween>
                         </Container>
+                        <div style={{textAlign: "center"}}>
+                          <Button variant="primary" onClick={() => this.setState({visible: true})}>Add chapter</Button>
+                        </div>
+                        </SpaceBetween>
+                        </>
                       ),
                       isOptional: false,
                     },
