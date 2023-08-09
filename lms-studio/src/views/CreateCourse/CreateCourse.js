@@ -175,7 +175,7 @@ class CreateCourse extends React.Component {
           <ExpandableSection key={cIndex} 
           headerText={chapter.name}
           variant="container"
-          headerActions={<Button>Add segment</Button>}>
+          headerActions={<Button>Edit</Button>}>
             <ul>
               {chapter.items.map((item, index) => (
                 <li key={index}>{item.value}</li>

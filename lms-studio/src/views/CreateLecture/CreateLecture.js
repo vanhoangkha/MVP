@@ -33,61 +33,66 @@ class CreateLecture extends React.Component {
 
   submitRequest = async () => {
     // console.log(detail);
-    this.setState({submitStatus: -1})
+    this.setState({ submitStatus: -1 });
     if (this.state.lectureType === "Video") {
-      this.uploadLectureVideo(this.state.lectureVideo[0]).then((res) => {
-        this.writeLectureToDB(res.key);
-      }).catch((error) => {
-        this.resetLectureVideo();
-        this.setState({submitStatus: 2})
-      });
-    } else if (this.state.lectureType === "Workshop") {
-      this.uploadArchitectureDiagram(this.state.architectureDiagram[0]).then(
-        (res) => {
+      this.uploadLectureVideo(this.state.lectureVideo[0])
+        .then((res) => {
           this.writeLectureToDB(res.key);
-        }
-      ).catch((error) => {
-        this.resetArchitectureDiagram();
-        this.setState({submitStatus: 2})
-      });
+        })
+        .catch((error) => {
+          this.resetLectureVideo();
+          this.setState({ submitStatus: 2 });
+        });
+    } else if (this.state.lectureType === "Workshop") {
+      this.uploadArchitectureDiagram(this.state.architectureDiagram[0])
+        .then((res) => {
+          this.writeLectureToDB(res.key);
+        })
+        .catch((error) => {
+          this.resetArchitectureDiagram();
+          this.setState({ submitStatus: 2 });
+        });
     } else {
-      this.uploadQuiz(this.state.quiz[0]).then((res) => {
-        this.writeLectureToDB(res.key);
-      }).catch((error) => {
-        this.resetQuiz();
-        this.setState({submitStatus: 2})
-      });
+      this.uploadQuiz(this.state.quiz[0])
+        .then((res) => {
+          this.writeLectureToDB(res.key);
+        })
+        .catch((error) => {
+          this.resetQuiz();
+          this.setState({ submitStatus: 2 });
+        });
     }
   };
-  
 
   writeLectureToDB = (lectureContent) => {
     // console.log(lectureContent)
+
     const jsonData = {
-        ID: uuid(),
-        Name: this.state.lectureTitle,
-        Desc: this.state.lectureDescription,
-        Type: this.state.lectureType,
-        Content: lectureContent,
-        WorkshopUrl: this.state.workshopUrl,
-        WorkshopDescription: this.state.workshopDescription,
-        ArchitectureDiagramS3Key: this.state.architectureDiagramS3Key,
-        QuizS3Key: this.state.quizS3Key,
-      };
-      const apiName = "lmsStudio";
-      const path = "/lectures";
-      API.put(apiName, path, { body: jsonData })
-        .then((response) => {
-          // showToast(SUCCESS, `Uploading lecture successful`)
-          // console.log(`TODO: handle submission response. ID: ${response.id}`);
-          this.setState({ submitStatus: 1, redirectToHome: true });
-        })
-        .catch((error) => {
-           // showToast(ERROR, `Uploading lecture error`)
-          // console.log(error.response);
-          this.setState({submitStatus: 2})
-        });
-  }
+      ID: uuid(),
+      Name: this.state.lectureTitle,
+      Desc: this.state.lectureDescription,
+      Type: this.state.lectureType,
+      Content: lectureContent,
+      Length: this.state.lectureVideoLength.toString(),
+      WorkshopUrl: this.state.workshopUrl,
+      WorkshopDescription: this.state.workshopDescription,
+      ArchitectureDiagramS3Key: this.state.architectureDiagramS3Key,
+      QuizS3Key: this.state.quizS3Key,
+    };
+    const apiName = "lmsStudio";
+    const path = "/lectures";
+    API.put(apiName, path, { body: jsonData })
+      .then((response) => {
+        // showToast(SUCCESS, `Uploading lecture successful`)
+        // console.log(`TODO: handle submission response. ID: ${response.id}`);
+        this.setState({ submitStatus: 1, redirectToHome: true });
+      })
+      .catch((error) => {
+        // showToast(ERROR, `Uploading lecture error`)
+        // console.log(error.response);
+        this.setState({ submitStatus: 2 });
+      });
+  };
 
   getDefaultState = () => {
     return {
@@ -123,7 +128,7 @@ class CreateLecture extends React.Component {
         level: "protected",
       });
       this.setState({ lectureVideoS3Key: s3Key });
-      return res
+      return res;
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
@@ -193,6 +198,30 @@ class CreateLecture extends React.Component {
     }
   };
 
+  setLectureLength = file => new Promise((resolve, reject) => {
+    if ( file.length > 0 ){
+        try {
+            let video = document.createElement('video')
+            video.preload = 'metadata'
+    
+            video.onloadedmetadata = function () {
+                resolve(this)
+            }
+    
+            video.onerror = function () {
+                reject("Invalid video. Please select a video file.")
+            }
+    
+            video.src = window.URL.createObjectURL(file[0])
+        } catch (e) {
+            reject(e)
+        }
+    }else{
+        this.setState({ lectureVideoLength: 0})
+    }
+    
+  })
+
   // render 'Add Content' in step 2
   renderAddContent = () => {
     if (this.state.lectureType === "Video") {
@@ -204,12 +233,14 @@ class CreateLecture extends React.Component {
           <FileUpload
             onChange={async ({ detail }) => {
               this.setState({ lectureVideo: detail.value });
-            //  console.log(detail.value[0])
-            //   if (detail.value.length === 0) {
-            //     this.resetLectureVideo();
-            //   } else {
-            //     this.uploadLectureVideo(detail.value[0]);
-            //   }
+              const video = await this.setLectureLength(detail.value);
+              this.setState({ lectureVideoLength: video.duration})
+              //  console.log(detail.value[0])
+              //   if (detail.value.length === 0) {
+              //     this.resetLectureVideo();
+              //   } else {
+              //     this.uploadLectureVideo(detail.value[0]);
+              //   }
             }}
             value={this.state.lectureVideo}
             i18nStrings={{
@@ -226,6 +257,7 @@ class CreateLecture extends React.Component {
             showFileThumbnail
             tokenLimit={3}
             constraintText=".mov, .mp4"
+            accept=".mov,.mp4"
           />
         </FormField>
       );
@@ -277,6 +309,7 @@ class CreateLecture extends React.Component {
               showFileThumbnail
               tokenLimit={3}
               constraintText=".jpeg, .png"
+              accept=".jpg,.jpeg,.png"
             />
           </FormField>
         </div>
@@ -287,11 +320,11 @@ class CreateLecture extends React.Component {
           <FileUpload
             onChange={async ({ detail }) => {
               this.setState({ quiz: detail.value });
-            //   if (detail.value.length === 0) {
-            //     this.resetQuiz();
-            //   } else {
-            //     this.uploadQuiz(detail.value[0]);
-            //   }
+              //   if (detail.value.length === 0) {
+              //     this.resetQuiz();
+              //   } else {
+              //     this.uploadQuiz(detail.value[0]);
+              //   }
             }}
             value={this.state.quiz}
             i18nStrings={{
@@ -307,7 +340,8 @@ class CreateLecture extends React.Component {
             showFileSize
             showFileThumbnail
             tokenLimit={3}
-            constraintText=".json"
+            constraintText=".csv"
+            accept=".csv"
           />
         </FormField>
       );
@@ -321,7 +355,11 @@ class CreateLecture extends React.Component {
         <ColumnLayout columns={2} variant="text-grid">
           <div>
             <Box variant="awsui-key-label">File name</Box>
-            <div>{this.state.lectureVideo.length > 0 ? this.state.lectureVideo[0].name : ""}</div>
+            <div>
+              {this.state.lectureVideo.length > 0
+                ? this.state.lectureVideo[0].name
+                : ""}
+            </div>
           </div>
         </ColumnLayout>
       );
@@ -347,7 +385,9 @@ class CreateLecture extends React.Component {
         <ColumnLayout columns={3} variant="text-grid">
           <div>
             <Box variant="awsui-key-label">File name</Box>
-            <div>{this.state.quiz.length > 0 ? this.state.quiz[0].name : ""}</div>
+            <div>
+              {this.state.quiz.length > 0 ? this.state.quiz[0].name : ""}
+            </div>
           </div>
         </ColumnLayout>
       );
@@ -476,7 +516,9 @@ class CreateLecture extends React.Component {
                               ? errorMess
                               : successMes}
                           </Alert>
-                        ) : (<></>)}
+                        ) : (
+                          <></>
+                        )}
                         <Header
                           variant="h3"
                           actions={
