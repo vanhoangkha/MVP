@@ -13,6 +13,7 @@ import "@cloudscape-design/global-styles/index.css";
 // Import React Router
 import {
   createBrowserRouter,
+  createHashRouter,
   RouterProvider,
   Navigate,
 } from "react-router-dom";
@@ -37,7 +38,7 @@ import CreateCourse from './views/CreateCourse/CreateCourse';
 Amplify.configure(awsExports);
 
 // Configure Router
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <Management />,

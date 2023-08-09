@@ -130,7 +130,7 @@ const MyLectures = () => {
                 >
                   Actions
                 </ButtonDropdown>
-                <Button variant="primary" href="/createLecture">Create Lecture</Button>
+                <Button variant="primary" href="/#/createLecture">Create Lecture</Button>
               </SpaceBetween>
             }
           >
