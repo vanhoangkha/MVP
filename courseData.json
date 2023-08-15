@@ -1,5 +1,5 @@
 {
-  "courses-devabc": [
+  "courses-test": [
     {
       "PutRequest": {
         "Item": {
@@ -25,7 +25,7 @@
                       {
                         "M": {
                           "lectureId": {
-                            "S": "1"
+                            "S": "ba82a9fc-aff5-43f7-8e40-12c0b4627369"
                           },
                           "length": {
                             "N": "490"
@@ -41,10 +41,10 @@
                       {
                         "M": {
                           "lectureId": {
-                            "S": "2"
+                            "S": "2c7a34a0-e228-4c2e-965b-91cb0ff3b7fc"
                           },
                           "length": {
-                            "N": "302"
+                            "N": "0"
                           },
                           "name": {
                             "S": "Subnet"
@@ -57,16 +57,16 @@
                       {
                         "M": {
                           "lectureId": {
-                            "S": "3"
+                            "S": "ab26ba2f-9f2d-4fa2-9a24-3fc8ceb0107e"
                           },
                           "length": {
-                            "N": "333"
+                            "N": "0"
                           },
                           "name": {
-                            "S": "Availability Zones"
+                            "S": "Billing Quiz"
                           },
                           "type": {
-                            "S": "video"
+                            "S": "quiz"
                           }
                         }
                       }
@@ -74,65 +74,6 @@
                   },
                   "name": {
                     "S": "Networking"
-                  }
-                }
-              },
-              {
-                "M": {
-                  "lectures": {
-                    "L": [
-                      {
-                        "M": {
-                          "lectureId": {
-                            "S": "20"
-                          },
-                          "length": {
-                            "N": "36"
-                          },
-                          "name": {
-                            "S": "Container"
-                          },
-                          "type": {
-                            "S": "video"
-                          }
-                        }
-                      },
-                      {
-                        "M": {
-                          "lectureId": {
-                            "S": "22"
-                          },
-                          "length": {
-                            "N": "91"
-                          },
-                          "name": {
-                            "S": "AWS Fargate"
-                          },
-                          "type": {
-                            "S": "video"
-                          }
-                        }
-                      },
-                      {
-                        "M": {
-                          "lectureId": {
-                            "S": "23"
-                          },
-                          "length": {
-                            "N": "44"
-                          },
-                          "name": {
-                            "S": "Elastic Container Registry"
-                          },
-                          "type": {
-                            "S": "video"
-                          }
-                        }
-                      }
-                    ]
-                  },
-                  "name": {
-                    "S": "Container"
                   }
                 }
               }

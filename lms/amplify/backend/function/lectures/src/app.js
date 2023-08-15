@@ -136,6 +136,38 @@ app.get(path + hashKeyPath, function(req, res) {
   });
 });
 
+app.put(path + hashKeyPath, function(req, res) {
+  const params = {};
+  if (userIdPresent && req.apiGateway) {
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  } else {
+    params[partitionKeyName] = req.params[partitionKeyName];
+    try {
+      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
+
+  let upadteItemParams = {
+    TableName: tableName,
+    Key: params,
+    UpdateExpression: 'set #views = #views + :unit',
+    ExpressionAttributeNames: {'#views' : 'Views'},
+    ExpressionAttributeValues:{
+      ":unit": 1,
+    }
+  }
+  dynamodb.update(upadteItemParams, (err, data) => {
+    if(err) {
+      res.statusCode = 500;
+      res.json({error: 'Could not update item: ' + err.message});
+    } else {
+      res.json(data);
+    }
+  })
+})
 
 // /************************************
 // * HTTP put method for insert object *

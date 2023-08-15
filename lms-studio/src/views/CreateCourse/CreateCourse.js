@@ -1,471 +1,777 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import NavBar from "../../components/NavBar/NavBar";
-import BreadcrumbGroup from '@cloudscape-design/components/breadcrumb-group';
-import Wizard from "@cloudscape-design/components/wizard";
-import FormField from '@cloudscape-design/components/form-field';
-import Input from '@cloudscape-design/components/input';
-import Container from '@cloudscape-design/components/container';
-import Modal from "@cloudscape-design/components/modal";
-import Header from '@cloudscape-design/components/header';
-import SpaceBetween from '@cloudscape-design/components/space-between';
-import Link from '@cloudscape-design/components/link';
-import Button from '@cloudscape-design/components/button';
-import Toggle from '@cloudscape-design/components/toggle';
-import Box from '@cloudscape-design/components/box';
-import ColumnLayout from '@cloudscape-design/components/column-layout';
-import Cards from "@cloudscape-design/components/cards";
-import TextFilter from "@cloudscape-design/components/text-filter";
-import Pagination from "@cloudscape-design/components/pagination";
-import CollectionPreferences from "@cloudscape-design/components/collection-preferences";
+import {
+    BreadcrumbGroup,
+    Wizard,
+    FormField,
+    Input,
+    Container,
+    Modal,
+    Header,
+    SpaceBetween,
+    Button,
+    Toggle,
+    Box,
+    ColumnLayout,
+    Cards,
+    TextFilter,
+    Textarea,
+    Alert,
+    Pagination,
+    CollectionPreferences,
+} from "@cloudscape-design/components";
+import { useCollection } from '@cloudscape-design/collection-hooks';
 import Footer from "../../components/Footer/Footer";
 import { withAuthenticator } from "@aws-amplify/ui-react";
-import SideNavigation from "@cloudscape-design/components/side-navigation";
-import Applayout from "@cloudscape-design/components/app-layout";
+import Icon from "@cloudscape-design/components/icon";
 import { useNavigate } from "react-router-dom";
 import ExpandableSection from "@cloudscape-design/components/expandable-section";
-import { createElement } from 'react';
-// import {v4 as uuid} from uuid;
-import {API} from 'aws-amplify'
+import { API } from "aws-amplify";
+import "./Course.css";
 
-class CreateCourse extends React.Component {
-  constructor(props) {
-      super(props);
-      this.state = this.getDefaultState();
+const successMes = "Created success";
+const errorMess = "Error! An error occurred. Please try again later";
+
+function EmptyState({ title, subtitle, action }) {
+    return (
+      <Box textAlign="center" color="inherit">
+        <Box variant="strong" textAlign="center" color="inherit">
+          {title}
+        </Box>
+        <Box variant="p" padding={{ bottom: 's' }} color="inherit">
+          {subtitle}
+        </Box>
+        {action}
+      </Box>
+    );
   }
-  componentDidMount() {
-    const apiName = 'lmsStudio'
-    const path = '/lectures/public'
-    
-    API.get(apiName, path)
-    .then((response) => {
-        this.setState({existingLectures: response});
-    })
-    .catch((error) => {
-        console.log(error.response);
-    });
-}
-  // createCourseSubmission = () => {
-  //   const apiName = 'lmsStudio';
-  //   const path = '/courses';
-  //   const jsonData = {
-  //     "ID": "SAA",
-  //     "Categories": [
-  //      "Networking",
-  //      "Storage"
-  //     ],
-  //     "Chapters": [
-  //      {
-  //       "lectures": [
-  //        {
-  //         "lectureId": "course-intro-aws-fundamental",
-  //         "length": 200,
-  //         "name": "What is AWS?",
-  //         "type": "video"
-  //        },
-  //        {
-  //         "lectureId": "aws-account",
-  //         "length": 95,
-  //         "name": "Create AWS account",
-  //         "type": "lab"
-  //        }
-  //       ],
-  //       "name": "Introduction"
-  //      },
-  //      {
-  //       "lectures": [
-  //        {
-  //         "lectureId": "ec2",
-  //         "length": 15,
-  //         "name": "EC2 introduction",
-  //         "type": "video"
-  //        },
-  //        {
-  //         "lectureId": "ec2-deep-dive",
-  //         "length": 15,
-  //         "name": "EC2 deep dive",
-  //         "type": "video"
-  //        },
-  //        {
-  //         "lectureId": "s3",
-  //         "length": 15,
-  //         "name": "Amazon S3 introduction",
-  //         "type": "video"
-  //        }
-  //       ],
-  //       "name": "Compute Services"
-  //      }
-  //     ],
-  //     "Description": "In this lab, users will programmatically deploy Cisco Secure Firewall Threat Defence (FTDv) and Firewall Management Center (FMC) using Infrastructure as Code (Terraform). The firewalls will be placed behind a network load balancer. User will also programmatically configure the firewalls once onboarded to ensure it allows required traffic flow from internet to the test machine setup in the AWS environment.",
-  //     "Last Updated": 1686760629,
-  //     "Length": 15,
-  //     "Level": "300",
-  //     "Name": "AWS Solution Architect Associate",
-  //     "Requirements": this.state.requirements,
-  //     "Tags": [
-  //      "EC2",
-  //      "Marketplace"
-  //     ],
-  //     "Difficulty: this.state.difficulty,
-  //     "WhatToLearn": [
-  //      "FULLY UPDATED FOR ANS-C00: Pass the AWS Certified Networking Specialty Certification",
-  //      "Learn networking on AWS in depth",
-  //      "All 700+ slides available as downloadable PDF",
-  //      "Practice alongside several advanced hands-on"
-  //     ]
-  //    }
-  //   API.put(apiName, path, { body: jsonData })
-  //       .then((response) => {
-  //           console.log(`TODO: handle submission response. ID: ${response.ID}`)
-  //       })
-  //       .catch((error) => {
-  //           console.log(error.response);
-  //       });
-  // }
 
-  getDefaultState = () => {
-    return {
-        activeHref: "/",
-        activeStepIndex: 0,
-        name: "",
-        description: "",
-        publicity: false,
-        difficulty: false,
-        currentRequirement: "",
-        requirements: [],
+function CreateCourse(props) {
+  const [state, setState] = useState({
+    activeHref: "/",
+    activeStepIndex: 0,
+    name: "",
+    description: "",
+    categories: "",
+    currentBenefit: "",
+    whatToLearn: [],
+    level: "",
+    publicity: false,
+    difficulty: false,
+    length: 0,
+    currentRequirement: "",
+    requirements: [],
+    currentChapter: {
+      name: "",
+      lectures: [],
+    },
+    existingLectures: [],
+    chapters: [],
+    visible: false,
+    selectedLectures: [],
+    editChapter: {
+      index: -1,
+      name: "",
+      lectures: [],
+    },
+    submitStatus: 0,
+  })
+
+  let draggedItem, draggedIdx;
+
+  const [preferences, setPreferences] = useState({ pageSize: 6, visibleContent: ["description", "type", "size"] });
+  const { items, actions, filteredItemsCount, collectionProps, filterProps, paginationProps } = useCollection(
+    state.existingLectures,
+    {
+      filtering: {
+        empty: <EmptyState title="No instances" action={<Button>Create instance</Button>} />,
+        noMatch: (
+          <EmptyState
+            title="No matches"
+            action={<Button onClick={() => actions.setFiltering('')}>Clear filter</Button>}
+          />
+        ),
+      },
+      pagination: { pageSize: preferences.pageSize },
+      sorting: {},
+      selection: {},
+    }
+  );
+
+  useEffect(() => {
+    const apiName = "lmsStudio";
+    const path = "/lectures/public";
+
+    API.get(apiName, path)
+      .then((response) => {
+        console.log(response)
+        setState({ ...state, existingLectures: response });
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  }, [])
+
+  const deleteRequirement = (index) => {
+    let list = [...state.requirements]
+    list.splice(index, 1);
+    setState({...state, requirements: list})
+  }
+
+  const deleteBenefit = (index) => {
+    let list = [...state.whatToLearn]
+    list.splice(index, 1);
+    setState({...state, whatToLearn: list})
+  }
+
+  const renderRequirements = () => {
+    // console.log(state)
+    // setState({...state, requirements: ["Một", "hai"]})
+    return <>
+        {state.requirements.map((item, index) => (
+          <div className="requirement-item">
+            <li className="requirement-item-haft" key={index}>
+              {item}
+            </li>
+            <div
+              className="requirement-item-haft"
+              style={{ textAlign: "right"}}
+              onClick={(e) => deleteRequirement(index)}
+            >
+              <Icon name="close" size="inherit" />
+            </div>
+          </div>
+        ))}
+      </>
+  };
+
+  const renderWhatToLearn = () => {
+    // console.log(state)
+    // setState({...state, requirements: ["Một", "hai"]})
+    return <>
+        {state.whatToLearn.map((item, index) => (
+          <div className="requirement-item">
+            <li className="requirement-item-haft" key={index}>
+              {item}
+            </li>
+            <div
+              className="requirement-item-haft"
+              style={{ textAlign: "right"}}
+              onClick={(e) => deleteBenefit(index)}
+            >
+              <Icon name="close" size="inherit" />
+            </div>
+          </div>
+        ))}
+      </>
+  };
+
+
+  const onDragLectureStart = (e, index) => {
+    draggedItem = state.editChapter.lectures[index];
+    e.dataTransfer.effectAllowed = "move";
+    console.log("onDragLectureStart")
+    // e.dataTransfer.setData("text/html", e.target.parentNode);
+    // e.dataTransfer.setDragImage(e.target.parentNode, 20, 20);
+  };
+
+  const onDragLectureOver = (e, index) => {
+    const draggedOverItem = state.editChapter.lectures[index];
+
+    // if the item is dragged over itself, ignore
+    if (draggedItem === draggedOverItem || !draggedItem) {
+      return;
+    }
+
+    console.log(draggedItem)
+
+    // filter out the currently dragged item
+    let items = state.editChapter.lectures.filter(item => item !== draggedItem);
+
+    // add the dragged item after the dragged over item
+    items.splice(index, 0, draggedItem);
+
+    // set updated items for chapters
+    let chapterList = state.editChapter;
+    chapterList.lectures = items;
+    setState({ ...state, editChapter: chapterList})
+  };
+
+  const onDragLectureEnd = () => {
+    draggedIdx = null;
+  };
+  
+  const editChapter = (e, cIndex) => {
+    let chapter = state.chapters[cIndex];
+    let selectedLectures = [];
+    chapter.index = cIndex;
+    for ( let i = 0; i < chapter.lectures.length; i++ ){
+        selectedLectures.push({
+            Name: chapter.lectures[i].name,
+            ID: chapter.lectures[i].lectureId,
+            Type: chapter.lectures[i].type,
+            Length: chapter.lectures[i].length
+        })
+    }
+    setState({ ...state, 
+        editChapter: chapter,
+        selectedLectures: selectedLectures,
+    });
+  }
+
+  const saveEditChapter = () => {
+    const existChapters = state.chapters;
+    existChapters[state.editChapter.index] = state.editChapter
+    setState({
+        ...state,
+        chapters: existChapters,
+        editChapter: {
+            index: -1,
+            name: "",
+            lectures: [],
+        },
+        selectedLectures: [],
+    })
+  }
+
+  const deleteLecture = (index) => {
+    let newEditChapter = state.editChapter
+    let selectedLec = [...state.selectedLectures]
+    newEditChapter.lectures.splice(index, 1);
+    setState({...state, 
+        editChapter: newEditChapter,
+        selectedLectures: selectedLec.splice(index, 1),
+    })
+  }
+
+  const updateLectureForChapter = () => {
+    const newlySelectedLectures = state.selectedLectures.map((lecture) => {
+      return {
+        name: lecture.Name,
+        lectureId: lecture.ID,
+        type: lecture.Type,
+        length: lecture.Length,
+      };
+    });
+    
+
+    if (state.editChapter.index === -1) {
+      const updatedCurrChapter = {
+        name: state.currentChapter.name,
+        lectures: state.currentChapter.lectures.concat(newlySelectedLectures),
+      };
+
+      setState({
+        ...state,
+        selectedLectures: [],
         currentChapter: {
           name: "",
-          items: []
+          lectures: [],
         },
-        existingLectures: [
-        ],
-        chapters: [],
+        chapters: [...state.chapters, updatedCurrChapter],
         visible: false,
-        selectedLectures: []
+      });
+    }else {
+        setState({
+            ...state,
+            editChapter: {...state.editChapter, lectures: newlySelectedLectures},
+            visible: false,
+        })
     }
+  };
+
+  const convertNameToID = (name) => {
+    const str_name = name.toLowerCase().split(" ");
+    const id = "";
+    str_name.map((item) => id = id + "-" + item)
+    return id;
   }
 
-  renderRequirements = () => {
+  const submitCourse = () => {
+    console.log(state);
+    let courseLength = 0;
+    let categories = state.categories.split(",")
+    state.chapters.map((chapter) => {
+        chapter.lectures.map((lecture)=> {
+            courseLength += lecture.length
+        })
+    })
+
+    const jsonData = {
+        ID: convertNameToID(state.name),
+        Name: state.name,
+        Description: state.description,
+        Length: courseLength,
+        Name: state.name,
+        Categories: categories,
+        Requirements: state.requirements,
+        Difficulty: state.difficulty,
+        WhatToLearn: state.whatToLearn,
+        Chapters: state.chapters,
+    }
+
+    const apiName = "lmsStudio";
+    const path = "/courses";
+
+    API.post(apiName, path, {body: jsonData})
+    .then((response) => {
+        setState({ submitStatus: 1, redirectToHome: true });
+      })
+      .catch((error) => {
+        setState({ submitStatus: 2 });
+      });
+
+  }
+
+  const renderEditForm = () => {
+    console.log(state.editChapter)
     return (
-      // <ul>
-      //   { this.state.requirements.map((item, index) => <li key={index}>{item}</li>)}
-      // </ul>
-      <>
-      { this.state.requirements.map((item, index) => <div key={index}>– {item}</div>)}
-      </>
-      );
-  }
-
-  renderChapters1 = () => {
-    return (<div>
-      {this.state.chapters.map((chapter, cIndex) =>
-      <ExpandableSection key={cIndex} headerText={chapter.name}>
-      <ul>
-      { chapter.items.map((item, index) => <li key={index}>{item.value}</li>)}
-      </ul>
-    </ExpandableSection>
-    )}
-    </div>)
-  }
-
-  renderChapters = () => {
-    return (
-      <div>
-        {this.state.chapters.map((chapter, cIndex) => (
-          <ExpandableSection key={cIndex} 
-          headerText={chapter.name}
-          variant="container"
-          headerActions={<Button>Edit</Button>}>
+      <Container
+        header={
+          <Header
+            variant="h2"
+            description="Change information and items of chapter"
+            actions={<Button onClick={saveEditChapter}>Save</Button>}
+          >
+            {state.editChapter.name}
+          </Header>
+        }
+      >
+        <SpaceBetween size="s">
+          <FormField label="Chapter Name">
+            <Input
+              value={state.editChapter.name}
+              onChange={(event) =>
+                setState({
+                  ...state,
+                  editChapter: {
+                    ...state.editChapter,
+                    name: event.detail.value,
+                  },
+                })
+              }
+            />
+          </FormField>
+          <div>
+            <h4>Lecture List</h4>
             <ul>
-              {chapter.items.map((item, index) => (
-                <li key={index}>{item.value}</li>
+              {state.editChapter.lectures.map((item, index) => (
+                <li
+                  key={index}
+                  draggable
+                  onDragStart={(e) =>
+                    onDragLectureStart(e, index)
+                  }
+                  onDragEnd={onDragLectureEnd}
+                  onDragOver={(e) => onDragLectureOver(e, index)}
+                >
+                  {item.name}
+                  <span onClick={() => deleteLecture(index)}><Icon name="close" size="inherit"/></span>
+                </li>
               ))}
             </ul>
-          </ExpandableSection>
-        ))}
+          </div>
+        </SpaceBetween>
+        <Button
+          variant="primary"
+          onClick={() =>
+            setState({
+              ...state,
+              visible: true,
+            })
+          }
+        >
+          Add more lecture
+        </Button>
+      </Container>
+    );
+  };
+
+  const renderChapters = () => {
+    return (
+      <div className="lecture-list">
+        <SpaceBetween size="xs">
+          {state.chapters.map((chapter, cIndex) => {
+            return (
+              <>
+                {state.editChapter.index === cIndex ? (
+                  <>
+                    {renderEditForm()}
+                  </>
+                ) : (
+                  <ExpandableSection
+                    key={cIndex}
+                    headerText={chapter.name}
+                    variant="container"
+                    headerActions={
+                      <Button onClick={(e) => editChapter(e, cIndex)}>
+                        Edit
+                      </Button>
+                    }
+                  >
+                    <ul>
+                      {chapter.lectures.map((item, index) => (
+                        <li
+                          key={index}
+                          draggable
+                          onDragStart={(e) =>
+                            onDragLectureStart(e, cIndex, index)
+                          }
+                          onDragEnd={onDragLectureEnd}
+                          onDragOver={() => onDragLectureOver(cIndex, index)}
+                        >
+                          {item.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </ExpandableSection>
+                )}
+              </>
+            );
+          })}
+        </SpaceBetween>
       </div>
     );
   };
-  render = () => {
 
-
-    
-  return (
-    <>
-      <NavBar navigation={this.props.navigation} title="Cloud Academy" />
-      <div className="dashboard-main">
-        <Applayout
-          navigation={
-            <SideNavigation
-              activeHref={this.state.activeHref}
-              header={{ href: "/", text: "Management" }}
-              onFollow={(event) => {
-                if (!event.detail.external) {
-                  event.preventDefault();
-                  const href =
-                    event.detail.href === "/"
-                      ? "myLectures"
-                      : event.detail.href;
-                  this.setState({activeHref: href});
-                  this.navigate(`/management/${href}`);
-                }
-              }}
-              items={[
-                {
-                  type: "section",
-                  text: "Lectures",
-                  items: [
-                    {
-                      type: "link",
-                      text: "My Lectures",
-                      href: "myLectures",
-                    },
-                    {
-                      type: "link",
-                      text: "Public Lectures",
-                      href: "publicLectures",
-                    },
-                  ],
-                },
-                {
-                  type: "section",
-                  text: "Courses",
-                  items: [
-                    {
-                      type: "link",
-                      text: "My Courses",
-                      href: "myCourses",
-                    },
-                    {
-                      type: "link",
-                      text: "Public Courses",
-                      href: "publicCourses",
-                    },
-                  ],
-                },
-                { type: "link", text: "User", href: "user" },
-                { type: "link", text: "Leaderboard", href: "leaderboard" },
-              ]}
-            />
-          }
-          content={
-            <div style={{ padding: 32 }}>
-              <Outlet />
+    return state.redirectToHome ? (
+      <Navigate to={"/"} />
+    ) : (
+      <>
+        <NavBar navigation={props.navigation} title="Cloud Academy" />
+        <div className="dashboard-main">
+          <div>
+            <Outlet />
+            <div style={{ paddingLeft: 20 }}>
               <BreadcrumbGroup
                 items={[
-                  { text: 'Home', href: '#' },
-                  { text: 'Course Management', href: '#components' },
+                  { text: "Home", href: "#" },
+                  { text: "Course Management", href: "#components" },
                 ]}
                 ariaLabel="Breadcrumbs"
               />
-              <div className="dashboard-main">
-                <Outlet />
-                <Wizard
-                  i18nStrings={{
-                    stepNumberLabel: (stepNumber) => `Step ${stepNumber}`,
-                    collapsedStepsLabel: (stepNumber, stepsCount) =>
-                      `Step ${stepNumber} of ${stepsCount}`,
-                    skipToButtonLabel: (step, stepNumber) =>
-                      `Skip to ${step.title}`,
-                    navigationAriaLabel: 'Steps',
-                    cancelButton: 'Cancel',
-                    previousButton: 'Previous',
-                    nextButton: 'Next',
-                    submitButton: 'Create course',
-                    optional: 'optional',
-                  }}
-                  onSubmit={() => console.log(this.state)}
-                  onNavigate={({ detail }) =>
-                    this.setState({activeStepIndex: detail.requestedStepIndex})
-                  }
-                  activeStepIndex={this.state.activeStepIndex}
-                  //allowSkipTo
-                  steps={[
-                    {
-                      title: 'Add Course Detail',
-                      //info: <Link variant="info">Info</Link>,
-                      //description:
-                      //  'Each instance type includes one or more instance sizes, allowing you to scale your resources to the requirements of your target workload.',
-                      content: (
-                        <Container
-                          header={
-                            <Header variant="h2">
-                              Add Course Detail
-                            </Header>
-                          }
-                        >
-                          <SpaceBetween direction="vertical" size="l">
-                            <FormField label="Course Title">
-                              <Input value={this.state.name}
-                              onChange={event => this.setState({ name: event.detail.value })}/>
-                            </FormField>
-                            <FormField label="Course Description">
-                              <Input value={this.state.description}
-                              onChange={event => this.setState({ description: event.detail.value })} />
-                            </FormField>
-                          </SpaceBetween>
-                            <p><strong>Course Publicity</strong></p>
-                            <Toggle
-                              onChange={({ detail }) =>
-                                this.setState({publicity: detail.checked})
-                              }
-                              checked={this.state.publicity}
-                            >
-                              Public Course
-                            </Toggle>
-                            <p><strong>Course Difficulty</strong></p>
-                            <Toggle
-                              onChange={({ detail }) =>
-                                this.setState({difficulty: detail.checked})
-                              }
-                              checked={this.state.difficulty}
-                            >
-                              Flexible
-                            </Toggle>
-                        </Container>
-                      ),
-                    },
-                    {
-                      title: 'Add requirements',
-                      content: (
-                        <Container
-                          header={
-                            <Header variant="h2">
-                            Requirements
-                            </Header>
-                          }
-                        >
-                          <SpaceBetween direction="vertical" size="l">
-                            <FormField label="Requirement">
-                              <Input  value={this.state.currentRequirement}
-                              onChange={event => this.setState({ currentRequirement: event.detail.value })}/>
-                            </FormField>
-                          <Button variant="primary" onClick={() => {
-                            this.setState({
-                              requirements: [...this.state.requirements, this.state.currentRequirement]});
-                            this.setState({currentRequirement: ""});
-                          }}>Add requirements</Button>
-                           <ColumnLayout columns={2} variant="text-grid">
-                                
-                                  { this.renderRequirements()}
-                              
-                            </ColumnLayout>
-                            </SpaceBetween>
-                        </Container>
-                      ),
-                      isOptional: false,
-                    },
-                    {
-                      title: 'Add Chapter',
-                      content: (
-                        <>
+            </div>
+            <div className="dashboard-main" style={{ padding: "0 20px" }}>
+              <Outlet />
+              <Wizard
+                i18nStrings={{
+                  stepNumberLabel: (stepNumber) => `Step ${stepNumber}`,
+                  collapsedStepsLabel: (stepNumber, stepsCount) =>
+                    `Step ${stepNumber} of ${stepsCount}`,
+                  skipToButtonLabel: (step, stepNumber) =>
+                    `Skip to ${step.title}`,
+                  navigationAriaLabel: "Steps",
+                  cancelButton: "Cancel",
+                  previousButton: "Previous",
+                  nextButton: "Next",
+                  submitButton: "Create course",
+                  optional: "optional",
+                }}
+                onSubmit={submitCourse}
+                onNavigate={({ detail }) =>
+                  setState({
+                    ...state,
+                    activeStepIndex: detail.requestedStepIndex,
+                  })
+                }
+                activeStepIndex={state.activeStepIndex}
+                steps={[
+                  {
+                    title: "Add Course Detail",
+                    content: (
+                      <Container
+                        header={<Header variant="h2">Add Course Detail</Header>}
+                      >
                         <SpaceBetween direction="vertical" size="l">
-                        <Container
-                          header={
-                            <Header variant="h2"
-                            >
-                              Chapter
-                            </Header>
-                          }
-                          action={this.state.currentChapter.name ? <Button>Add segment</Button> : <></>}
-                        >
-                          <SpaceBetween direction="vertical" size="l">
-                            <FormField label="Chapter Name">
-                              <Input value={this.state.currentChapter.name}
-                              onChange={event => this.setState({ currentChapter: {
-                                name: event.detail.value,
-                                items: this.state.currentChapter.items
-                              } })}/>
-                            </FormField>
-                            <Button variant="primary" onClick={() => this.setState({visible: true})}>Add</Button>
-                          
-                          <ColumnLayout columns={1} variant="text-grid">
-                              {this.renderChapters()}
-                          </ColumnLayout>
-                          
-                          <Modal
-                            onDismiss={() => this.setState({visible: false})}
-                            visible={this.state.visible}
-                            size="max"
-                            footer={
-                              <Box float="right">
-                                <SpaceBetween direction="horizontal" size="xs">
-                                  <Button variant="link" onClick={() => {
-                                    const selectedLecturesSize = this.state.selectedLectures.length;
-                                    this.setState({
-                                      selectedLectures: [],
-                                      currentChapter: {
-                                      name: this.state.currentChapter.name,
-                                      items: this.state.currentChapter.items.slice(0, this.state.currentChapter.items.length - selectedLecturesSize)
-                                    }})
-                                    this.setState({visible: false})
-                                  }}>Cancel</Button>
-                                  <Button variant="primary" onClick={() =>{
-                                    const newlySelectedLectures = this.state.selectedLectures.map((lecture) => {
-                                      return {
-                                        type: lecture.Type,
-                                        value: lecture.Name
-                                      }
-                                    })
-                                    const updatedCurrChapter = {
-                                      name: this.state.currentChapter.name,
-                                      items: this.state.currentChapter.items.concat(newlySelectedLectures)
-                                    }
-                                    this.setState({
-                                      selectedLectures: [],
-                                      currentChapter: {
-                                        name: "",
-                                        items: []
-                                      },
-                                      chapters: [...this.state.chapters, updatedCurrChapter],
-                                      visible: false
-                                    })
-                                  }}>Ok</Button>
-                                </SpaceBetween>
-                              </Box>
-                            }
-                            header="Add Chapter"
+                          <FormField label="Course Title">
+                            <Input
+                              value={state.name}
+                              onChange={(event) =>
+                                setState({ ...state, name: event.detail.value })
+                              }
+                            />
+                          </FormField>
+                          <FormField label="Course Description">
+                            <Textarea
+                              value={state.description}
+                              rows={4}
+                              onChange={(event) =>
+                                setState({
+                                  ...state,
+                                  description: event.detail.value,
+                                })
+                              }
+                            />
+                          </FormField>
+                          <FormField
+                            label="Category"
+                            description="Each category is separated by a comma"
                           >
-                                <Cards
-                                  onSelectionChange={({ detail }) =>
-                                    {
-                                      this.setState({selectedLectures: detail.selectedItems})
-                                    }
+                            <Input
+                              value={state.categories}
+                              placeholder="Network, Container"
+                              onChange={(event) =>
+                                setState({
+                                  ...state,
+                                  categories: event.detail.value,
+                                })
+                              }
+                            />
+                          </FormField>
+                          <FormField label="Level">
+                            <Input
+                              value={state.level}
+                              onChange={(event) =>
+                                setState({
+                                  ...state,
+                                  level: event.detail.value,
+                                })
+                              }
+                            />
+                          </FormField>
+                        </SpaceBetween>
+                        <p>
+                          <strong>Course Publicity</strong>
+                        </p>
+                        <Toggle
+                          onChange={({ detail }) =>
+                            setState({ ...state, publicity: detail.checked })
+                          }
+                          checked={state.publicity}
+                        >
+                          Public Course
+                        </Toggle>
+                        <p>
+                          <strong>Course Difficulty</strong>
+                        </p>
+                        <Toggle
+                          onChange={({ detail }) =>
+                            setState({ ...state, difficulty: detail.checked })
+                          }
+                          checked={state.difficulty}
+                        >
+                          Flexible
+                        </Toggle>
+                      </Container>
+                    ),
+                  },
+                  {
+                    title: "Add Requirements",
+                    content: (
+                      <Container
+                        header={<Header variant="h2">Requirements</Header>}
+                      >
+                        <SpaceBetween direction="vertical" size="l">
+                          <FormField label="Requirement">
+                            <Input
+                              value={state.currentRequirement}
+                              onChange={(event) =>
+                                setState({
+                                  ...state,
+                                  currentRequirement: event.detail.value,
+                                })
+                              }
+                            />
+                          </FormField>
+                          <Button
+                            variant="primary"
+                            onClick={() => {
+                              let newReq = state.currentRequirement;
+                              setState({
+                                ...state,
+                                requirements: [...state.requirements, newReq],
+                                currentRequirement: "",
+                              });
+
+                              // setState({ ...state, currentRequirement: "" });
+                            }}
+                          >
+                            Add requirements
+                          </Button>
+                          <ColumnLayout columns={2} variant="text-grid">
+                            {renderRequirements()}
+                          </ColumnLayout>
+                        </SpaceBetween>
+                      </Container>
+                    ),
+                    isOptional: false,
+                  },
+                  {
+                    title: "Add Benefits",
+                    content: (
+                      <Container
+                        header={<Header variant="h2">Benefits</Header>}
+                      >
+                        <SpaceBetween direction="vertical" size="l">
+                          <FormField label="Benefit">
+                            <Input
+                              value={state.currentBenefit}
+                              onChange={(event) =>
+                                setState({
+                                  ...state,
+                                  currentBenefit: event.detail.value,
+                                })
+                              }
+                            />
+                          </FormField>
+                          <Button
+                            variant="primary"
+                            onClick={() => {
+                              let newBenefit = state.currentBenefit;
+                              setState({
+                                ...state,
+                                whatToLearn: [...state.whatToLearn, newBenefit],
+                                currentBenefit: "",
+                              });
+
+                              // setState({ ...state, currentRequirement: "" });
+                            }}
+                          >
+                            Add benefit
+                          </Button>
+                          <ColumnLayout columns={2} variant="text-grid">
+                            {renderWhatToLearn()}
+                          </ColumnLayout>
+                        </SpaceBetween>
+                      </Container>
+                    ),
+                    isOptional: false,
+                  },
+                  {
+                    title: "Add Chapter",
+                    content: (
+                      <>
+                        <SpaceBetween direction="vertical" size="l">
+                          <Container
+                            header={<Header variant="h2">Chapter</Header>}
+                          >
+                            <SpaceBetween direction="vertical" size="l">
+                              <FormField label="Chapter Name">
+                                <Input
+                                  value={state.currentChapter.name}
+                                  onChange={(event) =>
+                                    setState({
+                                      ...state,
+                                      currentChapter: {
+                                        name: event.detail.value,
+                                        lectures: state.currentChapter.lectures,
+                                      },
+                                    })
                                   }
-                                  selectedItems={this.state.selectedLectures}
+                                />
+                              </FormField>
+                              <Button
+                                variant="primary"
+                                onClick={() =>
+                                  setState({ ...state, visible: true })
+                                }
+                              >
+                                Add
+                              </Button>
+
+                              <ColumnLayout columns={1} variant="text-grid">
+                                {renderChapters()}
+                              </ColumnLayout>
+
+                              <Modal
+                                onDismiss={() =>
+                                  setState({ ...state, visible: false })
+                                }
+                                visible={state.visible}
+                                size="max"
+                                footer={
+                                  <Box float="right">
+                                    <SpaceBetween
+                                      direction="horizontal"
+                                      size="xs"
+                                    >
+                                      <Button
+                                        variant="link"
+                                        onClick={() => {
+                                          const selectedLecturesSize =
+                                            state.selectedLectures.length;
+                                          setState({
+                                            ...state,
+                                            selectedLectures: [],
+                                            currentChapter: {
+                                              name: state.currentChapter.name,
+                                              lectures:
+                                                state.currentChapter.lectures.slice(
+                                                  0,
+                                                  state.currentChapter.lectures
+                                                    .length -
+                                                    selectedLecturesSize
+                                                ),
+                                            },
+                                          });
+                                          setState({
+                                            ...state,
+                                            visible: false,
+                                          });
+                                        }}
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        variant="primary"
+                                        onClick={updateLectureForChapter}
+                                      >
+                                        Ok
+                                      </Button>
+                                    </SpaceBetween>
+                                  </Box>
+                                }
+                                header="Add Chapter"
+                              >
+                                <Cards
+                                  {...collectionProps}
+                                  onSelectionChange={({ detail }) => {
+                                    setState({
+                                      ...state,
+                                      selectedLectures: detail.selectedItems,
+                                    });
+                                  }}
+                                  selectedItems={state.selectedLectures}
                                   ariaLabels={{
-                                    itemSelectionLabel: (e, n) => `select ${n.Name}`,
-                                    selectionGroupLabel: "Item selection"
+                                    itemSelectionLabel: (e, n) =>
+                                      `select ${n.Name}`,
+                                    selectionGroupLabel: "Item selection",
                                   }}
                                   cardDefinition={{
-                                    header: e => e.Name,
+                                    header: (e) => e.Name,
                                     sections: [
                                       {
                                         id: "description",
                                         header: "Description",
-                                        content: e => e.Desc
+                                        content: (e) => e.Desc,
                                       },
                                       {
                                         id: "type",
                                         header: "Type",
-                                        content: e => e.Type
+                                        content: (e) => e.Type,
                                       },
                                       {
                                         id: "size",
                                         header: "Size",
-                                        content: e => "-"
-                                      }
-                                    ]
+                                        content: (e) => "-",
+                                      },
+                                    ],
                                   }}
                                   cardsPerRow={[
                                     { cards: 1 },
-                                    { minWidth: 500, cards: 2 }
+                                    { minWidth: 500, cards: 2 },
                                   ]}
-                                  items={this.state.existingLectures}
+                                  items={items}
                                   loadingText="Loading resources"
                                   selectionType="multi"
                                   trackBy="Name"
-                                  visibleSections={["description", "type", "size"]}
+                                  visibleSections={[
+                                    "description",
+                                    "type",
+                                    "size",
+                                  ]}
                                   empty={
                                     <Box textAlign="center" color="inherit">
                                       <b>No resources</b>
@@ -480,13 +786,18 @@ class CreateCourse extends React.Component {
                                     </Box>
                                   }
                                   filter={
-                                    <TextFilter filteringPlaceholder="Find lectures" />
+                                    <TextFilter
+                                      {...filterProps}
+                                      filteringPlaceholder="Find lectures"
+                                    />
                                   }
                                   header={
                                     <Header
                                       counter={
-                                        this.state.selectedLectures.length
-                                          ? "(" + this.state.selectedLectures.length + "/10)"
+                                        state.selectedLectures.length
+                                          ? "(" +
+                                            state.selectedLectures.length +
+                                            "/10)"
                                           : "(10)"
                                       }
                                     >
@@ -494,161 +805,215 @@ class CreateCourse extends React.Component {
                                     </Header>
                                   }
                                   pagination={
-                                    <Pagination currentPageIndex={1} pagesCount={2} />
+                                    <Pagination {...paginationProps} />
                                   }
                                   preferences={
                                     <CollectionPreferences
                                       title="Preferences"
                                       confirmLabel="Confirm"
                                       cancelLabel="Cancel"
-                                      preferences={{
-                                        pageSize: 6,
-                                        visibleContent: [
-                                          "description",
-                                          "type",
-                                          "size"
-                                        ]
-                                      }}
+                                      preferences={preferences}
                                       pageSizePreference={{
                                         title: "Page size",
                                         options: [
                                           { value: 6, label: "6 resources" },
-                                          { value: 12, label: "12 resources" }
-                                        ]
+                                          { value: 12, label: "12 resources" },
+                                        ],
                                       }}
                                       visibleContentPreference={{
                                         title: "Select visible content",
                                         options: [
                                           {
-                                            label: "Main distribution properties",
+                                            label:
+                                              "Main distribution properties",
                                             options: [
                                               {
                                                 id: "description",
-                                                label: "Description"
+                                                label: "Description",
                                               },
                                               { id: "type", label: "Type" },
-                                              { id: "size", label: "Size" }
-                                            ]
-                                          }
-                                        ]
+                                              { id: "size", label: "Size" },
+                                            ],
+                                          },
+                                        ],
                                       }}
+                                      onConfirm={({ detail }) =>
+                                        setPreferences(detail)
+                                      }
                                     />
                                   }
                                 />
-                          </Modal>
-                          </SpaceBetween>
-                        </Container>
-                        <div style={{textAlign: "center"}}>
-                          <Button variant="primary" onClick={() => this.setState({visible: true})}>Add chapter</Button>
-                        </div>
-                        </SpaceBetween>
-                        </>
-                      ),
-                      isOptional: false,
-                    },
-                    {
-                      title: 'Review and launch',
-                      content: (
-                        <div>
-                        <SpaceBetween size="xs">
-                          <Header
-                            variant="h3"
-                            actions={
-                              <Button onClick={() => this.setState({activeStepIndex: 0})}>
-                                Edit
-                              </Button>
-                            }
-                          >
-                            Step 1: Add Course Detail
-                          </Header>
-                          <Container
-                            header={
-                              <Header variant="h2">Course Detail</Header>
-                            }
-                          >
-                            <ColumnLayout columns={4} variant="text-grid">
-                              <div>
-                                <Box variant="awsui-key-label">
-                                  Course Title
-                                </Box>
-                                <div>{this.state.name}</div>
-                              </div>
-                              <div>
-                                <Box variant="awsui-key-label">
-                                  Course Description
-                                </Box>
-                                <div>{this.state.description}</div>
-                              </div>
-                              <div>
-                                <Box variant="awsui-key-label">
-                                  Course Publicity
-                                </Box>
-                                <div>{this.state.publicity ? 'yes' : 'no'}</div>
-                              </div>
-                              <div>
-                                <Box variant="awsui-key-label">
-                                  Course Difficulty
-                                </Box>
-                                <div>{this.state.difficulty? 'yes' : 'no'}</div>
-                              </div>
-                            </ColumnLayout>
+                              </Modal>
+                            </SpaceBetween>
                           </Container>
+                          {/* <div style={{ textAlign: "center" }}>
+                            <Button
+                              variant="primary"
+                              onClick={() => setState({ ...state, visible: true })}
+                            >
+                              Add chapter
+                            </Button>
+                          </div> */}
                         </SpaceBetween>
-
-                        <SpaceBetween size="xs">
-                          <Header
-                            variant="h3"
-                          >
-                            Step 2: Add Requirements
-                          </Header>
-                          <Container
-                            header={
-                              <Header variant="h2">Requirement</Header>
+                      </>
+                    ),
+                    isOptional: false,
+                  },
+                  {
+                    title: "Review and launch",
+                    content: (
+                      <div>
+                        {state.submitStatus > 0 ? (
+                          <Alert
+                            statusIconAriaLabel="Success"
+                            type={
+                              state.submitStatus === 1 ? "success" : "error"
                             }
                           >
-                            <ColumnLayout columns={4} variant="text-grid">
+                            {state.submitStatus === 2 ? errorMess : successMes}
+                          </Alert>
+                        ) : (
+                          <></>
+                        )}
+                        <SpaceBetween size="s">
+                          <SpaceBetween size="xs">
+                            <Header
+                              variant="h3"
+                              actions={
+                                <Button
+                                  onClick={() =>
+                                    setState({ ...state, activeStepIndex: 0 })
+                                  }
+                                >
+                                  Edit
+                                </Button>
+                              }
+                            >
+                              Step 1: Add Course Detail
+                            </Header>
+                            <Container
+                              header={
+                                <Header variant="h2">Course Detail</Header>
+                              }
+                            >
+                              <ColumnLayout columns={3} variant="text-grid">
+                                <div>
+                                  <Box variant="awsui-key-label">
+                                    Course Title
+                                  </Box>
+                                  <div>{state.name}</div>
+                                </div>
+                                <div>
+                                  <Box variant="awsui-key-label">
+                                    Course Description
+                                  </Box>
+                                  <div>{state.description}</div>
+                                </div>
+                                <div>
+                                  <Box variant="awsui-key-label">
+                                    Course Publicity
+                                  </Box>
+                                  <div>{state.publicity ? "yes" : "no"}</div>
+                                </div>
+                              </ColumnLayout>
+                              <ColumnLayout columns={3} variant="text-grid">
+                                <div>
+                                  <Box variant="awsui-key-label">
+                                    Course Difficulty
+                                  </Box>
+                                  <div>{state.difficulty ? "yes" : "no"}</div>
+                                </div>
+                                <div>
+                                  <Box variant="awsui-key-label">Category</Box>
+                                  <div>{state.categories}</div>
+                                </div>
+                                <div>
+                                  <Box variant="awsui-key-label">Level</Box>
+                                  <div>{state.level}</div>
+                                </div>
+                              </ColumnLayout>
+                            </Container>
+                          </SpaceBetween>
+                          <SpaceBetween size="xs">
+                            <Header variant="h3">
+                              Step 2: Add Requirements
+                            </Header>
+                            <Container
+                              header={<Header variant="h2">Requirement</Header>}
+                            >
                               <div>
                                 <Box variant="awsui-key-label">
                                   Requirements
                                 </Box>
                                 <div>
-                                <ol>
-                                  { this.renderRequirements()}
-                                </ol> 
+                                  <ol>
+                                    {state.requirements.map((item, index) => (
+                                      <div className="requirement-item">
+                                        <li
+                                          className="requirement-item-haft"
+                                          key={index}
+                                        >
+                                          {item}
+                                        </li>
+                                      </div>
+                                    ))}
+                                  </ol>
                                 </div>
                               </div>
-                            </ColumnLayout>
-                          </Container>
+                            </Container>
+                          </SpaceBetween>
+                          <SpaceBetween size="xs">
+                            <Header variant="h3">Step 3: Add Benefits</Header>
+                            <Container
+                              header={
+                                <Header variant="h2">What To Learn</Header>
+                              }
+                            >
+                              <div>
+                                <Box variant="awsui-key-label">
+                                  What To Learn
+                                </Box>
+                                <div>
+                                  <ol>
+                                    {state.whatToLearn.map((item, index) => (
+                                      <div className="requirement-item">
+                                        <li
+                                          className="requirement-item-haft"
+                                          key={index}
+                                        >
+                                          {item}
+                                        </li>
+                                      </div>
+                                    ))}
+                                  </ol>
+                                </div>
+                              </div>
+                            </Container>
+                          </SpaceBetween>
+                          <SpaceBetween size="xs">
+                            <Header variant="h3">Step 4: Add Chapter</Header>
+                            <Container
+                              header={
+                                <Header variant="h2">Course Detail</Header>
+                              }
+                            >
+                              <ColumnLayout columns={1} variant="text-grid">
+                                {renderChapters()}
+                              </ColumnLayout>
+                            </Container>
+                          </SpaceBetween>
                         </SpaceBetween>
-                        <SpaceBetween size="xs">
-                          <Header>
-                            Step 3: Add Chapter
-                          </Header>
-                          <Container
-                            header={
-                              <Header variant="h2">Course Detail</Header>
-                            }
-                          >
-                            <ColumnLayout columns={1} variant="text-grid">
-                              {this.renderChapters()}
-                            </ColumnLayout>
-                          </Container>
-                        </SpaceBetween>
-                        </div>
-                        
-                      ),
-                    },
-                  ]}
-                />
-              </div>
+                      </div>
+                    ),
+                  },
+                ]}
+              />
             </div>
-          }
-        />
-        <Footer />
-      </div>
-    </>
-  );
-  }
+          </div>
+          <Footer />
+        </div>
+      </>
+    );
 }
 
 export default withAuthenticator(CreateCourse);

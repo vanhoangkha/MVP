@@ -142,7 +142,7 @@ const MyCourses = () => {
                 >
                   Actions
                 </ButtonDropdown>
-                <Button variant="primary" href="/course/createCourse">Create Course</Button>
+                <Button variant="primary" href="/#/course/createCourse">Create Course</Button>
               </SpaceBetween>
             }
           >

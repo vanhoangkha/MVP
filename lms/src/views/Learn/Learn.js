@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Learn.css";
 import "video-react/dist/video-react.css";
 import { API, Auth, Storage } from "aws-amplify";
@@ -76,24 +76,26 @@ function ContentLoading() {
 
 function LectureContent(props) {
   switch (props.lecture.lecture.type) {
-    case "video":
+    case "Video":
       return (
         <VideoContent
           videoSrc={props.lecture.lecture.content}
           setTimeLeft={props.setTimeLeft}
           handleFullScreen={props.handleFullScreen}
           handleVideoEnded={props.handleVideoEnded}
+          lectureId={props.lecture.lecture.id}
         />
       );
-    case "lab":
+    case "Workshop":
       return (
         <LabContent
-          desc={props.lecture.lecture.desc}
-          url={props.lecture.lecture.content}
+          desc={props.lecture.lecture.workshopDesc}
+          url={props.lecture.lecture.workshopUrl}
+          architect={props.lecture.lecture.content}
           openLink={props.openLink}
         />
       );
-    case "document":
+    case "Document":
       return (
         <DocumentContent
           desc={props.lecture.lecture.desc}
@@ -101,7 +103,7 @@ function LectureContent(props) {
           openLink={props.openLink}
         />
       );
-    case "survey":
+    case "Survey":
       return (
         <SurveyContent
           desc={props.lecture.lecture.desc}
@@ -110,7 +112,7 @@ function LectureContent(props) {
           name={props.lecture.lecture.name}
         />
       );
-    case "quiz":
+    case "Quiz":
       return (
         <QuizContent
           desc={props.lecture.lecture.desc}
@@ -129,17 +131,56 @@ function LectureContent(props) {
 }
 
 class VideoContent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      videoSrc: null,
+      updateView: false,
+      // uploading: false,
+    };
+    this.uploadingRef = React.createRef()
+    this.uploadingRef.current = false
+  }
+
   componentDidMount() {
+    this.getVideoURL(this.props.videoSrc);
     this.player.subscribeToStateChange(this.handleStateChange.bind(this));
     this.player.actions.toggleFullscreen = () => {
       this.props.handleFullScreen();
     };
   }
 
+
   handleStateChange(state) {
     this.props.setTimeLeft(Math.floor(state.duration - state.currentTime));
     if (state.ended) this.props.handleVideoEnded();
+    if (!this.uploadingRef.current && !this.state.updateView && state.currentTime / state.duration > 0.05) {
+      this.countView()
+    }
   }
+
+  countView() {
+    this.uploadingRef.current = true;
+    let lectureId = this.props.lectureId
+    const apiName = "courses";
+    const path = "/lectures/" + lectureId;
+    API.put(apiName, path, { body: {} })
+      .then((response) => {
+        this.setState((prevState) => ({ ...prevState, updateView: true }));
+        this.uploadingRef.current = false;
+        console.log(this.state.updateView);
+      })
+      .catch((error) => {
+        console.log(error.response);
+        this.uploadingRef.current = false;
+      });
+  }
+
+
+  getVideoURL = async (key) => {
+    const signedURL = await Storage.get(key, { level: "public" });
+    this.setState({ videoSrc: signedURL });
+  };
 
   render() {
     return (
@@ -153,7 +194,7 @@ class VideoContent extends React.Component {
         fluid={false}
         height="100%"
         width="100%"
-        src={this.props.videoSrc}
+        src={this.state.videoSrc}
       >
         <LoadingSpinner />
         <BigPlayButton position="center" />
@@ -173,6 +214,10 @@ class VideoContent extends React.Component {
 }
 
 function LabContent(props) {
+  const [architectUrl, setArchitecUrl] = useState("")
+  useEffect(() => {
+    Storage.get(props.architect, { level: "public" }).then((res)=> setArchitecUrl(res));
+  })
   return (
     <div className="learn-lab-content-container">
       <div className="learn-lab-content-desc">{props.desc}</div>
@@ -184,6 +229,9 @@ function LabContent(props) {
         >
           {props.url}
         </button>
+      </div>
+      <div className="learn-lab-architech" style={{textAlign: "center"}}>
+        <img src={architectUrl} />
       </div>
     </div>
   );
@@ -975,6 +1023,8 @@ export default class Learn extends React.Component {
                 type: response.Type,
                 viewed: response.Viewed,
                 questions: response.Questions,
+                workshopUrl: response.WorkshopUrl,
+                workshopDesc: response.WorkshopDescription
               },
             },
             loading: false,

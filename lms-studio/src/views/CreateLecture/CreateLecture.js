@@ -73,7 +73,7 @@ class CreateLecture extends React.Component {
       Desc: this.state.lectureDescription,
       Type: this.state.lectureType,
       Content: lectureContent,
-      Length: this.state.lectureVideoLength.toString(),
+      Length: Math.round(this.state.lectureVideoLength),
       WorkshopUrl: this.state.workshopUrl,
       WorkshopDescription: this.state.workshopDescription,
       ArchitectureDiagramS3Key: this.state.architectureDiagramS3Key,
@@ -125,7 +125,7 @@ class CreateLecture extends React.Component {
         "_"
       )}`;
       const res = await Storage.put(s3Key, file, {
-        level: "protected",
+        level: "public",
       });
       this.setState({ lectureVideoS3Key: s3Key });
       return res;
@@ -143,7 +143,7 @@ class CreateLecture extends React.Component {
         this.state.randomId
       }-${file.name.replace(/ /g, "_")}`;
       const res = await Storage.put(s3Key, file, {
-        level: "protected",
+        level: "public",
       });
       this.setState({ architectureDiagramS3Key: s3Key });
       return res;
@@ -162,7 +162,7 @@ class CreateLecture extends React.Component {
         "_"
       )}`;
       const res = await Storage.put(s3Key, file, {
-        level: "protected",
+        level: "public",
       });
       this.setState({ quizS3Key: s3Key });
       return res;
@@ -376,7 +376,7 @@ class CreateLecture extends React.Component {
           </div>
           <div>
             <Box variant="awsui-key-label">Architecture Diagram</Box>
-            <div>{this.state.architectureDiagram}</div>
+            <div>{this.state.architectureDiagram.length > 0 ? this.state.architectureDiagram[0].name : ""}</div>
           </div>
         </ColumnLayout>
       );
