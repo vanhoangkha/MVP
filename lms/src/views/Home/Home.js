@@ -125,12 +125,13 @@ export class Home extends React.Component {
                                         <div className='dashboard-courses-list-item-property'>
                                             <Icon variant='subtle' name='check' className='dashboard-courses-list-item-property-icon'/> 
                                             Tag:
-                                            {course.tags.map((tag, index) => <span key={index}>{index !== 0 ? ', ' : ' '}<a href='/#'>{tag}</a></span>)}
+                                            {course.tags && course.tags.map((tag, index) => <span key={index}>{index !== 0 ? ', ' : ' '}<a href='/#'>{tag}</a></span>)}
                                         </div>
                                         <div className='dashboard-courses-list-item-property'>
                                             <Icon variant='subtle' name='status-pending' className='dashboard-courses-list-item-property-icon'/> 
-                                            {Math.floor(course.length / 60) > 0 ? Math.floor(course.length / 60) + " hours " : ""}
-                                            {course.length % 60 > 0 ? course.length % 60 + " minutes" : ""}
+                                            {Math.floor(course.length / 3600) > 0 ? Math.floor(course.length / 3600) + " hours " : ""}
+                                            {(course.length % 3600) / 60 > 0 ? Math.floor((course.length % 3600) / 60) + " minutes " : ""}
+                                            {(course.length % 3600) % 60 > 0 ? (course.length % 3600) % 60 + " seconds" : ""}
                                         </div>
                                         <div className='dashboard-courses-list-item-desc'>
                                             {course.description}

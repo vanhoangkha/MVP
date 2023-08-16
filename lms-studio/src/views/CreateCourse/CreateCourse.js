@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Outlet } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import NavBar from "../../components/NavBar/NavBar";
@@ -78,8 +78,8 @@ function CreateCourse(props) {
     },
     submitStatus: 0,
   })
-
-  let draggedItem, draggedIdx;
+  const draggedItem = useRef(null)
+  let draggedIdx;
 
   const [preferences, setPreferences] = useState({ pageSize: 6, visibleContent: ["description", "type", "size"] });
   const { items, actions, filteredItemsCount, collectionProps, filterProps, paginationProps } = useCollection(
@@ -170,7 +170,7 @@ function CreateCourse(props) {
 
 
   const onDragLectureStart = (e, index) => {
-    draggedItem = state.editChapter.lectures[index];
+    draggedItem.current = state.editChapter.lectures[index];
     e.dataTransfer.effectAllowed = "move";
     console.log("onDragLectureStart")
     // e.dataTransfer.setData("text/html", e.target.parentNode);
@@ -181,17 +181,15 @@ function CreateCourse(props) {
     const draggedOverItem = state.editChapter.lectures[index];
 
     // if the item is dragged over itself, ignore
-    if (draggedItem === draggedOverItem || !draggedItem) {
+    if (draggedItem.current === draggedOverItem || !draggedItem.current) {
       return;
     }
 
-    console.log(draggedItem)
-
     // filter out the currently dragged item
-    let items = state.editChapter.lectures.filter(item => item !== draggedItem);
+    let items = state.editChapter.lectures.filter(item => item !== draggedItem.current);
 
     // add the dragged item after the dragged over item
-    items.splice(index, 0, draggedItem);
+    items.splice(index, 0, draggedItem.current);
 
     // set updated items for chapters
     let chapterList = state.editChapter;
@@ -283,9 +281,8 @@ function CreateCourse(props) {
   };
 
   const convertNameToID = (name) => {
-    const str_name = name.toLowerCase().split(" ");
-    const id = "";
-    str_name.map((item) => id = id + "-" + item)
+    const str_name = name.trim().toLowerCase();
+    let id = str_name.replace(/ /g, "-");
     return id;
   }
 
@@ -301,10 +298,11 @@ function CreateCourse(props) {
 
     const jsonData = {
         ID: convertNameToID(state.name),
-        Name: state.name,
+        Name: state.name.trim(),
         Description: state.description,
         Length: courseLength,
         Name: state.name,
+        Level: state.level,
         Categories: categories,
         Requirements: state.requirements,
         Difficulty: state.difficulty,
@@ -315,13 +313,13 @@ function CreateCourse(props) {
     const apiName = "lmsStudio";
     const path = "/courses";
 
-    API.post(apiName, path, {body: jsonData})
-    .then((response) => {
-        setState({ submitStatus: 1, redirectToHome: true });
-      })
-      .catch((error) => {
-        setState({ submitStatus: 2 });
-      });
+    // API.post(apiName, path, {body: jsonData})
+    // .then((response) => {
+    //     setState({ ...state, submitStatus: 1, redirectToHome: true });
+    //   })
+    //   .catch((error) => {
+    //     setState({ ...state, submitStatus: 2 });
+    //   });
 
   }
 

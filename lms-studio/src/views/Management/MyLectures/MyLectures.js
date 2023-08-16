@@ -9,6 +9,8 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import ButtonDropdown from "@cloudscape-design/components/button-dropdown";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import Title from "../../../components/Title";
+import { apiName, lecturePublicPath } from "../../../utils/api"
+import { API } from "aws-amplify";
 import { getMyLecturesService } from "../services/lecture";
 
 
@@ -22,11 +24,19 @@ const MyLectures = () => {
   const handleGetLectures = async () => {
     setLoading(true)
 
+    // try {
+    // const {data} = await getMyLecturesService()
+    // setLectures(data)
+    // setLoading(false)
+    // } catch(_) {
+    //   setLoading(false)
+    // }
     try {
-    const {data} = await getMyLecturesService()
-    setLectures(data)
-    setLoading(false)
-    } catch(_) {
+      const data = await API.get(apiName, lecturePublicPath)
+      console.log(data)
+      setLectures(data)
+      setLoading(false)
+    }catch(_) {
       setLoading(false)
     }
   }
@@ -61,24 +71,24 @@ const MyLectures = () => {
           {
             id: "Name",
             header: "Lecture name",
-            cell: (e) => e.Name,
+            cell: (lecture) => lecture.Name,
             sortingField: "Name",
             isRowHeader: true,
           },
           {
             id: "updatedAt",
             header: "Last Updated",
-            cell: (e) => e.updatedAt,
+            cell: (lecture) => lecture.updatedAt,
             sortingField: "updatedAt",
           },
           {
             id: "state",
             header: "State",
-            cell: (e) =>
-              e.state === "Enabled" ? (
-                <StatusIndicator>{e.state}</StatusIndicator>
+            cell: (lecture) =>
+              lecture.state === "Enabled" ? (
+                <StatusIndicator>{lecture.state}</StatusIndicator>
               ) : (
-                <StatusIndicator type="error">{e.state}</StatusIndicator>
+                <StatusIndicator type="error">{lecture.state}</StatusIndicator>
               ),
             sortingField: "state",
           },

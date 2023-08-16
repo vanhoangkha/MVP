@@ -10,6 +10,8 @@ import ButtonDropdown from "@cloudscape-design/components/button-dropdown";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import Title from "../../../components/Title";
 import { getMyCoursesService } from "../services/course";
+import { apiName, coursePath } from "../../../utils/api"
+import { API } from "aws-amplify";
 import { Link, useNavigate } from "react-router-dom";
 
 const MyCourses = () => {
@@ -23,11 +25,18 @@ const MyCourses = () => {
   const handleGetCouses = async () => {
     setLoading(true)
 
+    // try {
+    // const {data} = await getMyCoursesService()
+    // setCourses(data)
+    // setLoading(false)
+    // } catch(_) {
+    //   setLoading(false)
+    // }
     try {
-    const {data} = await getMyCoursesService()
-    setCourses(data)
-    setLoading(false)
-    } catch(_) {
+      const data = await API.get(apiName, coursePath + "/public")
+      setCourses(data)
+      setLoading(false)
+    }catch(_) {
       setLoading(false)
     }
   }

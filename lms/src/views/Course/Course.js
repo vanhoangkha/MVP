@@ -95,12 +95,13 @@ export default class Course extends React.Component {
                         <div className='course-property'>
                             <Icon variant='subtle' name='check' className='course-property-icon'/> 
                             Tag:
-                            {course.tags.map((tag, index) => <span key={index}>{index !== 0 ? ', ' : ' '}<a href='/#'>{tag}</a></span>)}
+                            {course.tags && course.tags.map((tag, index) => <span key={index}>{index !== 0 ? ', ' : ' '}<a href='/#'>{tag}</a></span>)}
                         </div>
                         <div className='course-property'>
                             <Icon variant='subtle' name='status-pending' className='course-property-icon'/> 
-                            {Math.floor(course.length / 60) > 0 ? Math.floor(course.length / 60) + " hours " : ""}
-                            {course.length % 60 > 0 ? course.length % 60 + " minutes" : ""}
+                            {Math.floor(course.length / 3600) > 0 ? Math.floor(course.length / 3600) + " hours " : ""}
+                            {(course.length % 3600) / 60 > 0 ? Math.floor((course.length % 3600) / 60) + " minutes " : ""}
+                            {(course.length % 3600) % 60 > 0 ? (course.length % 3600) % 60 + " seconds" : ""}
                         </div>
                         <div className='course-desc'>
                             {course.description}
