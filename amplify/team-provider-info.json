@@ -1,0 +1,55 @@
+{
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lmsstudio-prod-00159-authRole",
+      "UnauthRoleArn": "arn:aws:iam::148922931563:role/amplify-lmsstudio-prod-00159-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::148922931563:role/amplify-lmsstudio-prod-00159-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-lmsstudio-prod-00159-deployment",
+      "UnauthRoleName": "amplify-lmsstudio-prod-00159-unauthRole",
+      "StackName": "amplify-lmsstudio-prod-00159",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:148922931563:stack/amplify-lmsstudio-prod-00159/740bec32-3b8d-11ee-8dcf-063062a97464",
+      "AmplifyAppId": "d3pussyvi8sdx8"
+    },
+    "categories": {
+      "function": {
+        "studioCourses": {
+          "tableName": "",
+          "deploymentBucketName": "amplify-lmsstudio-prod-00159-deployment",
+          "s3Key": "amplify-builds/studioCourses-35425959323247543342-build.zip"
+        },
+        "studioLectures": {
+          "deploymentBucketName": "amplify-lmsstudio-prod-00159-deployment",
+          "s3Key": "amplify-builds/studioLectures-65615571357875773443-build.zip"
+        },
+        "studioUserCourse": {
+          "deploymentBucketName": "amplify-lmsstudio-prod-00159-deployment",
+          "s3Key": "amplify-builds/studioUserCourse-5067423642776432754e-build.zip"
+        },
+        "studiousers": {
+          "deploymentBucketName": "amplify-lmsstudio-prod-00159-deployment",
+          "s3Key": "amplify-builds/studiousers-554d6b51596c54726479-build.zip"
+        },
+        "userOverview": {
+          "deploymentBucketName": "amplify-lmsstudio-prod-00159-deployment",
+          "s3Key": "amplify-builds/userOverview-6e6a6b486d367356696b-build.zip"
+        }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3pussyvi8sdx8",
+          "type": "manual"
+        }
+      },
+      "auth": {
+        "lmsstudioc3fd255f": {}
+      },
+      "storage": {
+        "lmsstudiodcbd5e2f": {
+          "bucketName": "lecture-resource224559-prod",
+          "region": "ap-southeast-1"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "api": {
+    "lmsStudio": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studioCourses"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studioUserCourse"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studioLectures"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "userOverview"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "auth": {
+    "lmsstudioc3fd255f": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    }
+  },
+  "function": {
+    "studioCourses": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studioLectures": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studioUserCourse": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studiousers": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "userOverview": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "providerPlugin": "awscloudformation",
+      "service": "amplifyhosting",
+      "type": "manual"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_studioCourses_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioCourses"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioCourses_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioCourses"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioCourses_tableName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioCourses"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioLectures_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioLectures"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioLectures_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioLectures"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioUserCourse_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioUserCourse"
+        }
+      ]
+    },
+    "AMPLIFY_function_studioUserCourse_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studioUserCourse"
+        }
+      ]
+    },
+    "AMPLIFY_function_studiousers_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studiousers"
+        }
+      ]
+    },
+    "AMPLIFY_function_studiousers_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studiousers"
+        }
+      ]
+    },
+    "AMPLIFY_function_userOverview_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "userOverview"
+        }
+      ]
+    },
+    "AMPLIFY_function_userOverview_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "userOverview"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_storage_lmsstudiodcbd5e2f_bucketName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "lmsstudiodcbd5e2f"
+        }
+      ]
+    },
+    "AMPLIFY_storage_lmsstudiodcbd5e2f_region": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "lmsstudiodcbd5e2f"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "lmsstudiodcbd5e2f": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3",
+      "serviceType": "imported"
+    }
+  }
+}
