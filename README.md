@@ -6,7 +6,7 @@
 - Cloud Academy -> ***lms-studio***
 ## 2. Clone code:
 ```bash
-$ git clone https://git-codecommit.ap-southeast-1.amazonaws.com/v1/repos/LMS
+$ git clone https://github.com/vanhoangkha/MVP.g
 ```
 
 After that, check out git branch ```d_unicorm_gym_master```
@@ -46,7 +46,7 @@ $ cd lms/lms-studio
 $ (sudo) amplify init
 ...
 ```
-- When init ```lms-studio``` project, if amplify add for table to import, select ```courses-dev```.
+- When init ```lms-studio``` project, if amplify add for table to import, select ```courses-dev```, ```lecture-resource``` ...
 
 ## 4. Check your apps are on or not:
 Open your own isengard account and go to "Amplify" service to check if your app is now shown on or not (apps'name:  ***lms***, ***lmsstudio***)   
