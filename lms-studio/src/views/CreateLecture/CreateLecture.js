@@ -18,6 +18,7 @@ import Link from "@cloudscape-design/components/link";
 import Textarea from "@cloudscape-design/components/textarea";
 import RadioGroup from "@cloudscape-design/components/radio-group";
 import FileUpload from "@cloudscape-design/components/file-upload";
+import Flashbar from "@cloudscape-design/components/flashbar";
 import StatusIndicator from "@cloudscape-design/components/status-indicator"
 import { Storage } from 'aws-amplify';
 import { API } from 'aws-amplify';
@@ -33,7 +34,8 @@ class CreateLecture extends React.Component {
 
   submitRequest = async () => {
     // console.log(detail);
-    this.setState({ submitStatus: -1 });
+    this.setState({ isLoadingNextStep: true });
+
     if (this.state.lectureType === "Video") {
       this.uploadLectureVideo(this.state.lectureVideo[0])
         .then((res) => {
@@ -41,17 +43,45 @@ class CreateLecture extends React.Component {
         })
         .catch((error) => {
           this.resetLectureVideo();
-          this.setState({ submitStatus: 2 });
+          this.setState({
+            isLoadingNextStep: false,
+            flashItem: [
+              {
+                type: "error",
+                content: errorMess,
+                dismissible: true,
+                dismissLabel: "Dismiss message",
+                onDismiss: () => this.setState({ flashItem: [] }),
+                id: "error_message",
+              },
+            ],
+          });
         });
     } else if (this.state.lectureType === "Workshop") {
-      this.uploadArchitectureDiagram(this.state.architectureDiagram[0])
-        .then((res) => {
-          this.writeLectureToDB(res.key);
-        })
-        .catch((error) => {
-          this.resetArchitectureDiagram();
-          this.setState({ submitStatus: 2 });
-        });
+      if (this.state.architectureDiagram[0]) {
+        this.uploadArchitectureDiagram(this.state.architectureDiagram[0])
+          .then((res) => {
+            this.writeLectureToDB(res.key);
+          })
+          .catch((error) => {
+            this.resetArchitectureDiagram();
+            this.setState({
+              isLoadingNextStep: false,
+              flashItem: [
+                {
+                  type: "error",
+                  content: errorMess,
+                  dismissible: true,
+                  dismissLabel: "Dismiss message",
+                  onDismiss: () => this.setState({ flashItem: [] }),
+                  id: "error_message",
+                },
+              ],
+            });
+          });
+      } else {
+        this.writeLectureToDB("");
+      }
     } else {
       this.uploadQuiz(this.state.quiz[0])
         .then((res) => {
@@ -59,12 +89,24 @@ class CreateLecture extends React.Component {
         })
         .catch((error) => {
           this.resetQuiz();
-          this.setState({ submitStatus: 2 });
+          this.setState({
+            isLoadingNextStep: false,
+            flashItem: [
+              {
+                type: "error",
+                content: errorMess,
+                dismissible: true,
+                dismissLabel: "Dismiss message",
+                onDismiss: () => this.setState({ flashItem: [] }),
+                id: "error_message",
+              },
+            ],
+          });
         });
     }
   };
 
-  writeLectureToDB = (lectureContent) => {
+  writeLectureToDB = async (lectureContent) => {
     // console.log(lectureContent)
 
     const jsonData = {
@@ -81,19 +123,38 @@ class CreateLecture extends React.Component {
     };
     const apiName = "lmsStudio";
     const path = "/lectures";
-    API.put(apiName, path, { body: jsonData })
-      .then((response) => {
-        // showToast(SUCCESS, `Uploading lecture successful`)
-        // console.log(`TODO: handle submission response. ID: ${response.id}`);
-        this.setState({ submitStatus: 1, redirectToHome: true });
-      })
-      .catch((error) => {
-        // showToast(ERROR, `Uploading lecture error`)
-        // console.log(error.response);
-        this.setState({ submitStatus: 2 });
+    try {
+      await API.put(apiName, path, { body: jsonData });
+      this.setState({
+        redirectToHome: true,
+        isLoadingNextStep: false,
+        flashItem: [
+          {
+            type: "success",
+            content: successMes,
+            dismissible: true,
+            dismissLabel: "Dismiss message",
+            onDismiss: () => this.setState({ flashItem: [] }),
+            id: "success_message",
+          },
+        ],
       });
+    } catch (error) {
+      this.setState({
+        isLoadingNextStep: false,
+        flashItem: [
+          {
+            type: "error",
+            content: errorMess,
+            dismissible: true,
+            dismissLabel: "Dismiss message",
+            onDismiss: () => this.setState({ flashItem: [] }),
+            id: "error_message",
+          },
+        ],
+      });
+    }
   };
-
   getDefaultState = () => {
     return {
       activeStepIndex: 0,
@@ -111,7 +172,8 @@ class CreateLecture extends React.Component {
       quiz: [],
       quizS3Key: "",
       redirectToHome: false,
-      submitStatus: 0,
+      isLoadingNextStep: false,
+      flashItem: [],
     };
   };
 
@@ -198,29 +260,29 @@ class CreateLecture extends React.Component {
     }
   };
 
-  setLectureLength = file => new Promise((resolve, reject) => {
-    if ( file.length > 0 ){
+  setLectureLength = (file) =>
+    new Promise((resolve, reject) => {
+      if (file.length > 0) {
         try {
-            let video = document.createElement('video')
-            video.preload = 'metadata'
-    
-            video.onloadedmetadata = function () {
-                resolve(this)
-            }
-    
-            video.onerror = function () {
-                reject("Invalid video. Please select a video file.")
-            }
-    
-            video.src = window.URL.createObjectURL(file[0])
+          let video = document.createElement("video");
+          video.preload = "metadata";
+
+          video.onloadedmetadata = function () {
+            resolve(this);
+          };
+
+          video.onerror = function () {
+            reject("Invalid video. Please select a video file.");
+          };
+
+          video.src = window.URL.createObjectURL(file[0]);
         } catch (e) {
-            reject(e)
+          reject(e);
         }
-    }else{
-        this.setState({ lectureVideoLength: 0})
-    }
-    
-  })
+      } else {
+        this.setState({ lectureVideoLength: 0 });
+      }
+    });
 
   // render 'Add Content' in step 2
   renderAddContent = () => {
@@ -234,7 +296,7 @@ class CreateLecture extends React.Component {
             onChange={async ({ detail }) => {
               this.setState({ lectureVideo: detail.value });
               const video = await this.setLectureLength(detail.value);
-              this.setState({ lectureVideoLength: video.duration})
+              this.setState({ lectureVideoLength: video.duration });
               //  console.log(detail.value[0])
               //   if (detail.value.length === 0) {
               //     this.resetLectureVideo();
@@ -376,7 +438,11 @@ class CreateLecture extends React.Component {
           </div>
           <div>
             <Box variant="awsui-key-label">Architecture Diagram</Box>
-            <div>{this.state.architectureDiagram.length > 0 ? this.state.architectureDiagram[0].name : ""}</div>
+            <div>
+              {this.state.architectureDiagram.length > 0
+                ? this.state.architectureDiagram[0].name
+                : ""}
+            </div>
           </div>
         </ColumnLayout>
       );
@@ -421,6 +487,7 @@ class CreateLecture extends React.Component {
               submitButton: "Submit",
               optional: "optional",
             }}
+            isLoadingNextStep={this.state.isLoadingNextStep}
             onSubmit={this.submitRequest}
             onCancel={() => {
               this.resetQuiz();
@@ -503,22 +570,7 @@ class CreateLecture extends React.Component {
                   <div>
                     <SpaceBetween direction="vertical" size="l">
                       <SpaceBetween direction="vertical" size="s">
-                        {this.state.submitStatus > 0 ? (
-                          <Alert
-                            statusIconAriaLabel="Success"
-                            type={
-                              this.state.submitStatus === 1
-                                ? "success"
-                                : "error"
-                            }
-                          >
-                            {this.state.submitStatus === 2
-                              ? errorMess
-                              : successMes}
-                          </Alert>
-                        ) : (
-                          <></>
-                        )}
+                        <Flashbar items={this.state.flashItem} />
                         <Header
                           variant="h3"
                           actions={

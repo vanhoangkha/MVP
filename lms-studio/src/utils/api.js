@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const apiName = "lmsStudio";
-export const lecturePath = "/lecture";
+export const lecturePath = "/lectures";
 export const lecturePublicPath = "/lectures/public";
 export const coursePath = "/courses";
 

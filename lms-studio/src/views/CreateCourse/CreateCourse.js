@@ -21,6 +21,7 @@ import {
     Alert,
     Pagination,
     CollectionPreferences,
+    Flashbar,
 } from "@cloudscape-design/components";
 import { useCollection } from '@cloudscape-design/collection-hooks';
 import Footer from "../../components/Footer/Footer";
@@ -77,6 +78,8 @@ function CreateCourse(props) {
       lectures: [],
     },
     submitStatus: 0,
+    isLoadingNextStep: false,
+    flashItem: [],
   })
   const draggedItem = useRef(null)
   let draggedIdx;
@@ -286,8 +289,9 @@ function CreateCourse(props) {
     return id;
   }
 
-  const submitCourse = () => {
-    console.log(state);
+  const submitCourse = async () => {
+    setState({ ...state, isLoadingNextStep: true })
+
     let courseLength = 0;
     let categories = state.categories.split(",")
     state.chapters.map((chapter) => {
@@ -312,15 +316,39 @@ function CreateCourse(props) {
 
     const apiName = "lmsStudio";
     const path = "/courses";
-
-    // API.post(apiName, path, {body: jsonData})
-    // .then((response) => {
-    //     setState({ ...state, submitStatus: 1, redirectToHome: true });
-    //   })
-    //   .catch((error) => {
-    //     setState({ ...state, submitStatus: 2 });
-    //   });
-
+    try {
+      await API.post(apiName, path, { body: jsonData });
+      setState({
+        ...state,
+        redirectToHome: true,
+        isLoadingNextStep: false,
+        flashItem: [
+          {
+            type: "success",
+            content: successMes,
+            dismissible: true,
+            dismissLabel: "Dismiss message",
+            onDismiss: () => setState({ ...state, flashItem: [] }),
+            id: "success_message",
+          },
+        ],
+      });
+    } catch (error) {
+      setState({
+        ...state,
+        isLoadingNextStep: false,
+        flashItem: [
+          {
+            type: "error",
+            content: errorMess,
+            dismissible: true,
+            dismissLabel: "Dismiss message",
+            onDismiss: () => setState({ ...state, flashItem: [] }),
+            id: "error_message",
+          },
+        ],
+      });
+    }
   }
 
   const renderEditForm = () => {
@@ -467,6 +495,7 @@ function CreateCourse(props) {
                   submitButton: "Create course",
                   optional: "optional",
                 }}
+                isLoadingNextStep={state.isLoadingNextStep}
                 onSubmit={submitCourse}
                 onNavigate={({ detail }) =>
                   setState({
@@ -861,18 +890,7 @@ function CreateCourse(props) {
                     title: "Review and launch",
                     content: (
                       <div>
-                        {state.submitStatus > 0 ? (
-                          <Alert
-                            statusIconAriaLabel="Success"
-                            type={
-                              state.submitStatus === 1 ? "success" : "error"
-                            }
-                          >
-                            {state.submitStatus === 2 ? errorMess : successMes}
-                          </Alert>
-                        ) : (
-                          <></>
-                        )}
+                        <Flashbar items={state.flashItem} />
                         <SpaceBetween size="s">
                           <SpaceBetween size="xs">
                             <Header

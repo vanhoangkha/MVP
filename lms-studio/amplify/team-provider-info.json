@@ -270,7 +270,7 @@
         },
         "studioLectures": {
           "deploymentBucketName": "amplify-lmsstudio-test-144203-deployment",
-          "s3Key": "amplify-builds/studioLectures-414e553572676c545042-build.zip"
+          "s3Key": "amplify-builds/studioLectures-6a586f6462496e616c79-build.zip"
         },
         "studioUserCourse": {
           "deploymentBucketName": "amplify-lmsstudio-test-144203-deployment",
