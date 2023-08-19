@@ -235,5 +235,72 @@
         "lectureresource": {}
       }
     }
+  },
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lms-prod-224559-authRole",
+      "UnauthRoleArn": "arn:aws:iam::148922931563:role/amplify-lms-prod-224559-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::148922931563:role/amplify-lms-prod-224559-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-lms-prod-224559-deployment",
+      "UnauthRoleName": "amplify-lms-prod-224559-unauthRole",
+      "StackName": "amplify-lms-prod-224559",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:148922931563:stack/amplify-lms-prod-224559/d5722940-3b82-11ee-a624-06560c05bb02",
+      "AmplifyAppId": "dfd4pjr0efrj8",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-lms-prod-224559-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "auth": {
+        "lmsbc7a393d": {}
+      },
+      "function": {
+        "UserCourse": {
+          "deploymentBucketName": "amplify-lms-prod-224559-deployment",
+          "s3Key": "amplify-builds/UserCourse-7971376a5a354b59764e-build.zip"
+        },
+        "categories": {
+          "deploymentBucketName": "amplify-lms-prod-224559-deployment",
+          "s3Key": "amplify-builds/categories-50625167646743345057-build.zip"
+        },
+        "certs": {
+          "deploymentBucketName": "amplify-lms-prod-224559-deployment",
+          "s3Key": "amplify-builds/certs-30487543687243664e74-build.zip"
+        },
+        "courses": {
+          "deploymentBucketName": "amplify-lms-prod-224559-deployment",
+          "s3Key": "amplify-builds/courses-5854344b576157516839-build.zip"
+        },
+        "lectures": {
+          "deploymentBucketName": "amplify-lms-prod-224559-deployment",
+          "s3Key": "amplify-builds/lectures-4d684f482b6b6b665733-build.zip"
+        },
+        "usersLectures": {
+          "deploymentBucketName": "amplify-lms-prod-224559-deployment",
+          "s3Key": "amplify-builds/usersLectures-6c626c76756e2f535969-build.zip"
+        },
+        "Categories": {},
+        "Cert": {},
+        "Lectures": {},
+        "UserLecture": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dfd4pjr0efrj8",
+          "type": "manual"
+        }
+      },
+      "api": {
+        "courses": {}
+      },
+      "storage": {
+        "Categories": {},
+        "Cert": {},
+        "Lectures": {},
+        "UserCourse": {},
+        "UserLecture": {},
+        "courses": {},
+        "lectureresource": {}
+      }
+    }
   }
 }

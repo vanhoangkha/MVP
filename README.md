@@ -6,7 +6,7 @@
 - Cloud Academy -> ***lms-studio***
 ## 2. Clone code:
 ```bash
-$ git clone https://git-codecommit.ap-southeast-1.amazonaws.com/v1/repos/LMS
+$ git clone https://github.com/vanhoangkha/MVP.g
 ```
 
 After that, check out git branch ```d_unicorm_gym_master```
@@ -46,7 +46,75 @@ $ cd lms/lms-studio
 $ (sudo) amplify init
 ...
 ```
-- When init ```lms-studio``` project, if amplify add for table to import, select ```courses-dev```.
+- When init ```lms-studio``` project, if amplify add for table to import, select ```courses-dev```, ```lecture-resource``` ...
+
+```
+amplify push
+```
+
+We will create a policy to provide access to the S3 lecture resources with the following content:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::lecture-resource224559-prod/public/*",
+                "arn:aws:s3:::lecture-resource224559-prod/protected/${cognito-identity.amazonaws.com:sub}/*",
+                "arn:aws:s3:::lecture-resource224559-prod/private/${cognito-identity.amazonaws.com:sub}/*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::lecture-resource224559-prod/uploads/*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::lecture-resource224559-prod/protected/*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Condition": {
+                "StringLike": {
+                    "s3:prefix": [
+                        "public/",
+                        "public/*",
+                        "protected/",
+                        "protected/*",
+                        "private/${cognito-identity.amazonaws.com:sub}/",
+                        "private/${cognito-identity.amazonaws.com:sub}/*"
+                    ]
+                }
+            },
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::lecture-resource224559-prod"
+            ],
+            "Effect": "Allow"
+        }
+    ]
+}
+```
+
+- Then, create a role named "amplify-lmsstudio-prod-authRole" and attach the policy to it.
 
 ## 4. Check your apps are on or not:
 Open your own isengard account and go to "Amplify" service to check if your app is now shown on or not (apps'name:  ***lms***, ***lmsstudio***)   
@@ -93,3 +161,21 @@ Development steps:
     - If you need to add new APIs and lambda functions, run ```amplify update api``` and add a new path.
     - Use ```studio``` prefix for Lambda function name to avoid conflict with the LMS project. E.g: ```studioCourses```, ```studioLectures```.
     - Please use Node JS for your Lambda function to ensure consistency, and don’t create new api gateway.
+
+
+## 8 To publish the application, we execute the command:
+
+```
+cd lms
+amplify publish
+
+cd lms-studio
+amplify publish
+
+```
+
+## 9 Demo
+
+- Demo AWS Cloud Academy Studio: [AWS Cloud Academy Studio](https://prod.d3pussyvi8sdx8.amplifyapp.com/#/management/myLectures)
+
+- Demo AWS Cloud Solution Journey: [Cloud Solution Journey](https://prod.dfd4pjr0efrj8.amplifyapp.com/)
