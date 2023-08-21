@@ -6,7 +6,7 @@
 - Cloud Academy -> ***lms-studio***
 ## 2. Clone code:
 ```bash
-$ git clone https://github.com/vanhoangkha/MVP.g
+$ git clone https://github.com/vanhoangkha/MVP.git
 ```
 
 After that, check out git branch ```d_unicorm_gym_master```
