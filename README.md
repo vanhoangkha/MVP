@@ -149,10 +149,6 @@ Inside your cloned repository from section 1. From the ```d_unicorm_gym_master``
 
 You develope, test the project with that branch.
 
-After that, you create a pull request to the CodeCommit Git Repository inside mintuan's account.
-
-mintuan will review and merge the pull requests from everyone.
-
 Development steps:
 - Implement UI with React JS.
 - Implement APIs and integrate with the UI:
