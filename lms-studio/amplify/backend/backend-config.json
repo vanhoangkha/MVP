@@ -207,19 +207,19 @@
         }
       ]
     },
-    "AMPLIFY_storage_lmsstudiodcbd5e2f_bucketName": {
+    "AMPLIFY_storage_lmsstudiof4e07fec_bucketName": {
       "usedBy": [
         {
           "category": "storage",
-          "resourceName": "lmsstudiodcbd5e2f"
+          "resourceName": "lmsstudiof4e07fec"
         }
       ]
     },
-    "AMPLIFY_storage_lmsstudiodcbd5e2f_region": {
+    "AMPLIFY_storage_lmsstudiof4e07fec_region": {
       "usedBy": [
         {
           "category": "storage",
-          "resourceName": "lmsstudiodcbd5e2f"
+          "resourceName": "lmsstudiof4e07fec"
         }
       ]
     }

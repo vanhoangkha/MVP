@@ -8,17 +8,29 @@ import Pagination from "@cloudscape-design/components/pagination";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import ButtonDropdown from "@cloudscape-design/components/button-dropdown";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
+import Modal from "@cloudscape-design/components/modal";
+import Flashbar from "@cloudscape-design/components/flashbar";
 import Title from "../../../components/Title";
 import { getMyCoursesService } from "../services/course";
 import { apiName, coursePath } from "../../../utils/api"
 import { API } from "aws-amplify";
 import { Link, useNavigate } from "react-router-dom";
 
+
+const successMes = "Delete success";
+const errorMess = "Error! An error occurred. Please try again later";
+
 const MyCourses = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
 
   const [courses, setCourses] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [noticeMessage, setNoticeMessage] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [disable, setDisable] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [flashItem, setFlashItem] = useState([]);
+  const [multiDisable, setMultiDisable] = useState(false);
 
   const navigate  = useNavigate()
 
@@ -45,17 +57,98 @@ const MyCourses = () => {
     handleGetCouses()
   },[])
 
+  const handleClick = (value) => {
+    switch (value.id) {
+      case "rm":
+        confirmDelete();
+        break;
+      case "edt":
+        break;
+      default:
+        break;
+    }
+  };
+
+  const confirmDelete = () => {
+    setNoticeMessage("Are you sure deleting the courses?");
+    setVisible(true);
+  };
+
   const handleOpenAssignCoures = () => {
     navigate(`/assignCourse/${selectedItems[0]?.ID}`, {state: selectedItems[0]})
   }
 
+  const resetFail = () => {
+    setDeleting(false);
+    setDisable(false);
+    setVisible(false);
+    setFlashItem([
+      {
+        type: "error",
+        content: errorMess,
+        dismissible: true,
+        dismissLabel: "Dismiss message",
+        onDismiss: () => setFlashItem([]),
+        id: "error_message",
+      },
+    ]);
+  };
+
+  const resetSuccess = () => {
+    setDisable(false);
+    setDeleting(false);
+    setVisible(false);
+    setFlashItem([
+      {
+        type: "success",
+        content: successMes,
+        dismissible: true,
+        dismissLabel: "Dismiss message",
+        onDismiss: () => setFlashItem([]),
+        id: "success_message",
+      },
+    ]);
+    setSelectedItems([]);
+  };
+
+  const deleteCourse = async () => {
+    setDisable(true);
+    setDeleting(true);
+    let count = 0;
+    let countDeleteItems = selectedItems.length;
+    for (let i = 0; i < countDeleteItems; i++) {
+      deleteCourseInDB(selectedItems[i].ID, i)
+        .then((res) => {
+          count++;
+          if (count === countDeleteItems) {
+            resetSuccess();
+          }
+        })
+        .catch((error) => {
+          resetFail();
+          console.log(error);
+        });
+    }
+  }
+
+  const deleteCourseInDB = async (id, index) => {
+    await API.del(apiName, coursePath + "/object/" + id);
+    let courseList = courses;
+    // courseList.splice(index, 1);
+    courseList = courseList.filter(course => course.ID != id);
+    setCourses(courseList);
+  }
+
   return (
     <>
+      <Flashbar items={flashItem} />
       <Title text="My Courses" />
       <Table
-        onSelectionChange={({ detail }) =>
+        onSelectionChange={({ detail }) => {
+          if (detail.selectedItems.length > 1) setMultiDisable(true);
+          console.log(detail)
           setSelectedItems(detail.selectedItems)
-        }
+        }}
         selectedItems={selectedItems}
         
         ariaLabels={{
@@ -108,7 +201,7 @@ const MyCourses = () => {
         items={courses}
         loading={loading}
         loadingText="Loading resources"
-        selectionType="single"
+        selectionType="multi"
         trackBy="Name"
         empty={
           <Box textAlign="center" color="inherit">
@@ -139,15 +232,16 @@ const MyCourses = () => {
                     
                     {
                       text: "Edit",
-                      id: "mv",
-                      disabled: false,
+                      id: "edt",
+                      disabled: multiDisable,
                     },
                     {
                       text: "Delete",
-                      id: "rn",
+                      id: "rm",
                       disabled: false,
                     },
                   ]}
+                  onItemClick={(e) => handleClick(e.detail)}
                 >
                   Actions
                 </ButtonDropdown>
@@ -160,6 +254,30 @@ const MyCourses = () => {
         }
         pagination={<Pagination currentPageIndex={1} pagesCount={2} />}
       />
+      <Modal
+        onDismiss={() => setVisible(false)}
+        visible={visible}
+        footer={
+          <Box float="right">
+            <SpaceBetween direction="horizontal" size="xs">
+              <Button variant="link" onClick={() => setVisible(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                disable={disable}
+                loading={deleting}
+                onClick={() => deleteCourse()}
+              >
+                Delete
+              </Button>
+            </SpaceBetween>
+          </Box>
+        }
+        header="Confirm"
+      >
+        {noticeMessage}
+      </Modal>
     </>
   );
 };

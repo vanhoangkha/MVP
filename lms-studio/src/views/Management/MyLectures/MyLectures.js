@@ -153,7 +153,7 @@ const MyLectures = () => {
   const deleteLectureInDB = async (id, index) => {
     await API.del(apiName, lecturePath + "/object/" + id);
     let lectureList = lectures;
-    lectureList.splice(index, 1);
+    lectureList = lectureList.filter(course => course.ID != id);
     setLectures(lectureList);
   };
 
