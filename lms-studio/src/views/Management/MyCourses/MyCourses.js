@@ -75,7 +75,7 @@ const MyCourses = () => {
   };
 
   const handleOpenAssignCoures = () => {
-    navigate(`/assignCourse/${selectedItems[0]?.ID}`, {state: selectedItems[0]})
+    navigate(`/assignCourse/${selectedItems[0]?.ID}`, {lecture: selectedItems[0]})
   }
 
   const resetFail = () => {

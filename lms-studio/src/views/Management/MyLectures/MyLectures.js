@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,  } from "react";
 import {
   Modal,
   Table,
@@ -16,6 +16,7 @@ import {
 import Title from "../../../components/Title";
 import { apiName, lecturePublicPath, lecturePath } from "../../../utils/api";
 import { API, Storage } from "aws-amplify";
+import { useNavigate } from "react-router-dom";
 import { getMyLecturesService } from "../services/lecture";
 
 const successMes = "Delete success";
@@ -31,6 +32,10 @@ const MyLectures = () => {
   const [disable, setDisable] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [flashItem, setFlashItem] = useState([]);
+  const [editDisable, setEditDisable] = useState(false);
+  const [actionDisable, setActionDisable] = useState(true);
+
+  const navigate  = useNavigate()
 
   const handleGetLectures = async () => {
     setLoading(true);
@@ -62,6 +67,7 @@ const MyLectures = () => {
         confirmDelete();
         break;
       case "edt":
+        navigate(`/editLecture/${selectedItems[0]?.ID}`, {state: selectedItems[0]})
         break;
       default:
         break;
@@ -168,7 +174,13 @@ const MyLectures = () => {
       <Title text="My Lectures" />
       <Table
         onSelectionChange={({ detail }) =>
-          setSelectedItems(detail.selectedItems)
+          {
+            if (detail.selectedItems.length > 1) {
+              setEditDisable(true);
+            }
+            detail.selectedItems.length > 0 ? setActionDisable(false) : setActionDisable(true)
+            setSelectedItems(detail.selectedItems)
+          }
         }
         selectedItems={selectedItems}
         ariaLabels={{
@@ -247,7 +259,7 @@ const MyLectures = () => {
                     {
                       text: "Edit",
                       id: "edt",
-                      disabled: false,
+                      disabled: editDisable,
                     },
                     {
                       text: "Delete",
@@ -255,6 +267,7 @@ const MyLectures = () => {
                       disabled: false,
                     },
                   ]}
+                  disabled={actionDisable}
                   onItemClick={(e) => handleClick(e.detail)}
                 >
                   Actions

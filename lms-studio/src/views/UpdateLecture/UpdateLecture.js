@@ -1,188 +1,182 @@
-import React from 'react';
-import { Navigate } from "react-router-dom";
-import './CreateLecture.css';
+import React, { useState, useEffect } from 'react';
+import { Navigate, useNavigate, useLocation} from "react-router-dom";
+import './UpdateLecture.css';
 import NavBar from '../../components/NavBar/NavBar';
 import Footer from '../../components/Footer/Footer';
-import ColumnLayout from "@cloudscape-design/components/column-layout";
-import BreadcrumbGroup from "@cloudscape-design/components/breadcrumb-group";
-import Wizard from "@cloudscape-design/components/wizard";
-import Container from "@cloudscape-design/components/container";
-import Header from "@cloudscape-design/components/header";
-import SpaceBetween from "@cloudscape-design/components/space-between";
-import FormField from "@cloudscape-design/components/form-field";
-import Input from "@cloudscape-design/components/input";
-import Button from "@cloudscape-design/components/button";
-import Alert from "@cloudscape-design/components/alert"
-import Box from "@cloudscape-design/components/box";
-import Link from "@cloudscape-design/components/link";
-import Textarea from "@cloudscape-design/components/textarea";
-import RadioGroup from "@cloudscape-design/components/radio-group";
-import FileUpload from "@cloudscape-design/components/file-upload";
-import Flashbar from "@cloudscape-design/components/flashbar";
-import StatusIndicator from "@cloudscape-design/components/status-indicator"
+import {
+  ColumnLayout,
+  BreadcrumbGroup,
+  Wizard,
+  Container,
+  Header,
+  SpaceBetween,
+  FormField,
+  Input,
+  Button,
+  Box,
+  Link,
+  Textarea,
+  RadioGroup,
+  FileUpload,
+  Flashbar
+} from "@cloudscape-design/components";
 import { Storage } from 'aws-amplify';
 import { API } from 'aws-amplify';
-import {v4 as uuid} from 'uuid'
 
-const successMes = "Created success";
+const successMes = "Update success";
 const errorMess = "Error! An error occurred. Please try again later";
-class CreateLecture extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = this.getDefaultState();
-  }
+function UpdateLecture(props) {
 
-  submitRequest = async () => {
-    // console.log(detail);
-    this.setState({ isLoadingNextStep: true });
+  const [newLecture, setNewLecture] = useState({
+    activeStepIndex: 0,
+    lectureTitle: "",
+    lectureDescription: "",
+    lectureType: "Video",
+    lectureVideo: [],
+    lectureVideoLength: 0,
+    lectureVideoS3Key: "",
+    workshopUrl: "",
+    workshopDescription: "",
+    architectureDiagram: [],
+    architectureDiagramS3Key: "",
+    randomId: Math.floor(Math.random() * 1000000),
+    quiz: [],
+    quizS3Key: "",
+    redirectToHome: false,
+    isLoadingNextStep: false,
+    flashItem: [],
+  });
 
-    if (this.state.lectureType === "Video") {
-      this.uploadLectureVideo(this.state.lectureVideo[0])
-        .then((res) => {
-          this.writeLectureToDB(res.key);
-        })
-        .catch((error) => {
-          this.resetLectureVideo();
-          this.setState({
-            isLoadingNextStep: false,
-            flashItem: [
-              {
-                type: "error",
-                content: errorMess,
-                dismissible: true,
-                dismissLabel: "Dismiss message",
-                onDismiss: () => this.setState({ flashItem: [] }),
-                id: "error_message",
-              },
-            ],
-          });
-        });
-    } else if (this.state.lectureType === "Workshop") {
-      if (this.state.architectureDiagram[0]) {
-        this.uploadArchitectureDiagram(this.state.architectureDiagram[0])
-          .then((res) => {
-            this.writeLectureToDB(res.key);
-          })
-          .catch((error) => {
-            this.resetArchitectureDiagram();
-            this.setState({
-              isLoadingNextStep: false,
-              flashItem: [
-                {
-                  type: "error",
-                  content: errorMess,
-                  dismissible: true,
-                  dismissLabel: "Dismiss message",
-                  onDismiss: () => this.setState({ flashItem: [] }),
-                  id: "error_message",
-                },
-              ],
-            });
-          });
-      } else {
-        this.writeLectureToDB("");
-      }
-    } else {
-      this.uploadQuiz(this.state.quiz[0])
-        .then((res) => {
-          this.writeLectureToDB(res.key);
-        })
-        .catch((error) => {
-          this.resetQuiz();
-          this.setState({
-            isLoadingNextStep: false,
-            flashItem: [
-              {
-                type: "error",
-                content: errorMess,
-                dismissible: true,
-                dismissLabel: "Dismiss message",
-                onDismiss: () => this.setState({ flashItem: [] }),
-                id: "error_message",
-              },
-            ],
-          });
-        });
-    }
+  const { state } = useLocation();
+
+  useEffect(() => {
+    setNewLecture({
+      ...newLecture,
+      lectureTitle: state.Name,
+      lectureDescription: state.Desc,
+      lectureType: state.Type,
+      workshopUrl: state.WorkshopUrl,
+      workshopDescription: state.WorkshopDescription,
+      architectureDiagramS3Key: state.ArchitectureDiagramS3Key,
+      lectureVideoLength: state.Length,
+    })
+  }, [])
+
+  const resetFail = () => {
+    setNewLecture({ ...newLecture,
+      isLoadingNextStep: false,
+      flashItem: [
+        {
+          type: "error",
+          content: errorMess,
+          dismissible: true,
+          dismissLabel: "Dismiss message",
+          onDismiss: () => setNewLecture({ ...newLecture, flashItem: [] }),
+          id: "error_message",
+        },
+      ],
+    });
   };
 
-  writeLectureToDB = async (lectureContent) => {
+  const updateLectureWithNewFile = async () => {
+    if (newLecture.lectureType === "Video") {
+      uploadLectureVideo(newLecture.lectureVideo[0])
+        .then((res) => {
+          updateLectureInDB(res.key);
+        })
+        .catch((error) => {
+          resetLectureVideo();
+          resetFail();
+        });
+    } else if (newLecture.lectureType === "Workshop") {
+      if (newLecture.architectureDiagram[0]) {
+        uploadArchitectureDiagram(newLecture.architectureDiagram[0])
+          .then((res) => {
+            updateLectureInDB(res.key);
+          })
+          .catch((error) => {
+            resetArchitectureDiagram();
+            resetFail();
+          });
+      } else {
+        updateLectureInDB("");
+      }
+    } else {
+      uploadQuiz(newLecture.quiz[0])
+        .then((res) => {
+          updateLectureInDB(res.key);
+        })
+        .catch((error) => {
+          resetQuiz();
+          resetFail();
+        });
+    }
+  }
+
+  const submitRequest = async () => {
+    // console.log(detail);
+    setNewLecture({ ...newLecture, isLoadingNextStep: true });
+    if ( newLecture.lectureVideo[0] || newLecture.architectureDiagram[0] || newLecture.quiz[0]){
+      updateLectureWithNewFile();
+      removeOldFile(state.Content);
+    } else {
+      updateLectureInDB(state.Content)
+    }
+    
+  };
+
+  const updateLectureInDB = async (lectureContent) => {
     // console.log(lectureContent)
 
     const jsonData = {
-      ID: uuid(),
-      Name: this.state.lectureTitle,
-      Desc: this.state.lectureDescription,
-      Type: this.state.lectureType,
+      ID: state.ID,
+      Name: newLecture.lectureTitle ? newLecture.lectureTitle : state.Name,
+      Desc: newLecture.lectureDescription,
+      Type: newLecture.lectureType,
       Content: lectureContent,
-      Length: Math.round(this.state.lectureVideoLength),
-      WorkshopUrl: this.state.workshopUrl,
-      WorkshopDescription: this.state.workshopDescription,
-      ArchitectureDiagramS3Key: this.state.architectureDiagramS3Key,
-      QuizS3Key: this.state.quizS3Key,
+      Length: Math.round(newLecture.lectureVideoLength),
+      WorkshopUrl: newLecture.workshopUrl ? newLecture.workshopUrl : state.WorkshopUrl,
+      WorkshopDescription: newLecture.workshopDescription,
     };
     const apiName = "lmsStudio";
     const path = "/lectures";
-    try {
-      await API.put(apiName, path, { body: jsonData });
-      this.setState({
+    API.post(apiName, path, { body: jsonData }).then(() => {
+      setNewLecture({ ...newLecture, 
         redirectToHome: true,
-        isLoadingNextStep: false,
-        flashItem: [
-          {
-            type: "success",
-            content: successMes,
-            dismissible: true,
-            dismissLabel: "Dismiss message",
-            onDismiss: () => this.setState({ flashItem: [] }),
-            id: "success_message",
-          },
-        ],
+        // isLoadingNextStep: false,
+        // flashItem: [
+        //   {
+        //     type: "success",
+        //     content: successMes,
+        //     dismissible: true,
+        //     dismissLabel: "Dismiss message",
+        //     onDismiss: () => setNewLecture({ ...newLecture, flashItem: [] }),
+        //     id: "success_message",
+        //   },
+        // ],
       });
-    } catch (error) {
-      this.setState({
-        isLoadingNextStep: false,
-        flashItem: [
-          {
-            type: "error",
-            content: errorMess,
-            dismissible: true,
-            dismissLabel: "Dismiss message",
-            onDismiss: () => this.setState({ flashItem: [] }),
-            id: "error_message",
-          },
-        ],
-      });
-    }
-  };
-  getDefaultState = () => {
-    return {
-      activeStepIndex: 0,
-      lectureTitle: "",
-      lectureDescription: "",
-      lectureType: "Video",
-      lectureVideo: [],
-      lectureVideoLength: 0,
-      lectureVideoS3Key: "",
-      workshopUrl: "",
-      workshopDescription: "",
-      architectureDiagram: [],
-      architectureDiagramS3Key: "",
-      randomId: Math.floor(Math.random() * 1000000),
-      quiz: [],
-      quizS3Key: "",
-      redirectToHome: false,
-      isLoadingNextStep: false,
-      flashItem: [],
-    };
+    })
+    .catch( (error) => {
+      resetFail()
+    })
   };
 
-  uploadLectureVideo = async (file) => {
+  const removeOldFile = async (file) => {
+    try {
+      const res = await Storage.remove(state.Content, {
+        level: "public",
+      });
+    } catch (error) {
+      console.log("Error uploading file: ", error);
+    }
+  }
+
+  const uploadLectureVideo = async (file) => {
     if (!(file.type in ["video/mp4", "video/mov"])) {
       console.log("TODO: lecture video content validation");
     }
     try {
-      const s3Key = `lecture-videos/${this.state.randomId}-${file.name.replace(
+      const s3Key = `lecture-videos/${newLecture.randomId}-${file.name.replace(
         / /g,
         "_"
       )}`;
@@ -195,13 +189,13 @@ class CreateLecture extends React.Component {
     }
   };
 
-  uploadArchitectureDiagram = async (file) => {
+  const uploadArchitectureDiagram = async (file) => {
     if (!(file.type in ["image/jpeg", "image/png"])) {
       console.log("TODO: architecture diagram validation");
     }
     try {
       const s3Key = `architecture-diagrams/${
-        this.state.randomId
+        newLecture.randomId
       }-${file.name.replace(/ /g, "_")}`;
       const res = await Storage.put(s3Key, file, {
         level: "public",
@@ -212,12 +206,12 @@ class CreateLecture extends React.Component {
     }
   };
 
-  uploadQuiz = async (file) => {
+  const uploadQuiz = async (file) => {
     if (!(file.type in ["application/json"])) {
       console.log("TODO: quiz content validation");
     }
     try {
-      const s3Key = `quizzes/${this.state.randomId}-${file.name.replace(
+      const s3Key = `quizzes/${newLecture.randomId}-${file.name.replace(
         / /g,
         "_"
       )}`;
@@ -230,31 +224,31 @@ class CreateLecture extends React.Component {
     }
   };
 
-  resetQuiz = async () => {
-    if (this.state.quizS3Key !== "") {
-      await Storage.remove(this.state.quizS3Key, {
+  const resetQuiz = async () => {
+    if (newLecture.quizS3Key !== "") {
+      await Storage.remove(newLecture.quizS3Key, {
         level: "protected",
       });
     }
   };
 
-  resetArchitectureDiagram = async () => {
-    if (this.state.architectureDiagramS3Key !== "") {
-      await Storage.remove(this.state.architectureDiagramS3Key, {
+  const resetArchitectureDiagram = async () => {
+    if (newLecture.architectureDiagramS3Key !== "") {
+      await Storage.remove(newLecture.architectureDiagramS3Key, {
         level: "protected",
       });
     }
   };
 
-  resetLectureVideo = async () => {
-    if (this.state.lectureVideoS3Key !== "") {
-      await Storage.remove(this.state.lectureVideoS3Key, {
+  const resetLectureVideo = async () => {
+    if (newLecture.lectureVideoS3Key !== "") {
+      await Storage.remove(newLecture.lectureVideoS3Key, {
         level: "protected",
       });
     }
   };
 
-  setLectureLength = (file) =>
+  const setLectureLength = (file) =>
     new Promise((resolve, reject) => {
       if (file.length > 0) {
         try {
@@ -274,13 +268,13 @@ class CreateLecture extends React.Component {
           reject(e);
         }
       } else {
-        this.setState({ lectureVideoLength: 0 });
+        setNewLecture({ ...newLecture, lectureVideoLength: 0 });
       }
     });
-
+  
   // render 'Add Content' in step 2
-  renderAddContent = () => {
-    if (this.state.lectureType === "Video") {
+  const renderAddContent = () => {
+    if (newLecture.lectureType === "Video") {
       return (
         <FormField
           label="Lecture Videos"
@@ -288,17 +282,11 @@ class CreateLecture extends React.Component {
         >
           <FileUpload
             onChange={async ({ detail }) => {
-              this.setState({ lectureVideo: detail.value });
-              const video = await this.setLectureLength(detail.value);
-              this.setState({ lectureVideoLength: video.duration });
-              //  console.log(detail.value[0])
-              //   if (detail.value.length === 0) {
-              //     this.resetLectureVideo();
-              //   } else {
-              //     this.uploadLectureVideo(detail.value[0]);
-              //   }
+              // setNewLecture({ ...newLecture, lectureVideo: detail.value });
+              const video = await setLectureLength(detail.value);
+              setNewLecture({ ...newLecture, lectureVideo: detail.value, lectureVideoLength: video.duration });
             }}
-            value={this.state.lectureVideo}
+            value={newLecture.lectureVideo}
             i18nStrings={{
               uploadButtonText: (e) => (e ? "Choose files" : "Choose file"),
               dropzoneText: (e) =>
@@ -317,23 +305,23 @@ class CreateLecture extends React.Component {
           />
         </FormField>
       );
-    } else if (this.state.lectureType === "Workshop") {
+    } else if (newLecture.lectureType === "Workshop") {
       return (
         <div>
           <FormField description="Workshop" label="Hands-on lab for Lecture">
             <Input
-              value={this.state.workshopUrl}
+              value={newLecture.workshopUrl}
               onChange={(event) =>
-                this.setState({ workshopUrl: event.detail.value })
+                setNewLecture({ ...newLecture, workshopUrl: event.detail.value })
               }
             />
           </FormField>
 
           <FormField label={<span>Workshop Description</span>}>
             <Textarea
-              value={this.state.workshopDescription}
+              value={newLecture.workshopDescription}
               onChange={(event) =>
-                this.setState({ workshopDescription: event.detail.value })
+                setNewLecture({ ...newLecture, workshopDescription: event.detail.value })
               }
             />
           </FormField>
@@ -343,14 +331,9 @@ class CreateLecture extends React.Component {
           >
             <FileUpload
               onChange={async ({ detail }) => {
-                this.setState({ architectureDiagram: detail.value });
-                // if (detail.value.length === 0) {
-                //   this.resetArchitectureDiagram();
-                // } else {
-                //   this.uploadArchitectureDiagram(detail.value[0]);
-                // }
+                setNewLecture({ ...newLecture, architectureDiagram: detail.value });
               }}
-              value={this.state.architectureDiagram}
+              value={newLecture.architectureDiagram}
               i18nStrings={{
                 uploadButtonText: (e) => (e ? "Choose files" : "Choose file"),
                 dropzoneText: (e) =>
@@ -372,17 +355,12 @@ class CreateLecture extends React.Component {
       );
     } else {
       return (
-        <FormField label="Quiz" description="Add quiz file">
+        <FormField label="Quiz" description="Add questions">
           <FileUpload
             onChange={async ({ detail }) => {
-              this.setState({ quiz: detail.value });
-              //   if (detail.value.length === 0) {
-              //     this.resetQuiz();
-              //   } else {
-              //     this.uploadQuiz(detail.value[0]);
-              //   }
+              setNewLecture({ ...newLecture, quiz: detail.value });
             }}
-            value={this.state.quiz}
+            value={newLecture.quiz}
             i18nStrings={{
               uploadButtonText: (e) => (e ? "Choose files" : "Choose file"),
               dropzoneText: (e) =>
@@ -405,37 +383,37 @@ class CreateLecture extends React.Component {
   };
 
   // render review section in step 3
-  renderReviewSection = () => {
-    if (this.state.lectureType === "Video") {
+  const renderReviewSection = () => {
+    if (newLecture.lectureType === "Video") {
       return (
         <ColumnLayout columns={2} variant="text-grid">
           <div>
             <Box variant="awsui-key-label">File name</Box>
             <div>
-              {this.state.lectureVideo.length > 0
-                ? this.state.lectureVideo[0].name
-                : ""}
+              {newLecture.lectureVideo.length > 0
+                ? newLecture.lectureVideo[0].name
+                : state.Content}
             </div>
           </div>
         </ColumnLayout>
       );
-    } else if (this.state.lectureType === "Workshop") {
+    } else if (newLecture.lectureType === "Workshop") {
       return (
         <ColumnLayout columns={3} variant="text-grid">
           <div>
             <Box variant="awsui-key-label">Workshop URL</Box>
-            <div>{this.state.workshopUrl}</div>
+            <div>{newLecture.workshopUrl}</div>
           </div>
           <div>
             <Box variant="awsui-key-label">Workshop Description</Box>
-            <div>{this.state.workshopDescription}</div>
+            <div>{newLecture.workshopDescription}</div>
           </div>
           <div>
             <Box variant="awsui-key-label">Architecture Diagram</Box>
             <div>
-              {this.state.architectureDiagram.length > 0
-                ? this.state.architectureDiagram[0].name
-                : ""}
+              {newLecture.architectureDiagram.length > 0
+                ? newLecture.architectureDiagram[0].name
+                : state.Content}
             </div>
           </div>
         </ColumnLayout>
@@ -446,7 +424,7 @@ class CreateLecture extends React.Component {
           <div>
             <Box variant="awsui-key-label">File name</Box>
             <div>
-              {this.state.quiz.length > 0 ? this.state.quiz[0].name : ""}
+              {newLecture.quiz.length > 0 ? newLecture.quiz[0].name : state.Content}
             </div>
           </div>
         </ColumnLayout>
@@ -454,12 +432,11 @@ class CreateLecture extends React.Component {
     }
   };
 
-  render() {
-    return this.state.redirectToHome ? (
+    return newLecture.redirectToHome ? (
       <Navigate to={"/"} />
     ) : (
       <div>
-        <NavBar navigation={this.props.navigation} title="Cloud Academy" />
+        <NavBar navigation={props.navigation} title="Cloud Academy" />
         <div className="create-lecture-main">
           <BreadcrumbGroup
             items={[
@@ -481,13 +458,13 @@ class CreateLecture extends React.Component {
               submitButton: "Submit",
               optional: "optional",
             }}
-            isLoadingNextStep={this.state.isLoadingNextStep}
-            onSubmit={this.submitRequest}
+            isLoadingNextStep={newLecture.isLoadingNextStep}
+            onSubmit={submitRequest}
             onCancel={() => <Navigate to={"/"} />}
             onNavigate={({ detail }) =>
-              this.setState({ activeStepIndex: detail.requestedStepIndex })
+              setNewLecture({ ...newLecture, activeStepIndex: detail.requestedStepIndex })
             }
-            activeStepIndex={this.state.activeStepIndex}
+            activeStepIndex={newLecture.activeStepIndex}
             steps={[
               {
                 title: "Add Lecture Detail",
@@ -501,27 +478,27 @@ class CreateLecture extends React.Component {
                     <SpaceBetween direction="vertical" size="l">
                       <FormField label="Lecture Title">
                         <Input
-                          value={this.state.lectureTitle}
+                          value={newLecture.lectureTitle}
                           onChange={(event) =>
-                            this.setState({ lectureTitle: event.detail.value })
+                            setNewLecture({ ...newLecture, lectureTitle: event.detail.value })
                           }
                         />
                       </FormField>
                       <FormField label="Lecture Description">
                         <Input
-                          value={this.state.lectureDescription}
+                          value={newLecture.lectureDescription}
                           onChange={(event) =>
-                            this.setState({
-                              lectureDescription: event.detail.value,
+                            setNewLecture({
+                              ...newLecture, lectureDescription: event.detail.value,
                             })
                           }
                         />
                       </FormField>
                       <FormField label="Lecture Type">
                         <RadioGroup
-                          value={this.state.lectureType}
+                          value={newLecture.lectureType}
                           onChange={(event) =>
-                            this.setState({ lectureType: event.detail.value })
+                            setNewLecture({ ...newLecture, lectureType: event.detail.value })
                           }
                           items={[
                             {
@@ -547,7 +524,7 @@ class CreateLecture extends React.Component {
                     header={<Header variant="h2">Lecture Content</Header>}
                   >
                     <SpaceBetween direction="vertical" size="l">
-                      {this.renderAddContent()}
+                      {renderAddContent()}
                     </SpaceBetween>
                   </Container>
                 ),
@@ -559,13 +536,13 @@ class CreateLecture extends React.Component {
                   <div>
                     <SpaceBetween direction="vertical" size="l">
                       <SpaceBetween direction="vertical" size="s">
-                        <Flashbar items={this.state.flashItem} />
+                        <Flashbar items={newLecture.flashItem} />
                         <Header
                           variant="h3"
                           actions={
                             <Button
                               onClick={() =>
-                                this.setState({ activeStepIndex: 0 })
+                                setNewLecture({ ...newLecture, activeStepIndex: 0 })
                               }
                             >
                               Edit
@@ -580,15 +557,15 @@ class CreateLecture extends React.Component {
                           <ColumnLayout columns={3} variant="text-grid">
                             <div>
                               <Box variant="awsui-key-label">Lecture title</Box>
-                              <div>{this.state.lectureTitle}</div>
+                              <div>{newLecture.lectureTitle}</div>
                             </div>
                             <div>
                               <Box variant="awsui-key-label">Description</Box>
-                              <div>{this.state.lectureDescription}</div>
+                              <div>{newLecture.lectureDescription}</div>
                             </div>
                             <div>
                               <Box variant="awsui-key-label">Lecture Type</Box>
-                              <div>{this.state.lectureType}</div>
+                              <div>{newLecture.lectureType}</div>
                             </div>
                           </ColumnLayout>
                         </Container>
@@ -598,7 +575,7 @@ class CreateLecture extends React.Component {
                         <Container
                           header={<Header variant="h2">Lecture Content</Header>}
                         >
-                          {this.renderReviewSection()}
+                          {renderReviewSection()}
                         </Container>
                       </SpaceBetween>
                     </SpaceBetween>
@@ -611,7 +588,6 @@ class CreateLecture extends React.Component {
         <Footer />
       </div>
     );
-  }
 }
 
-export default (CreateLecture);
+export default (UpdateLecture);

@@ -33,6 +33,7 @@ import CreateLecture from './views/CreateLecture/CreateLecture';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import AddChapter from './components/CreateCourse/3-addChapter';
 import CreateCourse from './views/CreateCourse/CreateCourse';
+import UpdateLecture from './views/UpdateLecture/UpdateLecture';
 
 // Configure Amplify
 Amplify.configure(awsExports);
@@ -136,7 +137,10 @@ const router = createHashRouter([
     path: '/addChapter',
     element: <AddChapter />,
   },
-
+  {
+    path: "/editLecture/:id",
+    element: <UpdateLecture/>,
+  },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
