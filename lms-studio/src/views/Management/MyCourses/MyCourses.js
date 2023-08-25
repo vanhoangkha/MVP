@@ -63,6 +63,7 @@ const MyCourses = () => {
         confirmDelete();
         break;
       case "edt":
+        navigate(`/editCourse/${selectedItems[0]?.ID}`, {state: selectedItems[0]})
         break;
       default:
         break;

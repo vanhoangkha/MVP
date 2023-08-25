@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Outlet } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import NavBar from "../../components/NavBar/NavBar";
 import {
     BreadcrumbGroup,
@@ -49,8 +49,8 @@ function EmptyState({ title, subtitle, action }) {
     );
   }
 
-function CreateCourse(props) {
-  const [state, setState] = useState({
+function UpdateCourse(props) {
+  const [newCourse, setNewCourse] = useState({
     activeHref: "/",
     activeStepIndex: 0,
     name: "",
@@ -68,25 +68,27 @@ function CreateCourse(props) {
       name: "",
       lectures: [],
     },
-    existingLectures: [],
     chapters: [],
     visible: false,
-    selectedLectures: [],
     editChapter: {
       index: -1,
       name: "",
       lectures: [],
     },
-    submitStatus: 0,
-    isLoadingNextStep: false,
-    flashItem: [],
   })
+  const [existingLectures, setExistingLectures] = useState([]);
+  const [selectedLectures, setSelectedLectures] = useState([]);
+  const [isLoadingNextStep, setIsLoadingNextStep] = useState(false);
+  const [flashItem, setFlashItem] = useState([]);
+
+  const { state } = useLocation();
+
   const draggedItem = useRef(null)
   let draggedIdx;
 
   const [preferences, setPreferences] = useState({ pageSize: 6, visibleContent: ["description", "type", "size"] });
   const { items, actions, filteredItemsCount, collectionProps, filterProps, paginationProps } = useCollection(
-    state.existingLectures,
+    existingLectures,
     {
       filtering: {
         empty: <EmptyState title="No lectures" />,
@@ -109,31 +111,47 @@ function CreateCourse(props) {
 
     API.get(apiName, path)
       .then((response) => {
-        console.log(response)
-        setState({ ...state, existingLectures: response });
+        setExistingLectures(response);
       })
       .catch((error) => {
         console.log(error.response);
       });
   }, [])
 
+  let str_categories = "";
+  state.Categories.map((cate, index) => {
+    str_categories += (index !== 0 ? ', ' : ' ') + cate
+  })
+  
+  useEffect(() => {
+    setNewCourse({
+      ...newCourse,
+      name: state.Name,
+      description: state.Description,
+      level: state.Level,
+      categories: str_categories,
+      requirements: state.Requirements,
+      difficulty: state.Difficulty,
+      whatToLearn: state.WhatToLearn,
+      chapters: state.Chapters,
+    })
+  }, [])
+
   const deleteRequirement = (index) => {
-    let list = [...state.requirements]
+    let list = [...newCourse.requirements]
     list.splice(index, 1);
-    setState({...state, requirements: list})
+    setNewCourse({...newCourse, requirements: list})
   }
 
   const deleteBenefit = (index) => {
-    let list = [...state.whatToLearn]
+    let list = [...newCourse.whatToLearn]
     list.splice(index, 1);
-    setState({...state, whatToLearn: list})
+    setNewCourse({...newCourse, whatToLearn: list})
   }
 
   const renderRequirements = () => {
-    // console.log(state)
-    // setState({...state, requirements: ["Một", "hai"]})
     return <>
-        {state.requirements.map((item, index) => (
+        {newCourse.requirements.map((item, index) => (
           <div className="requirement-item">
             <li className="requirement-item-haft" key={index}>
               {item}
@@ -151,10 +169,8 @@ function CreateCourse(props) {
   };
 
   const renderWhatToLearn = () => {
-    // console.log(state)
-    // setState({...state, requirements: ["Một", "hai"]})
     return <>
-        {state.whatToLearn.map((item, index) => (
+        {newCourse.whatToLearn.map((item, index) => (
           <div className="requirement-item">
             <li className="requirement-item-haft" key={index}>
               {item}
@@ -173,15 +189,12 @@ function CreateCourse(props) {
 
 
   const onDragLectureStart = (e, index) => {
-    draggedItem.current = state.editChapter.lectures[index];
+    draggedItem.current = newCourse.editChapter.lectures[index];
     e.dataTransfer.effectAllowed = "move";
-    console.log("onDragLectureStart")
-    // e.dataTransfer.setData("text/html", e.target.parentNode);
-    // e.dataTransfer.setDragImage(e.target.parentNode, 20, 20);
   };
 
   const onDragLectureOver = (e, index) => {
-    const draggedOverItem = state.editChapter.lectures[index];
+    const draggedOverItem = newCourse.editChapter.lectures[index];
 
     // if the item is dragged over itself, ignore
     if (draggedItem.current === draggedOverItem || !draggedItem.current) {
@@ -189,15 +202,15 @@ function CreateCourse(props) {
     }
 
     // filter out the currently dragged item
-    let items = state.editChapter.lectures.filter(item => item !== draggedItem.current);
+    let items = newCourse.editChapter.lectures.filter(item => item !== draggedItem.current);
 
     // add the dragged item after the dragged over item
     items.splice(index, 0, draggedItem.current);
 
     // set updated items for chapters
-    let chapterList = state.editChapter;
+    let chapterList = newCourse.editChapter;
     chapterList.lectures = items;
-    setState({ ...state, editChapter: chapterList})
+    setNewCourse({ ...newCourse, editChapter: chapterList})
   };
 
   const onDragLectureEnd = () => {
@@ -205,7 +218,7 @@ function CreateCourse(props) {
   };
   
   const editChapter = (e, cIndex) => {
-    let chapter = state.chapters[cIndex];
+    let chapter = newCourse.chapters[cIndex];
     let selectedLectures = [];
     chapter.index = cIndex;
     for ( let i = 0; i < chapter.lectures.length; i++ ){
@@ -216,39 +229,50 @@ function CreateCourse(props) {
             Length: chapter.lectures[i].length
         })
     }
-    setState({ ...state, 
+    setNewCourse({ ...newCourse, 
         editChapter: chapter,
-        selectedLectures: selectedLectures,
     });
+    setSelectedLectures(selectedLectures)
   }
 
   const saveEditChapter = () => {
-    const existChapters = state.chapters;
-    existChapters[state.editChapter.index] = state.editChapter
-    setState({
-        ...state,
+    const existChapters = newCourse.chapters;
+    existChapters[newCourse.editChapter.index] = newCourse.editChapter
+    setNewCourse({
+        ...newCourse,
         chapters: existChapters,
         editChapter: {
             index: -1,
             name: "",
             lectures: [],
         },
-        selectedLectures: [],
     })
+    setSelectedLectures([])
+  }
+
+  const deleteChapter = () => {
+    let newChapter = [...newCourse.chapters];
+    newChapter.splice(newCourse.editChapter.index);
+    setNewCourse({...newCourse, chapters: newChapter, editChapter: {
+      index: -1,
+      name: "",
+      lectures: [],
+    }});
+    setSelectedLectures([])
   }
 
   const deleteLecture = (index) => {
-    let newEditChapter = state.editChapter
-    let selectedLec = [...state.selectedLectures]
+    let newEditChapter = newCourse.editChapter
+    let selectedLec = [...selectedLectures]
     newEditChapter.lectures.splice(index, 1);
-    setState({...state, 
+    setNewCourse({...newCourse, 
         editChapter: newEditChapter,
-        selectedLectures: selectedLec.splice(index, 1),
     })
+    setSelectedLectures(selectedLec.splice(index, 1))
   }
 
   const updateLectureForChapter = () => {
-    const newlySelectedLectures = state.selectedLectures.map((lecture) => {
+    const newlySelectedLectures = selectedLectures.map((lecture) => {
       return {
         name: lecture.Name,
         lectureId: lecture.ID,
@@ -258,26 +282,26 @@ function CreateCourse(props) {
     });
     
 
-    if (state.editChapter.index === -1) {
+    if (newCourse.editChapter.index === -1) {
       const updatedCurrChapter = {
-        name: state.currentChapter.name,
-        lectures: state.currentChapter.lectures.concat(newlySelectedLectures),
+        name: newCourse.currentChapter.name,
+        lectures: newCourse.currentChapter.lectures.concat(newlySelectedLectures),
       };
 
-      setState({
-        ...state,
-        selectedLectures: [],
+      setNewCourse({
+        ...newCourse,
         currentChapter: {
           name: "",
           lectures: [],
         },
-        chapters: [...state.chapters, updatedCurrChapter],
+        chapters: [...newCourse.chapters, updatedCurrChapter],
         visible: false,
       });
+      setSelectedLectures([])
     }else {
-        setState({
-            ...state,
-            editChapter: {...state.editChapter, lectures: newlySelectedLectures},
+        setNewCourse({
+            ...newCourse,
+            editChapter: {...newCourse.editChapter, lectures: newlySelectedLectures},
             visible: false,
         })
     }
@@ -290,74 +314,69 @@ function CreateCourse(props) {
   }
 
   const submitCourse = async () => {
-    setState({ ...state, isLoadingNextStep: true })
+    setIsLoadingNextStep(true)
 
     let courseLength = 0;
-    let categories = state.categories.split(",")
-    state.chapters.map((chapter) => {
+    let categories = newCourse.categories.split(",")
+    newCourse.chapters.map((chapter) => {
         chapter.lectures.map((lecture)=> {
             courseLength += lecture.length
         })
     })
 
     const jsonData = {
-        ID: convertNameToID(state.name),
-        Name: state.name.trim(),
-        Description: state.description,
+        ID: newCourse.name.trim() ? convertNameToID(newCourse.name) : state.ID,
+        Name: newCourse.name.trim() ? newCourse.name.trim() : state.name,
+        Description: newCourse.description,
         Length: courseLength,
-        Level: state.level,
+        Level: newCourse.level,
         Categories: categories,
-        Requirements: state.requirements,
-        Difficulty: state.difficulty,
-        WhatToLearn: state.whatToLearn,
-        Chapters: state.chapters,
+        Requirements: newCourse.requirements,
+        Difficulty: newCourse.difficulty,
+        WhatToLearn: newCourse.whatToLearn,
+        Chapters: newCourse.chapters,
     }
 
     const apiName = "lmsStudio";
     const path = "/courses";
     try {
       await API.post(apiName, path, { body: jsonData });
-      setState({
-        ...state,
+      setIsLoadingNextStep(false)
+      setNewCourse({
+        ...newCourse,
         redirectToHome: true,
-        isLoadingNextStep: false,
-        flashItem: [
-          {
-            type: "success",
-            content: successMes,
-            dismissible: true,
-            dismissLabel: "Dismiss message",
-            onDismiss: () => setState({ ...state, flashItem: [] }),
-            id: "success_message",
-          },
-        ],
       });
+      setFlashItem( [
+        {
+          type: "success",
+          content: successMes,
+          dismissible: true,
+          dismissLabel: "Dismiss message",
+          onDismiss: () => setFlashItem([]),
+          id: "success_message",
+        },
+      ])
     } catch (error) {
-      setState({
-        ...state,
-        isLoadingNextStep: false,
-        flashItem: [
+      setIsLoadingNextStep(false)
+      setNewCourse({
+        ...newCourse,
+      });
+      setFlashItem(
+        [
           {
             type: "error",
             content: errorMess,
             dismissible: true,
             dismissLabel: "Dismiss message",
-            onDismiss: () => setState({ ...state, flashItem: [] }),
+            onDismiss: () => setFlashItem([]),
             id: "error_message",
           },
-        ],
-      });
+        ]
+      )
     }
   }
 
-  const deleteChapter = () => {
-    let newChapter = [...state.chapters];
-    newChapter.splice(state.editChapter.index);
-    setState({...state, chapters: newChapter})
-  }
-
   const renderEditForm = () => {
-    console.log(state.editChapter)
     return (
       <Container
         header={
@@ -371,19 +390,19 @@ function CreateCourse(props) {
               </SpaceBetween>
             }
           >
-            {state.editChapter.name}
+            {newCourse.editChapter.name}
           </Header>
         }
       >
         <SpaceBetween size="s">
           <FormField label="Chapter Name">
             <Input
-              value={state.editChapter.name}
+              value={newCourse.editChapter.name}
               onChange={(event) =>
-                setState({
-                  ...state,
+                setNewCourse({
+                  ...newCourse,
                   editChapter: {
-                    ...state.editChapter,
+                    ...newCourse.editChapter,
                     name: event.detail.value,
                   },
                 })
@@ -393,7 +412,7 @@ function CreateCourse(props) {
           <div>
             <h4>Lecture List</h4>
             <ul>
-              {state.editChapter.lectures.map((item, index) => (
+              {newCourse.editChapter.lectures.map((item, index) => (
                 <li
                   key={index}
                   draggable
@@ -413,8 +432,8 @@ function CreateCourse(props) {
         <Button
           variant="primary"
           onClick={() =>
-            setState({
-              ...state,
+            setNewCourse({
+              ...newCourse,
               visible: true,
             })
           }
@@ -429,10 +448,10 @@ function CreateCourse(props) {
     return (
       <div className="lecture-list">
         <SpaceBetween size="xs">
-          {state.chapters.map((chapter, cIndex) => {
+          {newCourse.chapters.map((chapter, cIndex) => {
             return (
               <>
-                {state.editChapter.index === cIndex ? (
+                {newCourse.editChapter.index === cIndex ? (
                   <>
                     {renderEditForm()}
                   </>
@@ -472,7 +491,7 @@ function CreateCourse(props) {
     );
   };
 
-    return state.redirectToHome ? (
+    return newCourse.redirectToHome ? (
       <Navigate to={"/"} />
     ) : (
       <>
@@ -502,18 +521,18 @@ function CreateCourse(props) {
                   cancelButton: "Cancel",
                   previousButton: "Previous",
                   nextButton: "Next",
-                  submitButton: "Create course",
+                  submitButton: "Update course",
                   optional: "optional",
                 }}
-                isLoadingNextStep={state.isLoadingNextStep}
+                isLoadingNextStep={isLoadingNextStep}
                 onSubmit={submitCourse}
                 onNavigate={({ detail }) =>
-                  setState({
-                    ...state,
+                  setNewCourse({
+                    ...newCourse,
                     activeStepIndex: detail.requestedStepIndex,
                   })
                 }
-                activeStepIndex={state.activeStepIndex}
+                activeStepIndex={newCourse.activeStepIndex}
                 steps={[
                   {
                     title: "Add Course Detail",
@@ -524,19 +543,22 @@ function CreateCourse(props) {
                         <SpaceBetween direction="vertical" size="l">
                           <FormField label="Course Title">
                             <Input
-                              value={state.name}
+                              value={newCourse.name}
                               onChange={(event) =>
-                                setState({ ...state, name: event.detail.value })
+                                setNewCourse({
+                                  ...newCourse,
+                                  name: event.detail.value,
+                                })
                               }
                             />
                           </FormField>
                           <FormField label="Course Description">
                             <Textarea
-                              value={state.description}
+                              value={newCourse.description}
                               rows={4}
                               onChange={(event) =>
-                                setState({
-                                  ...state,
+                                setNewCourse({
+                                  ...newCourse,
                                   description: event.detail.value,
                                 })
                               }
@@ -547,11 +569,11 @@ function CreateCourse(props) {
                             description="Each category is separated by a comma"
                           >
                             <Input
-                              value={state.categories}
+                              value={newCourse.categories}
                               placeholder="Network, Container"
                               onChange={(event) =>
-                                setState({
-                                  ...state,
+                                setNewCourse({
+                                  ...newCourse,
                                   categories: event.detail.value,
                                 })
                               }
@@ -559,10 +581,10 @@ function CreateCourse(props) {
                           </FormField>
                           <FormField label="Level">
                             <Input
-                              value={state.level}
+                              value={newCourse.level}
                               onChange={(event) =>
-                                setState({
-                                  ...state,
+                                setNewCourse({
+                                  ...newCourse,
                                   level: event.detail.value,
                                 })
                               }
@@ -574,9 +596,12 @@ function CreateCourse(props) {
                         </p>
                         <Toggle
                           onChange={({ detail }) =>
-                            setState({ ...state, publicity: detail.checked })
+                            setNewCourse({
+                              ...newCourse,
+                              publicity: detail.checked,
+                            })
                           }
-                          checked={state.publicity}
+                          checked={newCourse.publicity}
                         >
                           Public Course
                         </Toggle>
@@ -585,9 +610,12 @@ function CreateCourse(props) {
                         </p>
                         <Toggle
                           onChange={({ detail }) =>
-                            setState({ ...state, difficulty: detail.checked })
+                            setNewCourse({
+                              ...newCourse,
+                              difficulty: detail.checked,
+                            })
                           }
-                          checked={state.difficulty}
+                          checked={newCourse.difficulty}
                         >
                           Flexible
                         </Toggle>
@@ -603,10 +631,10 @@ function CreateCourse(props) {
                         <SpaceBetween direction="vertical" size="l">
                           <FormField label="Requirement">
                             <Input
-                              value={state.currentRequirement}
+                              value={newCourse.currentRequirement}
                               onChange={(event) =>
-                                setState({
-                                  ...state,
+                                setNewCourse({
+                                  ...newCourse,
                                   currentRequirement: event.detail.value,
                                 })
                               }
@@ -615,14 +643,17 @@ function CreateCourse(props) {
                           <Button
                             variant="primary"
                             onClick={() => {
-                              let newReq = state.currentRequirement;
-                              setState({
-                                ...state,
-                                requirements: [...state.requirements, newReq],
+                              let newReq = newCourse.currentRequirement;
+                              setNewCourse({
+                                ...newCourse,
+                                requirements: [
+                                  ...newCourse.requirements,
+                                  newReq,
+                                ],
                                 currentRequirement: "",
                               });
 
-                              // setState({ ...state, currentRequirement: "" });
+                              // setNewCourse({ ...newCourse, currentRequirement: "" });
                             }}
                           >
                             Add requirements
@@ -644,10 +675,10 @@ function CreateCourse(props) {
                         <SpaceBetween direction="vertical" size="l">
                           <FormField label="Benefit">
                             <Input
-                              value={state.currentBenefit}
+                              value={newCourse.currentBenefit}
                               onChange={(event) =>
-                                setState({
-                                  ...state,
+                                setNewCourse({
+                                  ...newCourse,
                                   currentBenefit: event.detail.value,
                                 })
                               }
@@ -656,14 +687,17 @@ function CreateCourse(props) {
                           <Button
                             variant="primary"
                             onClick={() => {
-                              let newBenefit = state.currentBenefit;
-                              setState({
-                                ...state,
-                                whatToLearn: [...state.whatToLearn, newBenefit],
+                              let newBenefit = newCourse.currentBenefit;
+                              setNewCourse({
+                                ...newCourse,
+                                whatToLearn: [
+                                  ...newCourse.whatToLearn,
+                                  newBenefit,
+                                ],
                                 currentBenefit: "",
                               });
 
-                              // setState({ ...state, currentRequirement: "" });
+                              // setNewCourse({ ...newCourse, currentRequirement: "" });
                             }}
                           >
                             Add benefit
@@ -687,13 +721,14 @@ function CreateCourse(props) {
                             <SpaceBetween direction="vertical" size="l">
                               <FormField label="Chapter Name">
                                 <Input
-                                  value={state.currentChapter.name}
+                                  value={newCourse.currentChapter.name}
                                   onChange={(event) =>
-                                    setState({
-                                      ...state,
+                                    setNewCourse({
+                                      ...newCourse,
                                       currentChapter: {
                                         name: event.detail.value,
-                                        lectures: state.currentChapter.lectures,
+                                        lectures:
+                                          newCourse.currentChapter.lectures,
                                       },
                                     })
                                   }
@@ -701,9 +736,16 @@ function CreateCourse(props) {
                               </FormField>
                               <Button
                                 variant="primary"
-                                onClick={() =>
-                                  setState({ ...state, visible: true })
-                                }
+                                onClick={() => {
+                                  newCourse.currentChapter.name ? (
+                                    setNewCourse({
+                                      ...newCourse,
+                                      visible: true,
+                                    })
+                                  ) : (
+                                    <></>
+                                  );
+                                }}
                               >
                                 Add
                               </Button>
@@ -714,9 +756,9 @@ function CreateCourse(props) {
 
                               <Modal
                                 onDismiss={() =>
-                                  setState({ ...state, visible: false })
+                                  setNewCourse({ ...newCourse, visible: false })
                                 }
-                                visible={state.visible}
+                                visible={newCourse.visible}
                                 size="max"
                                 footer={
                                   <Box float="right">
@@ -728,25 +770,26 @@ function CreateCourse(props) {
                                         variant="link"
                                         onClick={() => {
                                           const selectedLecturesSize =
-                                            state.selectedLectures.length;
-                                          setState({
-                                            ...state,
-                                            selectedLectures: [],
+                                            selectedLectures.length;
+                                          setNewCourse({
+                                            ...newCourse,
                                             currentChapter: {
-                                              name: state.currentChapter.name,
+                                              name: newCourse.currentChapter
+                                                .name,
                                               lectures:
-                                                state.currentChapter.lectures.slice(
+                                                newCourse.currentChapter.lectures.slice(
                                                   0,
-                                                  state.currentChapter.lectures
-                                                    .length -
+                                                  newCourse.currentChapter
+                                                    .lectures.length -
                                                     selectedLecturesSize
                                                 ),
                                             },
                                           });
-                                          setState({
-                                            ...state,
+                                          setNewCourse({
+                                            ...newCourse,
                                             visible: false,
                                           });
+                                          setSelectedLectures([]);
                                         }}
                                       >
                                         Cancel
@@ -765,12 +808,9 @@ function CreateCourse(props) {
                                 <Cards
                                   {...collectionProps}
                                   onSelectionChange={({ detail }) => {
-                                    setState({
-                                      ...state,
-                                      selectedLectures: detail.selectedItems,
-                                    });
+                                    setSelectedLectures(detail.selectedItems);
                                   }}
-                                  selectedItems={state.selectedLectures}
+                                  selectedItems={selectedLectures}
                                   ariaLabels={{
                                     itemSelectionLabel: (e, n) =>
                                       `select ${n.Name}`,
@@ -831,9 +871,9 @@ function CreateCourse(props) {
                                   header={
                                     <Header
                                       counter={
-                                        state.selectedLectures.length
+                                        selectedLectures.length
                                           ? "(" +
-                                            state.selectedLectures.length +
+                                            selectedLectures.length +
                                             "/10)"
                                           : "(10)"
                                       }
@@ -886,7 +926,7 @@ function CreateCourse(props) {
                           {/* <div style={{ textAlign: "center" }}>
                             <Button
                               variant="primary"
-                              onClick={() => setState({ ...state, visible: true })}
+                              onClick={() => setNewCourse({ ...newCourse, visible: true })}
                             >
                               Add chapter
                             </Button>
@@ -900,7 +940,7 @@ function CreateCourse(props) {
                     title: "Review and launch",
                     content: (
                       <div>
-                        <Flashbar items={state.flashItem} />
+                        <Flashbar items={flashItem} />
                         <SpaceBetween size="s">
                           <SpaceBetween size="xs">
                             <Header
@@ -908,7 +948,10 @@ function CreateCourse(props) {
                               actions={
                                 <Button
                                   onClick={() =>
-                                    setState({ ...state, activeStepIndex: 0 })
+                                    setNewCourse({
+                                      ...newCourse,
+                                      activeStepIndex: 0,
+                                    })
                                   }
                                 >
                                   Edit
@@ -927,19 +970,21 @@ function CreateCourse(props) {
                                   <Box variant="awsui-key-label">
                                     Course Title
                                   </Box>
-                                  <div>{state.name}</div>
+                                  <div>{newCourse.name}</div>
                                 </div>
                                 <div>
                                   <Box variant="awsui-key-label">
                                     Course Description
                                   </Box>
-                                  <div>{state.description}</div>
+                                  <div>{newCourse.description}</div>
                                 </div>
                                 <div>
                                   <Box variant="awsui-key-label">
                                     Course Publicity
                                   </Box>
-                                  <div>{state.publicity ? "yes" : "no"}</div>
+                                  <div>
+                                    {newCourse.publicity ? "yes" : "no"}
+                                  </div>
                                 </div>
                               </ColumnLayout>
                               <ColumnLayout columns={3} variant="text-grid">
@@ -947,15 +992,17 @@ function CreateCourse(props) {
                                   <Box variant="awsui-key-label">
                                     Course Difficulty
                                   </Box>
-                                  <div>{state.difficulty ? "yes" : "no"}</div>
+                                  <div>
+                                    {newCourse.difficulty ? "yes" : "no"}
+                                  </div>
                                 </div>
                                 <div>
                                   <Box variant="awsui-key-label">Category</Box>
-                                  <div>{state.categories}</div>
+                                  <div>{newCourse.categories}</div>
                                 </div>
                                 <div>
                                   <Box variant="awsui-key-label">Level</Box>
-                                  <div>{state.level}</div>
+                                  <div>{newCourse.level}</div>
                                 </div>
                               </ColumnLayout>
                             </Container>
@@ -973,16 +1020,18 @@ function CreateCourse(props) {
                                 </Box>
                                 <div>
                                   <ol>
-                                    {state.requirements.map((item, index) => (
-                                      <div className="requirement-item">
-                                        <li
-                                          className="requirement-item-haft"
-                                          key={index}
-                                        >
-                                          {item}
-                                        </li>
-                                      </div>
-                                    ))}
+                                    {newCourse.requirements.map(
+                                      (item, index) => (
+                                        <div className="requirement-item">
+                                          <li
+                                            className="requirement-item-haft"
+                                            key={index}
+                                          >
+                                            {item}
+                                          </li>
+                                        </div>
+                                      )
+                                    )}
                                   </ol>
                                 </div>
                               </div>
@@ -1001,16 +1050,18 @@ function CreateCourse(props) {
                                 </Box>
                                 <div>
                                   <ol>
-                                    {state.whatToLearn.map((item, index) => (
-                                      <div className="requirement-item">
-                                        <li
-                                          className="requirement-item-haft"
-                                          key={index}
-                                        >
-                                          {item}
-                                        </li>
-                                      </div>
-                                    ))}
+                                    {newCourse.whatToLearn.map(
+                                      (item, index) => (
+                                        <div className="requirement-item">
+                                          <li
+                                            className="requirement-item-haft"
+                                            key={index}
+                                          >
+                                            {item}
+                                          </li>
+                                        </div>
+                                      )
+                                    )}
                                   </ol>
                                 </div>
                               </div>
@@ -1024,31 +1075,27 @@ function CreateCourse(props) {
                               }
                             >
                               <ColumnLayout columns={1} variant="text-grid">
-                                <div className="lecture-list">
-                                  <SpaceBetween size="xs">
-                                    {state.chapters.map((chapter, cIndex) => {
-                                      return (
-                                        <>
-                                          <ExpandableSection
-                                            key={cIndex}
-                                            headerText={chapter.name}
-                                            variant="container"
-                                          >
-                                            <ul>
-                                              {chapter.lectures.map(
-                                                (item, index) => (
-                                                  <li key={index}>
-                                                    {item.name}
-                                                  </li>
-                                                )
-                                              )}
-                                            </ul>
-                                          </ExpandableSection>
-                                        </>
-                                      );
-                                    })}
-                                  </SpaceBetween>
-                                </div>
+                                <SpaceBetween size="xs">
+                                  {newCourse.chapters.map((chapter, cIndex) => {
+                                    return (
+                                      <>
+                                        <ExpandableSection
+                                          key={cIndex}
+                                          headerText={chapter.name}
+                                          variant="container"
+                                        >
+                                          <ul>
+                                            {chapter.lectures.map(
+                                              (item, index) => (
+                                                <li key={index}>{item.name}</li>
+                                              )
+                                            )}
+                                          </ul>
+                                        </ExpandableSection>
+                                      </>
+                                    );
+                                  })}
+                                </SpaceBetween>
                               </ColumnLayout>
                             </Container>
                           </SpaceBetween>
@@ -1066,4 +1113,4 @@ function CreateCourse(props) {
     );
 }
 
-export default withAuthenticator(CreateCourse);
+export default withAuthenticator(UpdateCourse);
