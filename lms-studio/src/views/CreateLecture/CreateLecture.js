@@ -105,7 +105,7 @@ class CreateLecture extends React.Component {
         });
     }
   };
-
+  
   writeLectureToDB = async (lectureContent) => {
     // console.log(lectureContent)
 
@@ -120,6 +120,7 @@ class CreateLecture extends React.Component {
       WorkshopDescription: this.state.workshopDescription,
       ArchitectureDiagramS3Key: this.state.architectureDiagramS3Key,
       QuizS3Key: this.state.quizS3Key,
+      LastUpdated: new Date().toISOString(),
     };
     const apiName = "lmsStudio";
     const path = "/lectures";
@@ -319,8 +320,8 @@ class CreateLecture extends React.Component {
       );
     } else if (this.state.lectureType === "Workshop") {
       return (
-        <div>
-          <FormField description="Workshop" label="Hands-on lab for Lecture">
+        <SpaceBetween direction="vertical" size="s">
+          <FormField label="Workshop" description="Hands-on lab for Lecture">
             <Input
               value={this.state.workshopUrl}
               onChange={(event) =>
@@ -368,7 +369,7 @@ class CreateLecture extends React.Component {
               accept=".jpg,.jpeg,.png"
             />
           </FormField>
-        </div>
+        </SpaceBetween>
       );
     } else {
       return (
@@ -483,7 +484,7 @@ class CreateLecture extends React.Component {
             }}
             isLoadingNextStep={this.state.isLoadingNextStep}
             onSubmit={this.submitRequest}
-            onCancel={() => <Navigate to={"/"} />}
+            onCancel={() => this.setState({redirectToHome: true})}
             onNavigate={({ detail }) =>
               this.setState({ activeStepIndex: detail.requestedStepIndex })
             }

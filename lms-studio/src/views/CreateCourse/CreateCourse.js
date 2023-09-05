@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Outlet } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar/NavBar";
 import {
     BreadcrumbGroup,
@@ -27,7 +27,6 @@ import { useCollection } from '@cloudscape-design/collection-hooks';
 import Footer from "../../components/Footer/Footer";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import Icon from "@cloudscape-design/components/icon";
-import { useNavigate } from "react-router-dom";
 import ExpandableSection from "@cloudscape-design/components/expandable-section";
 import { API } from "aws-amplify";
 import "./Course.css";
@@ -50,6 +49,8 @@ function EmptyState({ title, subtitle, action }) {
   }
 
 function CreateCourse(props) {
+  const navigate  = useNavigate();
+
   const [state, setState] = useState({
     activeHref: "/",
     activeStepIndex: 0,
@@ -350,6 +351,10 @@ function CreateCourse(props) {
     }
   }
 
+  const backToCourseHome = () => {
+    navigate(`/management/myCourses`)
+  }
+
   const deleteChapter = () => {
     let newChapter = [...state.chapters];
     newChapter.splice(state.editChapter.index);
@@ -507,6 +512,7 @@ function CreateCourse(props) {
                 }}
                 isLoadingNextStep={state.isLoadingNextStep}
                 onSubmit={submitCourse}
+                onCancel={backToCourseHome}
                 onNavigate={({ detail }) =>
                   setState({
                     ...state,

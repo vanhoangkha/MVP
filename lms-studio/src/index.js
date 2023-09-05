@@ -35,6 +35,8 @@ import AddChapter from './components/CreateCourse/3-addChapter';
 import CreateCourse from './views/CreateCourse/CreateCourse';
 import UpdateLecture from './views/UpdateLecture/UpdateLecture';
 import UpdateCourse from './views/UpdateCourse/UpdateCourse'
+import LectureDetail from './views/Management/MyLectures/LectureDetail'
+import CourseDetail from './views/Management/MyCourses/CourseDetail'
 
 // Configure Amplify
 Amplify.configure(awsExports);
@@ -68,6 +70,14 @@ const router = createHashRouter([
       {
         path: "user",
         element: <User />
+      },
+      {
+        path: "myLectures/detail/:id",
+        element: <LectureDetail />
+      },
+      {
+        path: "myCourses/detail/:id",
+        element: <CourseDetail />
       },
     ],
   },
@@ -110,7 +120,15 @@ const router = createHashRouter([
       {
         path: "user",
         element: <User />
-      }
+      },
+      {
+        path: "myLectures/detail/:id",
+        element: <LectureDetail />
+      },
+      {
+        path: "myCourses/detail/:id",
+        element: <CourseDetail />
+      },
     ],
   },
   {

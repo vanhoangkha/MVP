@@ -30,7 +30,9 @@ const MyCourses = () => {
   const [disable, setDisable] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [flashItem, setFlashItem] = useState([]);
-  const [multiDisable, setMultiDisable] = useState(false);
+  const [editDisable, setEditDisable] = useState(false);
+  const [actionDisable, setActionDisable] = useState(true);
+  const [currentCourse, setCurrentCourse] = useState();
 
   const navigate  = useNavigate()
 
@@ -57,13 +59,28 @@ const MyCourses = () => {
     handleGetCouses()
   },[])
 
-  const handleClick = (value) => {
+  const handleClick = (value, course) => {
     switch (value.id) {
       case "rm":
         confirmDelete();
+        if ( course ) {
+          setCurrentCourse(course)
+        }
         break;
       case "edt":
-        navigate(`/editCourse/${selectedItems[0]?.ID}`, {state: selectedItems[0]})
+        navigate(`/editCourse/${selectedItems[0]?.ID}`, {
+          state: selectedItems[0],
+        });
+        break;
+      case "edt1":
+        navigate(`/editCourse/${course?.ID}`, {
+          state: course,
+        });
+        break;
+      case "detail":
+        navigate(`/myCourses/detail/${course?.ID}`, {
+          state: course,
+        });
         break;
       default:
         break;
@@ -116,9 +133,10 @@ const MyCourses = () => {
     setDisable(true);
     setDeleting(true);
     let count = 0;
-    let countDeleteItems = selectedItems.length;
+    let countDeleteItems = currentCourse ? 1 : selectedItems.length;
+    const deteleItems = currentCourse ? currentCourse : selectedItems
     for (let i = 0; i < countDeleteItems; i++) {
-      deleteCourseInDB(selectedItems[i].ID, i)
+      deleteCourseInDB(deteleItems[i].ID, i)
         .then((res) => {
           count++;
           if (count === countDeleteItems) {
@@ -146,9 +164,13 @@ const MyCourses = () => {
       <Title text="My Courses" />
       <Table
         onSelectionChange={({ detail }) => {
-          if (detail.selectedItems.length > 1) setMultiDisable(true);
-          console.log(detail)
-          setSelectedItems(detail.selectedItems)
+          if (detail.selectedItems.length > 1) {
+            setEditDisable(true);
+          }
+          detail.selectedItems.length > 0
+            ? setActionDisable(false)
+            : setActionDisable(true);
+          setSelectedItems(detail.selectedItems);
         }}
         selectedItems={selectedItems}
         
@@ -193,11 +215,30 @@ const MyCourses = () => {
               ),
             sortingField: "state",
           },
+          {
+            id: "actions",
+            header: "Actions",
+            minWidth: 100,
+            cell: (item) => (
+              <ButtonDropdown
+                ariaLabel="Control lecture"
+                variant="inline-icon"
+                expandToViewport={true}
+                onItemClick={(e) => handleClick(e.detail, item)}
+                items={[
+                  { id: "detail", text: "View details" },
+                  { id: "edt1", text: "Edit" },
+                  { id: "rm", text: "Delete"},
+                ]}
+              />
+            ),
+          },
         ]}
         columnDisplay={[
           { id: "Name", visible: true },
           { id: "Last Updated", visible: true},
           { id: "state", visible: true },
+          { id: "actions", visible: true },
         ]}
         items={courses}
         loading={loading}
@@ -230,11 +271,10 @@ const MyCourses = () => {
                 
                 <ButtonDropdown
                   items={[
-                    
                     {
                       text: "Edit",
                       id: "edt",
-                      disabled: multiDisable,
+                      disabled: editDisable,
                     },
                     {
                       text: "Delete",
@@ -242,6 +282,7 @@ const MyCourses = () => {
                       disabled: false,
                     },
                   ]}
+                  disabled={actionDisable}
                   onItemClick={(e) => handleClick(e.detail)}
                 >
                   Actions

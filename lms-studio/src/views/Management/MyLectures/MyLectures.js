@@ -12,15 +12,32 @@ import {
   StatusIndicator,
   Alert,
   Flashbar,
+  CollectionPreferences,
 } from "@cloudscape-design/components";
 import Title from "../../../components/Title";
 import { apiName, lecturePublicPath, lecturePath } from "../../../utils/api";
 import { API, Storage } from "aws-amplify";
 import { useNavigate } from "react-router-dom";
+import { transformDateTime } from "../../../utils/tool"
+import { useCollection } from '@cloudscape-design/collection-hooks';
 import { getMyLecturesService } from "../services/lecture";
 
 const successMes = "Delete success";
 const errorMess = "Error! An error occurred. Please try again later";
+
+function EmptyState({ title, subtitle, action }) {
+  return (
+    <Box textAlign="center" color="inherit">
+      <Box variant="strong" textAlign="center" color="inherit">
+        {title}
+      </Box>
+      <Box variant="p" padding={{ bottom: 's' }} color="inherit">
+        {subtitle}
+      </Box>
+      {action}
+    </Box>
+  );
+}
 
 const MyLectures = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
@@ -34,8 +51,28 @@ const MyLectures = () => {
   const [flashItem, setFlashItem] = useState([]);
   const [editDisable, setEditDisable] = useState(false);
   const [actionDisable, setActionDisable] = useState(true);
+  const [currentLecture, setCurrentLecture] = useState();
 
   const navigate  = useNavigate()
+
+  const [preferences, setPreferences] = useState({ pageSize: 15, visibleContent: ["name", "updatedAt", "state", "actions"] });
+  const { items, actions, filteredItemsCount, collectionProps, filterProps, paginationProps } = useCollection(
+    lectures,
+    {
+      filtering: {
+        empty: <EmptyState title="No lectures" />,
+        noMatch: (
+          <EmptyState
+            title="No matches"
+            action={<Button onClick={() => actions.setFiltering('')}>Clear filter</Button>}
+          />
+        ),
+      },
+      pagination: { pageSize: preferences.pageSize },
+      sorting: {},
+      selection: {},
+    }
+  );
 
   const handleGetLectures = async () => {
     setLoading(true);
@@ -49,7 +86,6 @@ const MyLectures = () => {
     // }
     try {
       const data = await API.get(apiName, lecturePublicPath);
-      console.log(data);
       setLectures(data);
       setLoading(false);
     } catch (_) {
@@ -61,13 +97,26 @@ const MyLectures = () => {
     handleGetLectures();
   }, []);
 
-  const handleClick = (value) => {
+  const handleClick = (value, lecture) => {
     switch (value.id) {
       case "rm":
         confirmDelete();
+        setCurrentLecture(lecture)
         break;
       case "edt":
-        navigate(`/editLecture/${selectedItems[0]?.ID}`, {state: selectedItems[0]})
+        navigate(`/editLecture/${selectedItems[0]?.ID}`, {
+          state: selectedItems[0],
+        });
+        break;
+      case "edt1":
+        navigate(`/editLecture/${lecture?.ID}`, {
+          state: lecture,
+        });
+        break;
+      case "detail":
+        navigate(`/myLectures/detail/${lecture?.ID}`, {
+          state: lecture,
+        });
         break;
       default:
         break;
@@ -111,16 +160,17 @@ const MyLectures = () => {
     setDisable(true);
     setDeleting(true);
     let count = 0;
-    let countDeleteItems = selectedItems.length;
+    let countDeleteItems = currentLecture ? 1 : selectedItems.length;
+    let deleteItems = currentLecture ? currentLecture : selectedItems
 
     // selectedItems.map((item) => {
     //   await API.delete(apiName, lecturePublicPath + "/object/" + item.lectureId)
     // })
     for (let i = 0; i < countDeleteItems; i++) {
-      if (selectedItems[i].Content) {
-        deleteFile(selectedItems[i].Content)
+      if (deleteItems[i].Content) {
+        deleteFile(deleteItems[i].Content)
           .then((res) => {
-            deleteLectureInDB(selectedItems[i].ID, i)
+            deleteLectureInDB(deleteItems[i].ID, i)
               .then((res) => {
                 count++;
                 if ( count === countDeleteItems ) {
@@ -137,7 +187,7 @@ const MyLectures = () => {
             console.log(error);
           });
       } else {
-        deleteLectureInDB(selectedItems[i].ID, i)
+        deleteLectureInDB(deleteItems[i].ID, i)
           .then((res) => {
             count++;
             if ( count === countDeleteItems ) {
@@ -173,15 +223,16 @@ const MyLectures = () => {
       <Flashbar items={flashItem} />
       <Title text="My Lectures" />
       <Table
-        onSelectionChange={({ detail }) =>
-          {
-            if (detail.selectedItems.length > 1) {
-              setEditDisable(true);
-            }
-            detail.selectedItems.length > 0 ? setActionDisable(false) : setActionDisable(true)
-            setSelectedItems(detail.selectedItems)
+        {...collectionProps}
+        onSelectionChange={({ detail }) => {
+          if (detail.selectedItems.length > 1) {
+            setEditDisable(true);
           }
-        }
+          detail.selectedItems.length > 0
+            ? setActionDisable(false)
+            : setActionDisable(true);
+          setSelectedItems(detail.selectedItems);
+        }}
         selectedItems={selectedItems}
         ariaLabels={{
           selectionGroupLabel: "Items selection",
@@ -199,7 +250,7 @@ const MyLectures = () => {
         }}
         columnDefinitions={[
           {
-            id: "Name",
+            id: "name",
             header: "Lecture name",
             cell: (lecture) => lecture.Name,
             sortingField: "Name",
@@ -208,7 +259,7 @@ const MyLectures = () => {
           {
             id: "updatedAt",
             header: "Last Updated",
-            cell: (lecture) => lecture.updatedAt,
+            cell: (lecture) => lecture.LastUpdated ? transformDateTime(lecture.LastUpdated) : "",
             sortingField: "updatedAt",
           },
           {
@@ -222,17 +273,37 @@ const MyLectures = () => {
               ),
             sortingField: "state",
           },
+          {
+            id: "actions",
+            header: "Actions",
+            minWidth: 100,
+            cell: (item) => (
+              <ButtonDropdown
+                ariaLabel="Control lecture"
+                variant="inline-icon"
+                expandToViewport={true}
+                onItemClick={(e) => handleClick(e.detail, item)}
+                items={[
+                  { id: "detail", text: "View details" },
+                  { id: "edt1", text: "Edit" },
+                  { id: "rm", text: "Delete"},
+                ]}
+              />
+            ),
+          },
         ]}
-        columnDisplay={[
-          { id: "Name", visible: true },
-          { id: "updatedAt", visible: true },
-          { id: "state", visible: true },
-        ]}
-        items={lectures}
+        // columnDisplay={[
+        //   { id: "name", visible: true },
+        //   { id: "updatedAt", visible: true },
+        //   { id: "state", visible: true },
+        //   { id: "actions", visible: true },
+        // ]}
+        visibleColumns={preferences.visibleContent}
+        items={items}
         loading={loading}
         loadingText="Loading resources"
         selectionType="multi"
-        trackBy="Name"
+        trackBy="name"
         empty={
           <Box textAlign="center" color="inherit">
             <b>No resources</b>
@@ -243,7 +314,7 @@ const MyLectures = () => {
           </Box>
         }
         filter={
-          <TextFilter filteringPlaceholder="Find resources" filteringText="" />
+          <TextFilter {...filterProps} filteringPlaceholder="Find resources" />
         }
         header={
           <Header
@@ -281,7 +352,43 @@ const MyLectures = () => {
             My Lectures
           </Header>
         }
-        pagination={<Pagination currentPageIndex={1} pagesCount={2} />}
+        pagination={<Pagination {...paginationProps} />}
+        preferences={
+          <CollectionPreferences
+            title="Preferences"
+            preferences={preferences}
+            confirmLabel="Confirm"
+            cancelLabel="Cancel"
+            pageSizePreference={{
+              title: "Page size",
+              options: [
+                { value: 15, label: "15 lectures" },
+                { value: 20, label: "20 lectures" },
+                { value: 25, label: "25 lectures" },
+              ],
+            }}
+            visibleContentPreference={{
+              title: "Select visible content",
+              options: [
+                {
+                  label:
+                    "Main distribution properties",
+                  options: [
+                    {
+                      id: "name",
+                      label: "Lecture Name",
+                      editable: false,
+                    },
+                    { id: "updatedAt", label: "Last Updated" },
+                    { id: "state", label: "State" },
+                    { id: "actions", label: "Actions" },
+                  ],
+                },
+              ],
+            }}
+            onConfirm={({ detail }) => setPreferences(detail)}
+          />
+        }
       />
       <Modal
         onDismiss={() => setVisible(false)}
@@ -296,7 +403,7 @@ const MyLectures = () => {
                 variant="primary"
                 disable={disable}
                 loading={deleting}
-                onClick={() => deleteLecture()}
+                onClick={() => deleteLecture(selectedItems)}
               >
                 Delete
               </Button>
