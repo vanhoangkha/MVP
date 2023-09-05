@@ -303,7 +303,7 @@ const MyLectures = () => {
         loading={loading}
         loadingText="Loading resources"
         selectionType="multi"
-        trackBy="name"
+        trackBy="Name"
         empty={
           <Box textAlign="center" color="inherit">
             <b>No resources</b>
