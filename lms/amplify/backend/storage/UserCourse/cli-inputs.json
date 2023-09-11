@@ -9,6 +9,14 @@
     "fieldName": "CourseID",
     "fieldType": "string"
   },
-  "gsi": [],
+  "gsi": [
+    {
+      "name": "Courses-index",
+      "partitionKey": {
+        "fieldName": "CourseID",
+        "fieldType": "string"
+      }
+    }
+  ],
   "triggerFunctions": []
 }

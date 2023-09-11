@@ -49,6 +49,7 @@ const MyCourses = () => {
     try {
       const data = await API.get(apiName, coursePath + "/public")
       setCourses(data)
+      console.log(data)
       setLoading(false)
     }catch(_) {
       setLoading(false)
@@ -93,7 +94,7 @@ const MyCourses = () => {
   };
 
   const handleOpenAssignCoures = () => {
-    navigate(`/assignCourse/${selectedItems[0]?.ID}`, {lecture: selectedItems[0]})
+    navigate(`/assignCourse/${selectedItems[0]?.ID}`, {state: selectedItems[0]})
   }
 
   const resetFail = () => {
@@ -199,7 +200,7 @@ const MyCourses = () => {
             isRowHeader: true,
           },
           {
-            id: "Last Updated",
+            id: "LastUpdated",
             header: "Last Updated",
             cell: (e) => <span>{(new Date(e['Last Updated']).toDateString())}</span>,
             sortingField: "updatedAt",
@@ -236,7 +237,7 @@ const MyCourses = () => {
         ]}
         columnDisplay={[
           { id: "Name", visible: true },
-          { id: "Last Updated", visible: true},
+          { id: "LastUpdated", visible: true},
           { id: "state", visible: true },
           { id: "actions", visible: true },
         ]}

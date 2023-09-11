@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Learn.css";
 import "video-react/dist/video-react.css";
 import { API, Auth, Storage } from "aws-amplify";
@@ -84,6 +84,7 @@ function LectureContent(props) {
           handleFullScreen={props.handleFullScreen}
           handleVideoEnded={props.handleVideoEnded}
           lectureId={props.lecture.lecture.id}
+          countView={props.countView}
         />
       );
     case "Workshop":
@@ -93,6 +94,7 @@ function LectureContent(props) {
           url={props.lecture.lecture.workshopUrl}
           architect={props.lecture.lecture.content}
           openLink={props.openLink}
+          countView={props.countView}
         />
       );
     case "Document":
@@ -123,6 +125,7 @@ function LectureContent(props) {
           nextLecture={props.nextLecture}
           markLectureCompleted={props.markLectureCompleted}
           setQuestionLength={props.setQuestionLength}
+          countView={props.countView}
         />
       );
     default:
@@ -138,8 +141,8 @@ class VideoContent extends React.Component {
       updateView: false,
       // uploading: false,
     };
-    this.uploadingRef = React.createRef()
-    this.uploadingRef.current = false
+    this.uploadingRef = React.createRef();
+    this.uploadingRef.current = false;
   }
 
   componentDidMount() {
@@ -150,32 +153,33 @@ class VideoContent extends React.Component {
     };
   }
 
-
   handleStateChange(state) {
     this.props.setTimeLeft(Math.floor(state.duration - state.currentTime));
     if (state.ended) this.props.handleVideoEnded();
-    if (!this.uploadingRef.current && !this.state.updateView && state.currentTime / state.duration > 0.05) {
-      this.countView()
+    // if (!this.uploadingRef.current && !this.state.updateView && state.currentTime / state.duration > 0.05) {
+    //   this.countView()
+    // }
+    if (state.currentTime / state.duration > 0.05) {
+      this.props.countView();
     }
   }
 
-  countView() {
-    this.uploadingRef.current = true;
-    let lectureId = this.props.lectureId
-    const apiName = "courses";
-    const path = "/lectures/" + lectureId;
-    API.put(apiName, path, { body: {} })
-      .then((response) => {
-        this.setState((prevState) => ({ ...prevState, updateView: true }));
-        this.uploadingRef.current = false;
-        console.log(this.state.updateView);
-      })
-      .catch((error) => {
-        console.log(error.response);
-        this.uploadingRef.current = false;
-      });
-  }
-
+  // countView() {
+  //   this.uploadingRef.current = true;
+  //   let lectureId = this.props.lectureId
+  //   const apiName = "courses";
+  //   const path = "/lectures/" + lectureId;
+  //   API.put(apiName, path, { body: {} })
+  //     .then((response) => {
+  //       this.setState((prevState) => ({ ...prevState, updateView: true }));
+  //       this.uploadingRef.current = false;
+  //       console.log(this.state.updateView);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response);
+  //       this.uploadingRef.current = false;
+  //     });
+  // }
 
   getVideoURL = async (key) => {
     const signedURL = await Storage.get(key, { level: "public" });
@@ -214,25 +218,30 @@ class VideoContent extends React.Component {
 }
 
 function LabContent(props) {
-  const [architectUrl, setArchitecUrl] = useState("")
+  const [architectUrl, setArchitecUrl] = useState("");
   useEffect(() => {
-    Storage.get(props.architect, { level: "public" }).then((res)=> setArchitecUrl(res));
-  })
+    Storage.get(props.architect, { level: "public" }).then((res) =>
+      setArchitecUrl(res)
+    );
+    props.countView();
+  });
   return (
     <div className="learn-lab-content-container">
-      <div className="learn-lab-content-desc">{props.desc}</div>
-      <div className="learn-lab-content-link">
-        <button
-          onClick={() => {
-            props.openLink(props.url);
-          }}
-        >
-          {props.url}
-        </button>
-      </div>
-      <div className="learn-lab-architech" style={{textAlign: "center"}}>
-        <img src={architectUrl} />
-      </div>
+      <>
+        <div className="learn-lab-content-desc">{props.desc}</div>
+        <div className="learn-lab-content-link">
+          <button
+            onClick={() => {
+              props.openLink(props.url);
+            }}
+          >
+            {props.url}
+          </button>
+        </div>
+        <div className="learn-lab-architech" style={{ textAlign: "center" }}>
+          <img src={architectUrl} />
+        </div>
+      </>
     </div>
   );
 }
@@ -303,9 +312,8 @@ class QuizContent extends React.Component {
       download: true,
       complete: (result) => {
         this.setState({ questions: Array.from(result.data) });
-        this.props.setQuestionLength(result.data.length)
+        this.props.setQuestionLength(result.data.length);
         // this.convertJSONToObject(result.data)
-        console.log(result.data);
       },
     });
   };
@@ -321,7 +329,6 @@ class QuizContent extends React.Component {
         });
       }
     }
-    console.log(answers);
     return answers;
   };
 
@@ -349,27 +356,6 @@ class QuizContent extends React.Component {
       }
     }
     return checkboxGroup;
-  };
-
-  convertJSONToObject = (jsonData) => {
-    let questions = {
-      answers: [],
-      correct: [],
-    };
-    for (let i = 0; i < jsonData.length; i++) {
-      questions.question = jsonData[i].Question;
-      questions.multiChoice = jsonData[i].Multichoice;
-      for (let j = 0; j < MAX_ANSWERS; j++) {
-        let answer = {};
-        answer.text = jsonData[i][`A${j}`];
-        answer.explain = jsonData[i][`E${j}`];
-        questions.answers = [...questions.answers, answer];
-        if (jsonData[i][`C${j}`]) {
-          questions.correct = [...questions.correct, jsonData[i][`C${j}`]];
-        }
-      }
-    }
-    this.setState({ questions: questions });
   };
 
   checkAnswer = () => {
@@ -419,6 +405,7 @@ class QuizContent extends React.Component {
   };
   componentDidMount() {
     this.convertCSVtoJSON(this.props.url);
+    this.props.countView();
   }
 
   render() {
@@ -778,7 +765,7 @@ class QuizContent extends React.Component {
                   let correctedAnswer = this.state.correctedAnswer;
                   correctedAnswer += this.checkAnswer() ? 1 : 0;
                   this.setState({
-                    correctedAnswer: correctedAnswer
+                    correctedAnswer: correctedAnswer,
                   });
 
                   console.log(correctedAnswer);
@@ -813,6 +800,33 @@ function MainContent(props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [autoNext, setAutoNext] = useState(true);
   const [timeLeft, setTimeLeft] = useState(100);
+  const [updateView, setUpdateView] = useState(false);
+  const uploadingRef = useRef(false);
+
+  // console.log("updateView", updateView)
+  const countView = async () => {
+    if (!updateView && !uploadingRef.current) {
+      uploadingRef.current = true;
+      let lectureId = props.lecture.lecture.id;
+      const apiName = "courses";
+      const path = "/lectures/" + lectureId;
+      API.put(apiName, path, { body: {} })
+        .then((response) => {
+          console.log("count view done");
+          setUpdateView(true);
+          uploadingRef.current = false;
+          props.countViewForCourse();
+        })
+        .catch((error) => {
+          uploadingRef.current = false;
+          console.log(error);
+        });
+    }
+  };
+
+  useEffect(() => {
+    setUpdateView(false);
+  }, [props.lecture]);
 
   return (
     <FullScreen handle={handle}>
@@ -851,6 +865,7 @@ function MainContent(props) {
               nextLecture={props.nextLecture}
               markLectureCompleted={props.markLectureCompleted}
               setQuestionLength={props.setQuestionLength}
+              countView={countView}
             />
           )}
         </div>
@@ -1024,7 +1039,7 @@ export default class Learn extends React.Component {
                 viewed: response.Viewed,
                 questions: response.Questions,
                 workshopUrl: response.WorkshopUrl,
-                workshopDesc: response.WorkshopDescription
+                workshopDesc: response.WorkshopDescription,
               },
             },
             loading: false,
@@ -1139,6 +1154,7 @@ export default class Learn extends React.Component {
         this.setState(
           {
             course: {
+              id: course.id,
               name: course.name,
               chapters: chapters,
               firstLectureIndex: firstLectureIndex,
@@ -1168,14 +1184,12 @@ export default class Learn extends React.Component {
     API.get(apiName, path)
       .then((response) => {
         response.LastAccessed = new Date().getTime();
-
+        
         const apiName = "courses";
         const path = "/users/courses/";
         const myInit = {
           body: response,
         };
-
-        console.log(response);
 
         API.put(apiName, path, myInit)
           .then((response) => {
@@ -1247,11 +1261,10 @@ export default class Learn extends React.Component {
 
     lectureId++;
     if (lectureId === this.state.course.chapters[chapterId].lectures.length) {
-      if (chapterId < this.state.course.chapters.length){
+      if (chapterId < this.state.course.chapters.length) {
         chapterId++;
         lectureId = 0;
-      }
-      else {
+      } else {
         return;
       }
     }
@@ -1363,9 +1376,25 @@ export default class Learn extends React.Component {
   }
 
   setQuestionLength = (length) => {
-    let newLecture = {...this.state.lecture, lecture: {...this.state.lecture.lecture, length: length}}
-    this.setState({ lecture: newLecture })
-  }
+    let newLecture = {
+      ...this.state.lecture,
+      lecture: { ...this.state.lecture.lecture, length: length },
+    };
+    this.setState({ lecture: newLecture });
+  };
+
+  countViewForCourse = () => {
+    let courseId = this.state.course.id;
+    const apiName = "courses";
+    const path = "/courses/" + courseId;
+    API.put(apiName, path, { body: {} })
+      .then((response) => {
+        console.log("count view done");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   render() {
     return this.state.loggedIn === false ? (
@@ -1463,22 +1492,49 @@ export default class Learn extends React.Component {
                                 ) : (
                                   lecture.name
                                 ),
-                              href: lecture.lectureId,
-                              info:
+                              text:
                                 lecture.type === "section" ? (
-                                  ""
-                                ) : this.state.completedLectures.includes(
-                                    lecture.lectureId
-                                  ) ? (
-                                  <span className="learn-navigation-badge">
-                                    <IoEllipseSharp />
-                                    {this.formatTime(lecture.length)}
-                                  </span>
+                                  <div className="text-bold">
+                                    {" "}
+                                    {lecture.name.toUpperCase()}{" "}
+                                  </div>
                                 ) : (
-                                  <span className="learn-navigation-badge">
-                                    {this.formatTime(lecture.length)}
-                                  </span>
+                                  <div className="learn-navigation-chapter">
+                                    {lecture.name}{" "}
+                                    {this.state.completedLectures.includes(
+                                      lecture.lectureId
+                                    ) ? (
+                                      <span className="learn-navigation-badge">
+                                        <IoEllipseSharp />
+                                        {lecture.length > 0
+                                          ? this.formatTime(lecture.length)
+                                          : ""}
+                                      </span>
+                                    ) : (
+                                      <span className="learn-navigation-badge">
+                                        {lecture.length > 0
+                                          ? this.formatTime(lecture.length)
+                                          : ""}
+                                      </span>
+                                    )}
+                                  </div>
                                 ),
+                              href: lecture.lectureId,
+                              // info:
+                              //   lecture.type === "section" ? (
+                              //     ""
+                              //   ) : this.state.completedLectures.includes(
+                              //       lecture.lectureId
+                              //     ) ? (
+                              //     <span className="learn-navigation-badge">
+                              //       <IoEllipseSharp />
+                              //       {lecture.length > 0 ? this.formatTime(lecture.length) : ""}
+                              //     </span>
+                              //   ) : (
+                              //     <span className="learn-navigation-badge">
+                              //       {lecture.length > 0 ? this.formatTime(lecture.length) : ""}
+                              //     </span>
+                              //   ),
                             };
                           }),
                         };
@@ -1560,6 +1616,7 @@ export default class Learn extends React.Component {
                           this.nextLecture();
                         }}
                         setQuestionLength={this.setQuestionLength}
+                        countViewForCourse={this.countViewForCourse}
                       />
                     </div>
                   </div>

@@ -2,7 +2,7 @@
     /* background-color: #232F3E; */
     /* padding: 20px 20px 0 20px; */
     height: calc(100vh - 210px);
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
 }
 
 .review-content-parent {

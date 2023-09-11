@@ -27,6 +27,8 @@ const partitionKeyName = "UserID";
 const partitionKeyType = "S";
 const sortKeyName = "CourseID";
 const sortKeyType = "S";
+const courseIndex = "Course-index";
+const paritionKeyNameIndex = "CoursesID" 
 const hasSortKey = sortKeyName !== "";
 const path = "/usercourse";
 const UNAUTH = 'UNAUTH';
@@ -146,6 +148,34 @@ app.get(path + sortKeyPath, function(req, res) {
   });
 });
 
+app.get(path + "/assigned" + hashKeyPath, function(req, res) {
+  const condition = {}
+  condition[partitionKeyName] = {
+    ComparisonOperator: 'EQ'
+  }
+  condition[paritionKeyNameIndex]['AttributeValueList'] = req.params[paritionKeyNameIndex];
+  // try {
+  //   condition[paritionKeyNameIndex]['AttributeValueList'] = convertUrlType(req.params[paritionKeyNameIndex], "S");
+  // } catch(err) {
+  //   res.statusCode = 500;
+  //   res.json({error: 'Wrong column type ' + err});
+  // }
+
+  let queryParams = {
+    TableName: tableName,
+    IndexName: courseIndex,
+    KeyConditions: condition
+  }
+
+  dynamodb.query(queryParams,(err, data) => {
+    if(err) {
+      res.statusCode = 500;
+      res.json({error: 'Could not load items: ' + err.message});
+    } else {
+      
+    }
+  })
+})
 
 // /************************************
 // * HTTP put method for insert object *

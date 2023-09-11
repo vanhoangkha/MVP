@@ -121,6 +121,7 @@ class CreateLecture extends React.Component {
       ArchitectureDiagramS3Key: this.state.architectureDiagramS3Key,
       QuizS3Key: this.state.quizS3Key,
       LastUpdated: new Date().toISOString(),
+      Views: 0,
     };
     const apiName = "lmsStudio";
     const path = "/lectures";

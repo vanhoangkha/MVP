@@ -28,7 +28,7 @@ import Footer from "../../components/Footer/Footer";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 import Icon from "@cloudscape-design/components/icon";
 import ExpandableSection from "@cloudscape-design/components/expandable-section";
-import { API } from "aws-amplify";
+import { API, Auth } from "aws-amplify";
 import "./Course.css";
 
 const successMes = "Created success";
@@ -81,6 +81,7 @@ function CreateCourse(props) {
     submitStatus: 0,
     isLoadingNextStep: false,
     flashItem: [],
+    userId: "",
   })
   const draggedItem = useRef(null)
   let draggedIdx;
@@ -117,6 +118,16 @@ function CreateCourse(props) {
         console.log(error.response);
       });
   }, [])
+
+  const loadUserId = async (callback) => {
+    let credentials = await Auth.currentUserCredentials();
+    setState(
+      { ...state,
+        userId: credentials.identityId,
+      },
+      callback
+    );
+  }
 
   const deleteRequirement = (index) => {
     let list = [...state.requirements]
@@ -310,8 +321,11 @@ function CreateCourse(props) {
         Categories: categories,
         Requirements: state.requirements,
         Difficulty: state.difficulty,
+        Publicity: state.publicity ? 1 : 0,
         WhatToLearn: state.whatToLearn,
         Chapters: state.chapters,
+        Views: 0,
+        CreatedID: state.userId,
     }
 
     const apiName = "lmsStudio";
@@ -707,9 +721,11 @@ function CreateCourse(props) {
                               </FormField>
                               <Button
                                 variant="primary"
-                                onClick={() =>
-                                  setState({ ...state, visible: true })
-                                }
+                                onClick={(() =>{
+                                  if (state.currentChapter.name) {
+                                    setState({ ...state, visible: true })
+                                  }
+                                })()}
                               >
                                 Add
                               </Button>

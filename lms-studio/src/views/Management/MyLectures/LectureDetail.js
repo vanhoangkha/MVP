@@ -281,14 +281,14 @@ export default function LectureDetail(props) {
                     : state.Desc}
                 </div>
               </div>
-              <ColumnLayout columns={3} variant="text-grid">
-                <div>
-                  <Box variant="awsui-key-label">File name</Box>
-                  <div>{state.Content}</div>
-                </div>
+              <ColumnLayout columns={4} variant="text-grid">
                 <div>
                   <Box variant="awsui-key-label">Type</Box>
                   <div>{state.Type}</div>
+                </div>
+                <div>
+                  <Box variant="awsui-key-label">File name</Box>
+                  <div>{state.Content}</div>
                 </div>
                 <div>
                   {state.Length > 0 ? (
@@ -304,6 +304,10 @@ export default function LectureDetail(props) {
                       <div>{state.WorkshopUrl}</div>
                     </>
                   )}
+                </div>
+                <div>
+                  <Box variant="awsui-key-label">Views</Box>
+                  <div>{String(state.Views).replace(/(.)(?=(\d{3})+$)/g,'$1,')}</div>
                 </div>
               </ColumnLayout>
             </SpaceBetween>

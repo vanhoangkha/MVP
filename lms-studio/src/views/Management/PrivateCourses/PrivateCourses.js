@@ -21,7 +21,7 @@ import { Link, useNavigate } from "react-router-dom";
 const successMes = "Delete success";
 const errorMess = "Error! An error occurred. Please try again later";
 
-const PublicCourses = () => {
+const PrivateCourses = () => {
   const [selectedItems, setSelectedItems] = React.useState([]);
 
   const [courses, setCourses] = useState([])
@@ -48,7 +48,7 @@ const PublicCourses = () => {
     //   setLoading(false)
     // }
     try {
-      const data = await API.get(apiName, coursePath + "/public")
+      const data = await API.get(apiName, coursePath + "/private")
       setCourses(data)
       console.log(data)
       setLoading(false)
@@ -95,7 +95,7 @@ const PublicCourses = () => {
   };
 
   const handleOpenAssignCoures = () => {
-    navigate(`/assignCourse/${selectedItems[0]?.ID}`, {state: selectedItems[0]})
+    navigate(`assignCourse/${selectedItems[0]?.ID}`, {state: selectedItems[0]})
   }
 
   const resetFail = () => {
@@ -287,6 +287,7 @@ const PublicCourses = () => {
                 >
                   Actions
                 </ButtonDropdown>
+                <Button disabled={selectedItems.length > 0 ? false : true} onClick={handleOpenAssignCoures}>Assign</Button>
               </SpaceBetween>
             }
           >
@@ -323,4 +324,4 @@ const PublicCourses = () => {
   );
 };
 
-export default PublicCourses;
+export default PrivateCourses;

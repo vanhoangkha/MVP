@@ -37,6 +37,7 @@ import UpdateLecture from './views/UpdateLecture/UpdateLecture';
 import UpdateCourse from './views/UpdateCourse/UpdateCourse'
 import LectureDetail from './views/Management/MyLectures/LectureDetail'
 import CourseDetail from './views/Management/MyCourses/CourseDetail'
+import PrivateCourses from './views/Management/PrivateCourses/PrivateCourses'
 
 // Configure Amplify
 Amplify.configure(awsExports);
@@ -68,6 +69,14 @@ const router = createHashRouter([
         element: <PublicCourses />,
       },
       {
+        path: "privateCourses",
+        element: <PrivateCourses />,
+      },
+      {
+        path: "privateCourses/assignCourse/:id",
+        element: <AssignCourse />,
+      },
+      {
         path: "user",
         element: <User />
       },
@@ -89,10 +98,10 @@ const router = createHashRouter([
     path: "/course/:id",
     element: <Course />,
   },
-  {
-    path: "/assignCourse/:id",
-    element: <AssignCourse />,
-  },
+  // {
+  //   path: "/assignCourse/:id",
+  //   element: <AssignCourse />,
+  // },
   {
     path: "/management",
     element: <Management />,
@@ -116,6 +125,14 @@ const router = createHashRouter([
       {
         path: "publicCourses",
         element: <PublicCourses />,
+      },
+      {
+        path: "privateCourses",
+        element: <PrivateCourses />,
+      },
+      {
+        path: "privateCourses/assignCourse/:id",
+        element: <AssignCourse />,
       },
       {
         path: "user",

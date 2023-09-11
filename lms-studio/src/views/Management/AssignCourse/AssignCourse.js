@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AssignCourse.css";
 import {
   AppLayout,
@@ -21,6 +21,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { API } from 'aws-amplify';
 import NavBar from "../../../components/NavBar/NavBar";
+import { apiName, userOverview, userCourse } from "../../../utils/api"
 import Footer from "../../../components/Footer/Footer";
 
 const ValueWithLabel = ({ label, children }) => (
@@ -32,6 +33,9 @@ const ValueWithLabel = ({ label, children }) => (
 
 const AssignCourse = (props) => {
   const [activeHref, setActiveHref] = useState("myLectures");
+  const [ users, setUsers ] = useState([]);
+  const [ loading, setLoading ] = useState(false);
+  const [ buttonLoad, setButtonLoad ] = useState(false);
   const [checked, setChecked] = useState(false);
   const [oppId, setOppId] = React.useState("");
   const [oppValue, setOppValue] = React.useState("");
@@ -52,18 +56,19 @@ const AssignCourse = (props) => {
       Status: "ASSIGNED",
       CreatorID: state.CreatorID,
     };
+    setButtonLoad(true)
     var userCourseArray = [];
 
     selectedUsers.forEach((user) => {
-      if(user?.ID){
-        const dynamicData = { ...staticData, UserID: user.ID };
+      if(user?.id){
+        const dynamicData = { ...staticData, UserID: user.id };
         userCourseArray.push(dynamicData);
       }
     });
 
-    const apiName = 'lmsStudio';
-    const path = '/usercourse';
-    API.put(apiName, path, { body: userCourseArray })
+    console.log(userCourseArray);
+
+    API.put(apiName, userCourse, { body: userCourseArray })
     .then((response) => {
       setItems([{
         type: "success",
@@ -72,6 +77,7 @@ const AssignCourse = (props) => {
         dismissLabel: "Dismiss message",
         onDismiss: () => setItems([]),
       }])
+      setButtonLoad(false);
       setTimeout(() => setItems([]),3000)
     })
     .catch((error) => {
@@ -82,16 +88,46 @@ const AssignCourse = (props) => {
         dismissible: true,
         dismissLabel: "Dismiss message",
         onDismiss: () => setItems([]),
-      }])    
+      }]) 
+      setButtonLoad(false);
+      setTimeout(() => setItems([]),3000)
     })
   }
+
+  const getAllUser = async () => {
+    setLoading(true)
+    let userList = [];
+    try {
+      const userData = await API.get(apiName, userOverview);
+      console.log(userData)
+      userData.forEach((user) => {
+        userList.push({
+          id: user.Attributes[0].Value,
+          email: user.Attributes[4].Value,
+          preferred_username: user.Attributes[2].Value,
+          family_name: user.Attributes[3].Value,
+        });
+      });
+      setUsers(userList);
+      setLoading(false);
+    }
+    catch(err){
+      setLoading(false)
+      console.log(err)
+    }
+  }
+
+  useEffect(()=> {
+    getAllUser();
+  }, [])
     
     // business logic goes here
   return (
     <>
-      <NavBar navigation={props.navigation} title="Cloud Academy" />
+      {/* <NavBar navigation={props.navigation} title="Cloud Academy" /> */}
+      <Flashbar items={items} />
       <div className="dashboard-main">
-        <AppLayout
+        {/* <AppLayout
           breadcrumbs={
             <BreadcrumbGroup
               items={[
@@ -146,6 +182,11 @@ const AssignCourse = (props) => {
                       type: "link",
                       text: "Public Courses",
                       href: "publicCourses",
+                    },
+                    {
+                      type: "link",
+                      text: "Private Courses",
+                      href: "privateCourses",
                     },
                   ],
                 },
@@ -353,7 +394,212 @@ const AssignCourse = (props) => {
               <Flashbar items={items} />
             </div>
           }
-        />
+        /> */}
+        <div>
+              <br></br>
+              <div>
+                <Container
+                  header={
+                    <Header headingTagOverride="h3">Course Detail</Header>
+                  }
+                >
+                  <ColumnLayout columns={3} variant="text-grid">
+                    <SpaceBetween size="l">
+                      <ValueWithLabel label="Course title">
+                        {state.Name}
+                      </ValueWithLabel>
+                      <ValueWithLabel label="Course Difficulty">
+                        <Toggle
+                          onChange={({ detail }) => setChecked(detail.checked)}
+                          checked={checked}
+                        >
+                          {" "}
+                          Follow Order{" "}
+                        </Toggle>
+                      </ValueWithLabel>
+                    </SpaceBetween>
+                    <SpaceBetween size="l">
+                      <ValueWithLabel label="Description">{state.Description}</ValueWithLabel>
+                      <ValueWithLabel label="Opportunity ID">
+                        <Input
+                          onChange={({ detail }) => setOppId(detail.value)}
+                          value={oppId}
+                        />
+                      </ValueWithLabel>
+                    </SpaceBetween>
+                    <SpaceBetween size="l">
+                      <ValueWithLabel label="Owner">{state.CreatorID}</ValueWithLabel>
+                      <ValueWithLabel label="Opportunity Value">
+                        <Input
+                          onChange={({ detail }) => setOppValue(detail.value)}
+                          value={oppValue}
+                        />
+                      </ValueWithLabel>
+                    </SpaceBetween>
+                  </ColumnLayout>
+                </Container>
+              </div>
+              <br></br>
+              <div>
+                <Table
+                  onSelectionChange={({ detail }) =>
+                    setSelectedUsers(detail.selectedItems)
+                  }
+                  selectedItems={selectedUsers}
+                  ariaLabels={{
+                    selectionGroupLabel: "Users selection",
+                    allUsersSelectionLabel: ({ selectedUsers }) =>
+                      `${selectedUsers.length} ${
+                        selectedUsers.length === 1 ? "item" : "items"
+                      } selected`,
+                    userSelectionLabel: ({ selectedUsers }, item) => {
+                      const isUserSelected = selectedUsers.filter(
+                        (i) => i.name === item.name
+                      ).length;
+                      return `${item.name} is ${
+                        isUserSelected ? "" : "not"
+                      } selected`;
+                    },
+                  }}
+                  columnDefinitions={[
+                    {
+                      id: "email",
+                      header: "Email",
+                      cell: (e) => e.email,
+                      sortingField: "name",
+                      isRowHeader: true,
+                    },
+                    {
+                      id: "familyName",
+                      header: "Family Name",
+                      cell: (e) => e.family_name,
+                      sortingField: "name",
+                    },
+                    {
+                      id: "preferredName",
+                      header: "Preferred Name",
+                      cell: (e) => e.preferred_username,
+                      sortingField: "name",
+                    },
+                  ]}
+                  columnDisplay={[
+                    { id: "email", visible: true },
+                    { id: "familyName", visible: true },
+                    { id: "preferredName", visible: true },
+                  ]}
+                  items={users}
+                  loading={loading}
+                  loadingText="Loading users"
+                  selectionType="multi"
+                  trackBy="email"
+                  empty={
+                    <Box textAlign="center" color="inherit">
+                      {" "}
+                      <b>No users</b>{" "}
+                      <Box
+                        padding={{ bottom: "s" }}
+                        variant="p"
+                        color="inherit"
+                      >
+                        {" "}
+                        No users to display.{" "}
+                      </Box>{" "}
+                    </Box>
+                  }
+                  filter={
+                    <TextFilter
+                      filteringPlaceholder="Find users"
+                      filteringText=""
+                    />
+                  }
+                  header={
+                    <Header
+                      counter={
+                        selectedUsers.length
+                          ? "(" + selectedUsers.length + "/10)"
+                          : "(10)"
+                      }
+                    >
+                      {" "}
+                      List users{" "}
+                    </Header>
+                  }
+                  pagination={
+                    <Pagination currentPageIndex={1} pagesCount={2} />
+                  }
+                  preferences={
+                    <CollectionPreferences
+                      title="Preferences"
+                      confirmLabel="Confirm"
+                      cancelLabel="Cancel"
+                      preferences={{
+                        pageSize: 10,
+                        contentDisplay: [{ id: "username", visible: true }],
+                      }}
+                      pageSizePreference={{
+                        title: "Page size",
+                        options: [
+                          { value: 10, label: "10 resources" },
+                          { value: 20, label: "20 resources" },
+                        ],
+                      }}
+                      wrapLinesPreference={{}}
+                      stripedRowsPreference={{}}
+                      contentDensityPreference={{}}
+                      contentDisplayPreference={{
+                        options: [
+                          {
+                            id: "username",
+                            label: "User name",
+                            alwaysVisible: true,
+                          },
+                        ],
+                      }}
+                      stickyColumnsPreference={{
+                        firstColumns: {
+                          title: "Stick first column(s)",
+                          description:
+                            "Keep the first column(s) visible while horizontally scrolling the table content.",
+                          options: [
+                            { label: "None", value: 0 },
+                            { label: "First column", value: 1 },
+                            { label: "First two columns", value: 2 },
+                          ],
+                        },
+                        lastColumns: {
+                          title: "Stick last column",
+                          description:
+                            "Keep the last column visible while horizontally scrolling the table content.",
+                          options: [
+                            { label: "None", value: 0 },
+                            { label: "Last column", value: 1 },
+                          ],
+                        },
+                      }}
+                    />
+                  }
+                />
+              </div>
+              <br></br>
+              <div className="assigncourse-float-right">
+                <SpaceBetween direction="horizontal" size="xs">
+                  {" "}
+                  <Button formAction="none" variant="link">
+                    {" "}
+                    Cancel{" "}
+                  </Button>{" "}
+                  <Button
+                    disabled={!selectedUsers.length}
+                    variant="primary"
+                    onClick={() => handlePutAssignCourse()}
+                    loading={buttonLoad}
+                  >
+                    Assign
+                  </Button>{" "}
+                </SpaceBetween>
+              </div>
+              <br></br>
+            </div>
         <Footer />
       </div>
     </>

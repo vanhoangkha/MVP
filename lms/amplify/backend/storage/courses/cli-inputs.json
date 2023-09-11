@@ -5,6 +5,14 @@
     "fieldName": "ID",
     "fieldType": "string"
   },
-  "gsi": [],
+  "gsi": [
+    {
+      "name": "Publicity-index",
+      "partitionKey": {
+        "fieldName": "Publicity",
+        "fieldType": "number"
+      }
+    }
+  ],
   "triggerFunctions": []
 }

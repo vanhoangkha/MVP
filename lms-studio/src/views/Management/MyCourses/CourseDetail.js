@@ -46,7 +46,7 @@ export default function CourseDetail(props) {
           <ColumnLayout columns={4} variant="text-grid">
             <div>
               <Box variant="awsui-key-label">Course Publicity</Box>
-              <div>{state.Publicity ? "Yes" : "No"}</div>
+              <div>{state.Publicity === 1 ? "Yes" : "No"}</div>
             </div>
             <div>
               <Box variant="awsui-key-label">Course Difficulty</Box>

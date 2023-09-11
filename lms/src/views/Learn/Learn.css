@@ -14,8 +14,13 @@
 
 .fullscreen-enabled .learn-lab-content-container {
     padding: 20px;
+    display: inline-block;
 }
-  
+
+.learn-lab-content-container {
+    height: 100%;
+}
+
 .learn-video-player-container {
     height: 100%;
     width: 100%;
@@ -216,6 +221,7 @@ a.learn-fill-div:hover {
   
 .learn-content-main {
     height: calc(100% - 30px);
+    /* display: inline; */
 }
   
 .learn-content-control {
@@ -451,4 +457,13 @@ a.learn-fill-div:hover {
 /* This is temporary overwrite Clouscape CSS */
 .awsui_info_l0dv0_5p78l_253 {
     opacity: 0.7;
+}
+
+.learn-lab-architech {
+    height: calc(100% - 70px)
+}
+
+.learn-lab-architech img {
+    max-width: 100%;
+    max-height: 100%;
 }

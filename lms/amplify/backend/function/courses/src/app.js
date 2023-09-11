@@ -25,6 +25,7 @@ if (process.env.ENV && process.env.ENV !== "NONE") {
 const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "ID";
 const partitionKeyType = "S";
+const publicityIndex = "Publicity-index"
 const sortKeyName = "";
 const sortKeyType = "";
 const hasSortKey = sortKeyName !== "";
@@ -82,6 +83,32 @@ app.get(path, function(req, res) {
   }
 
   dynamodb.scan(queryParams, (err, data) => {
+    if (err) {
+      res.statusCode = 500;
+      res.json({error: 'Could not load items: ' + err});
+    } else {
+      res.json(data.Items);
+    }
+  });
+});
+
+app.get(path+"/public", function(req, res) {
+  // const condition = {}
+  // condition[sortKeyName] = {
+  //   ComparisonOperator: 'EQ'
+  // }
+
+  let queryParams = {
+    TableName: tableName,
+    IndexName: publicityIndex,
+    KeyConditionExpression: "Publicity = :value",
+    ExpressionAttributeValues: {
+      ":value": 1
+    }
+  }
+  console.log(queryParams)
+
+  dynamodb.query(queryParams, (err, data) => {
     if (err) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err});
@@ -213,6 +240,38 @@ app.get(path + hashKeyPath, function(req, res) {
 //   });
 // });
 
+app.put(path + hashKeyPath, function(req, res) {
+  const params = {};
+  if (userIdPresent && req.apiGateway) {
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  } else {
+    params[partitionKeyName] = req.params[partitionKeyName];
+    try {
+      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
+    } catch(err) {
+      res.statusCode = 500;
+      res.json({error: 'Wrong column type ' + err});
+    }
+  }
+
+  let upadteItemParams = {
+    TableName: tableName,
+    Key: params,
+    UpdateExpression: 'set #views = #views + :unit',
+    ExpressionAttributeNames: {'#views' : 'Views'},
+    ExpressionAttributeValues:{
+      ":unit": 1,
+    }
+  }
+  dynamodb.update(upadteItemParams, (err, data) => {
+    if(err) {
+      res.statusCode = 500;
+      res.json({error: 'Could not update item: ' + err.message});
+    } else {
+      res.json(data);
+    }
+  })
+})
 app.listen(3000, function() {
   console.log("App started")
 });

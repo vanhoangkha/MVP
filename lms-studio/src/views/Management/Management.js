@@ -78,6 +78,11 @@ const Management = (props) => {
                       text: "Public Courses",
                       href: "publicCourses",
                     },
+                    {
+                      type: "link",
+                      text: "Private Courses",
+                      href: "privateCourses",
+                    },
                   ],
                 },
                 { type: "link", text: "User", href: "user" },
