@@ -274,7 +274,7 @@
         },
         "studioUserCourse": {
           "deploymentBucketName": "amplify-lmsstudio-test-144203-deployment",
-          "s3Key": "amplify-builds/studioUserCourse-36694a58316c69707933-build.zip"
+          "s3Key": "amplify-builds/studioUserCourse-7a544562376c6f2b7347-build.zip"
         },
         "studiousers": {
           "deploymentBucketName": "amplify-lmsstudio-test-144203-deployment",

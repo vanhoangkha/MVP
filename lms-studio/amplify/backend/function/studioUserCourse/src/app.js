@@ -27,12 +27,13 @@ const partitionKeyName = "UserID";
 const partitionKeyType = "S";
 const sortKeyName = "CourseID";
 const sortKeyType = "S";
-const courseIndex = "Course-index";
-const paritionKeyNameIndex = "CoursesID" 
+const courseIndex = "Courses-index";
+const paritionKeyNameIndex = "CourseID" 
 const hasSortKey = sortKeyName !== "";
 const path = "/usercourse";
 const UNAUTH = 'UNAUTH';
 const hashKeyPath = '/:' + partitionKeyName;
+const hashKeyIndexPath = '/:' + paritionKeyNameIndex;
 const sortKeyPath = hasSortKey ? '/:' + sortKeyName : '';
 
 // declare a new express app
@@ -77,6 +78,8 @@ app.get(path, function(req, res) {
   //     res.json({error: 'Wrong column type ' + err});
   //   }
   // }
+  
+  console.log(condition)
 
   let queryParams = {
     TableName: tableName,
@@ -148,12 +151,12 @@ app.get(path + sortKeyPath, function(req, res) {
   });
 });
 
-app.get(path + "/assigned" + hashKeyPath, function(req, res) {
+app.get(path + "/assigned" + hashKeyIndexPath, function(req, res) {
   const condition = {}
-  condition[partitionKeyName] = {
+  condition[paritionKeyNameIndex] = {
     ComparisonOperator: 'EQ'
   }
-  condition[paritionKeyNameIndex]['AttributeValueList'] = req.params[paritionKeyNameIndex];
+  condition[paritionKeyNameIndex]['AttributeValueList'] = [req.params[paritionKeyNameIndex]];
   // try {
   //   condition[paritionKeyNameIndex]['AttributeValueList'] = convertUrlType(req.params[paritionKeyNameIndex], "S");
   // } catch(err) {
@@ -172,7 +175,7 @@ app.get(path + "/assigned" + hashKeyPath, function(req, res) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err.message});
     } else {
-      
+      res.json(data.Items);
     }
   })
 })

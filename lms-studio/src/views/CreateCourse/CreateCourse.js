@@ -721,11 +721,11 @@ function CreateCourse(props) {
                               </FormField>
                               <Button
                                 variant="primary"
-                                onClick={(() =>{
+                                onClick={() =>{
                                   if (state.currentChapter.name) {
                                     setState({ ...state, visible: true })
                                   }
-                                })()}
+                                }}
                               >
                                 Add
                               </Button>
