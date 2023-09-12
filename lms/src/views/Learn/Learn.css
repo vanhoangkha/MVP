@@ -19,6 +19,7 @@
 
 .learn-lab-content-container {
     height: 100%;
+    overflow: auto;
 }
 
 .learn-video-player-container {
