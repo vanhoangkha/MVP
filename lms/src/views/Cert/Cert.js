@@ -45,7 +45,7 @@ export default class Cert extends React.Component {
         }).then((user) => {
             this.setState({
                 userEmail: user.attributes.email,
-                userName: user.attributes.family_name + " " + user.attributes.preferred_username,
+                userName: user.attributes.family_name + " " + user.attributes.name,
             })
         });
     }

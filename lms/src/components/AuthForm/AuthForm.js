@@ -7,186 +7,19 @@ import {
   Button,
   useTheme,
   useAuthenticator,
+  Theme,
+  ThemeProvider
 } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { Navigate } from "react-router-dom";
+import './AuthForm.css';
 
-// const components = {
-//   Header() {
-//     const { tokens } = useTheme();
-
-//     return (
-//       <View textAlign="center" padding={tokens.space.large}>
-//         <Image
-//           alt="Amplify logo"
-//           src="https://docs.amplify.aws/assets/logo-dark.svg"
-//         />
-//       </View>
-//     );
-//   },
-
-//   Footer() {
-//     const { tokens } = useTheme();
-
-//     return (
-//       <View textAlign="center" padding={tokens.space.large}>
-//         <Text color={tokens.colors.neutral[80]}>
-//           &copy; All Rights Reserved
-//         </Text>
-//       </View>
-//     );
-//   },
-
-//   SignIn: {
-//     Header() {
-//       const { tokens } = useTheme();
-
-//       return (
-//         <Heading
-//           padding={`${tokens.space.xl} 0 0 ${tokens.space.xl}`}
-//           level={3}
-//         >
-//           Sign in to your account
-//         </Heading>
-//       );
-//     },
-//     Footer() {
-//       const { toResetPassword } = useAuthenticator();
-
-//       return (
-//         <View textAlign="center">
-//           <Button
-//             fontWeight="normal"
-//             onClick={toResetPassword}
-//             size="small"
-//             variation="link"
-//           >
-//             Reset Password
-//           </Button>
-//         </View>
-//       );
-//     },
-//   },
-
-//   SignUp: {
-//     Header() {
-//       const { tokens } = useTheme();
-
-//       return (
-//         <Heading
-//           padding={`${tokens.space.xl} 0 0 ${tokens.space.xl}`}
-//           level={3}
-//         >
-//           Create a new account
-//         </Heading>
-//       );
-//     },
-//     Footer() {
-//       const { toSignIn } = useAuthenticator();
-
-//       return (
-//         <View textAlign="center">
-//           <Button
-//             fontWeight="normal"
-//             onClick={toSignIn}
-//             size="small"
-//             variation="link"
-//           >
-//             Back to Sign In
-//           </Button>
-//         </View>
-//       );
-//     },
-//   },
-//   ConfirmSignUp: {
-//     Header() {
-//       const { tokens } = useTheme();
-//       return (
-//         <Heading
-//           padding={`${tokens.space.xl} 0 0 ${tokens.space.xl}`}
-//           level={3}
-//         >
-//           Enter Information:
-//         </Heading>
-//       );
-//     },
-//     Footer() {
-//       return <Text>Footer Information</Text>;
-//     },
-//   },
-//   SetupTOTP: {
-//     Header() {
-//       const { tokens } = useTheme();
-//       return (
-//         <Heading
-//           padding={`${tokens.space.xl} 0 0 ${tokens.space.xl}`}
-//           level={3}
-//         >
-//           Enter Information:
-//         </Heading>
-//       );
-//     },
-//     Footer() {
-//       return <Text>Footer Information</Text>;
-//     },
-//   },
-//   ConfirmSignIn: {
-//     Header() {
-//       const { tokens } = useTheme();
-//       return (
-//         <Heading
-//           padding={`${tokens.space.xl} 0 0 ${tokens.space.xl}`}
-//           level={3}
-//         >
-//           Enter Information:
-//         </Heading>
-//       );
-//     },
-//     Footer() {
-//       return <Text>Footer Information</Text>;
-//     },
-//   },
-//   ResetPassword: {
-//     Header() {
-//       const { tokens } = useTheme();
-//       return (
-//         <Heading
-//           padding={`${tokens.space.xl} 0 0 ${tokens.space.xl}`}
-//           level={3}
-//         >
-//           Enter Information:
-//         </Heading>
-//       );
-//     },
-//     Footer() {
-//       return <Text>Footer Information</Text>;
-//     },
-//   },
-//   ConfirmResetPassword: {
-//     Header() {
-//       const { tokens } = useTheme();
-//       return (
-//         <Heading
-//           padding={`${tokens.space.xl} 0 0 ${tokens.space.xl}`}
-//           level={3}
-//         >
-//           Enter Information:
-//         </Heading>
-//       );
-//     },
-//     Footer() {
-//       return <Text>Footer Information</Text>;
-//     },
-//   },
-// };
 
 const formFields = {
-  signIn: {
-    username: {
-      placeholder: "Enter your email",
-    },
-  },
   signUp: {
+    email: {
+      order: 1
+    },
     password: {
       label: "Password:",
       placeholder: "Enter your Password:",
@@ -195,17 +28,66 @@ const formFields = {
     },
     confirm_password: {
       label: "Confirm Password:",
-      order: 1,
+      order: 3,
     },
+    'custom:name_on_certificate': {
+      placeHolder: 'Enter your Name on Certificate',
+      isRequired: true,
+      label: "Name on Certificate",
+      order: 4
+    }
   },
 };
 
-const signUpAttributes= ['family_name', 'preferred_username']
+// const signUpAttributes= ['family_name', 'name_on_certificate']
 
 export default function AuthForm() {
+  const { tokens } = useTheme();
+  console.log(tokens);
+  const theme: Theme = {
+    name: 'Auth Example Theme',
+    tokens: {
+      colors: {
+        brand: {
+          primary: {
+            '10': tokens.colors.teal['100'],
+            '80': tokens.colors.teal['40'],
+            '90': tokens.colors.teal['20'],
+            '100': tokens.colors.teal['10'],
+          },
+        },
+      },
+      components: {
+        tabs: {
+          item: {
+            _focus: {
+              color: {
+                value: '#EC7211',
+              }
+            },
+            _hover: {
+              color: {
+                value: '#ffa963',
+              },
+            },
+            _active: {
+              color: {
+                value: '#EC7211',
+              },
+              borderColor: {
+                value: '#EC7211'
+              }
+            },
+          },
+        },
+      },
+    },
+  };
   return (
-    <Authenticator signUpAttributes={signUpAttributes}>
+    <ThemeProvider theme={theme}>
+    <Authenticator formFields={formFields} >
       <Navigate to="/" replace={true} />
     </Authenticator>
+    </ThemeProvider>
   );
 }

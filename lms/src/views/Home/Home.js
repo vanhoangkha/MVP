@@ -14,6 +14,7 @@ import hightlightIcon2 from "../../assets/images/dashboard-highlight-2.png";
 import hightlightIcon3 from "../../assets/images/dashboard-highlight-3.png";
 import courseDefaultThumbnail from "../../assets/images/course-default-thumbnail.png";
 import loadingGif from "../../assets/images/loading.gif";
+import { Auth } from "aws-amplify";
 import { withTranslation } from "react-i18next";
 import { apiName, coursePath, publicCoursePath, userCoursePath } from "../../utils/api"
 
@@ -28,10 +29,20 @@ export class Home extends React.Component {
     };
   }
 
+  async checkLoggedIn() {
+    try {
+      await Auth.currentAuthenticatedUser();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async getCourse() {
     let transformedCourses = [];
-
     this.setState({ loading: true });
+
+    // Assigned course
     try {
       const userCourseResp = await API.get(apiName, userCoursePath);
       if (userCourseResp.length > 0) {
@@ -48,7 +59,13 @@ export class Home extends React.Component {
           });
         }
       }
+    } catch (error) {
+      console.log(error);
+      this.setState({ loading: false });
+    }
 
+    // Public course
+    try {
       const publicCourseResp = await API.get(apiName, publicCoursePath);
       publicCourseResp.forEach((course) => {
         transformedCourses.push({
@@ -63,7 +80,8 @@ export class Home extends React.Component {
       });
       // console.log(transformedCourses);
       this.setState({ courses: transformedCourses, loading: false });
-    } catch (error) {
+
+    }catch(error) {
       console.log(error);
       this.setState({ loading: false });
     }
@@ -87,6 +105,7 @@ export class Home extends React.Component {
     ) : (
       <div>
         <NavBar
+          href = "/"
           navigation={this.props.navigation}
           title="Cloud Solutions Journey"
         />
@@ -158,7 +177,7 @@ export class Home extends React.Component {
             </Grid>
           </div>
           <div className="dashboard-courses">
-            <p className="dashboard-courses-header">{t("home.list_title")}</p>
+            <p className="dashboard-courses-header">{ this.checkLoggedIn() ? t("home.list_title") : t("home.list_title_unauthen")}</p>
             <div className="dashboard-courses-header-decor" />
             <div className="dashboard-courses-list">
               {this.state.loading ? (

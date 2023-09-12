@@ -95,6 +95,7 @@ function LectureContent(props) {
           architect={props.lecture.lecture.content}
           openLink={props.openLink}
           countView={props.countView}
+          markLectureCompleted={props.markLectureCompleted}
         />
       );
     case "Document":
@@ -224,6 +225,7 @@ function LabContent(props) {
       setArchitecUrl(res)
     );
     props.countView();
+    props.markLectureCompleted()
   });
   return (
     <div className="learn-lab-content-container">
@@ -313,6 +315,7 @@ class QuizContent extends React.Component {
       complete: (result) => {
         this.setState({ questions: Array.from(result.data) });
         this.props.setQuestionLength(result.data.length);
+        console.log(result.data)
         // this.convertJSONToObject(result.data)
       },
     });
@@ -364,7 +367,7 @@ class QuizContent extends React.Component {
         this.state.currentQuestion
       ].Multichoice.localeCompare("1") === 0
     ) {
-      let i, j;
+      let i = 0, j = 0;
       while (i < this.state.selectedMultiAnswer.length && j < MAX_ANSWERS) {
         if (
           this.state.selectedMultiAnswer[i] ===
@@ -660,9 +663,9 @@ class QuizContent extends React.Component {
                 ].Multichoice.localeCompare("1") === 0
                   ? this.state.selectedMultiAnswer.map(
                       (ans) =>
-                        this.state.questions[this.state.currentQuestion][
-                          `E${ans}`
-                        ]
+                        <div >
+                          {this.state.questions[this.state.currentQuestion][`E${ans}`]}
+                        </div>
                     )
                   : this.state.questions[this.state.currentQuestion][
                       `E${this.state.selectedAnswer}`
@@ -1261,7 +1264,7 @@ export default class Learn extends React.Component {
 
     lectureId++;
     if (lectureId === this.state.course.chapters[chapterId].lectures.length) {
-      if (chapterId < this.state.course.chapters.length) {
+      if (chapterId < this.state.course.chapters.length - 1) {
         chapterId++;
         lectureId = 0;
       } else {
@@ -1485,40 +1488,23 @@ export default class Learn extends React.Component {
                             return {
                               type: "link",
                               text:
-                                lecture.type === "section" ? (
-                                  <div className="text-bold">
-                                    {lecture.name.toUpperCase()}
-                                  </div>
-                                ) : (
-                                  lecture.name
-                                ),
-                              text:
-                                lecture.type === "section" ? (
-                                  <div className="text-bold">
-                                    {" "}
-                                    {lecture.name.toUpperCase()}{" "}
-                                  </div>
-                                ) : (
-                                  <div className="learn-navigation-chapter">
-                                    {lecture.name}{" "}
-                                    {this.state.completedLectures.includes(
-                                      lecture.lectureId
-                                    ) ? (
-                                      <span className="learn-navigation-badge">
-                                        <IoEllipseSharp />
-                                        {lecture.length > 0
-                                          ? this.formatTime(lecture.length)
-                                          : ""}
-                                      </span>
-                                    ) : (
-                                      <span className="learn-navigation-badge">
-                                        {lecture.length > 0
-                                          ? this.formatTime(lecture.length)
-                                          : ""}
-                                      </span>
-                                    )}
-                                  </div>
-                                ),
+                              lecture.type === "section" ? (
+                                <div className="text-bold">
+                                  {" "}
+                                  {lecture.name.toUpperCase()}{" "}
+                                </div>
+                              ) : (
+                                <div className="learn-navigation-lecture">
+                                  {this.state.completedLectures.includes(
+                                    lecture.lectureId) ? <IoEllipseSharp /> : <IoEllipseSharp style={{visibility:"hidden"}}/>}
+                                  {lecture.name}{" "}
+                                  <span className="learn-navigation-badge">
+                                    {lecture.length > 0
+                                      ? this.formatTime(lecture.length)
+                                      : ""}
+                                  </span>
+                                </div>
+                              ),
                               href: lecture.lectureId,
                               // info:
                               //   lecture.type === "section" ? (

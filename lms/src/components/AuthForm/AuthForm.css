@@ -1,0 +1,14 @@
+.amplify-button[data-variation="primary"] {
+  background: #EC7211
+}
+
+[data-amplify-authenticator] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.amplify-button--link{
+    color: #0080cf
+}

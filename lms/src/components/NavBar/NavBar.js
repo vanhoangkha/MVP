@@ -55,6 +55,11 @@ export class NavBar extends React.Component {
             authChecked: true,
             authenticated: false,
         })
+        if ( this.props.href != "/" ){
+            this.setState({
+                redirectHome: true,
+            })
+        }
     }
 
     onLanguageHandle = (event) => {
@@ -156,9 +161,6 @@ export class NavBar extends React.Component {
                                     })
                                 } else if (e.detail.id === 'signout') {
                                     this.startSignOut();
-                                    this.setState({
-                                        redirectHome: true,
-                                    })
                                 }
                             }
                         }

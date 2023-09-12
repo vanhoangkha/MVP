@@ -375,15 +375,15 @@ a.learn-fill-div:hover {
     /* opacity: 0.5; */
 }
 
-.learn-navigation-badge svg {
+.learn-navigation-lecture svg {
     color: #2E7D32;
     height: 8px;
     position: relative;
     top: -1px;
 }
 
-.learn-navigation-chapter {
-    width: 230px;
+.learn-navigation-chapter, .learn-navigation-lecture {
+    width: 250px;
 }
 
 .learn-navigation-chapter span {
