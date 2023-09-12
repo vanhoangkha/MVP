@@ -1495,9 +1495,11 @@ export default class Learn extends React.Component {
                                 </div>
                               ) : (
                                 <div className="learn-navigation-lecture">
+                                  <div style={{ width: "80%"}}>
                                   {this.state.completedLectures.includes(
                                     lecture.lectureId) ? <IoEllipseSharp /> : <IoEllipseSharp style={{visibility:"hidden"}}/>}
                                   {lecture.name}{" "}
+                                  </div>
                                   <span className="learn-navigation-badge">
                                     {lecture.length > 0
                                       ? this.formatTime(lecture.length)

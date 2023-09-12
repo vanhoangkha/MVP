@@ -371,8 +371,10 @@ a.learn-fill-div:hover {
 }
 
 .learn-navigation-badge {
-    float: right;
+    /* float: right; */
     /* opacity: 0.5; */
+    width: 20%;
+    text-align: end;
 }
 
 .learn-navigation-lecture svg {
@@ -382,8 +384,12 @@ a.learn-fill-div:hover {
     top: -1px;
 }
 
+.learn-navigation-lecture {
+    display: flex;
+}
+
 .learn-navigation-chapter, .learn-navigation-lecture {
-    width: 250px;
+    width: 230px;
 }
 
 .learn-navigation-chapter span {
