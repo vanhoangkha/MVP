@@ -134,30 +134,22 @@ const PrivateCourses = () => {
   const deleteCourse = async () => {
     setDisable(true);
     setDeleting(true);
-    let count = 0;
+    let courseList = courses;
     let countDeleteItems = currentCourse ? 1 : selectedItems.length;
     const deteleItems = currentCourse ? currentCourse : selectedItems
     for (let i = 0; i < countDeleteItems; i++) {
-      deleteCourseInDB(deteleItems[i].ID, i)
-        .then((res) => {
-          count++;
-          if (count === countDeleteItems) {
-            resetSuccess();
-          }
-        })
-        .catch((error) => {
-          resetFail();
-          console.log(error);
-        });
+      try {
+        await API.del(apiName, coursePath + "/object/" + deteleItems[i].ID);
+        courseList = courseList.filter(course => course.ID != deteleItems[i].ID);
+        if ( i === countDeleteItems - 1){
+          resetSuccess();
+          setCourses(courseList);
+        }
+      }catch(error){
+        resetFail();
+        console.log(error);
+      }
     }
-  }
-
-  const deleteCourseInDB = async (id, index) => {
-    await API.del(apiName, coursePath + "/object/" + id);
-    let courseList = courses;
-    // courseList.splice(index, 1);
-    courseList = courseList.filter(course => course.ID != id);
-    setCourses(courseList);
   }
 
   return (

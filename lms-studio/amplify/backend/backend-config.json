@@ -8,14 +8,6 @@
             "Arn"
           ],
           "category": "function",
-          "resourceName": "studioCourses"
-        },
-        {
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "function",
           "resourceName": "studioUserCourse"
         },
         {
@@ -33,6 +25,14 @@
           ],
           "category": "function",
           "resourceName": "userOverview"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studioCourses"
         }
       ],
       "providerPlugin": "awscloudformation",

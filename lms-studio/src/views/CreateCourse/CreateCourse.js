@@ -111,7 +111,7 @@ function CreateCourse(props) {
 
     API.get(apiName, path)
       .then((response) => {
-        console.log(response)
+        // console.log(response)
         setState({ ...state, existingLectures: response });
       })
       .catch((error) => {
@@ -325,7 +325,6 @@ function CreateCourse(props) {
         WhatToLearn: state.whatToLearn,
         Chapters: state.chapters,
         Views: 0,
-        CreatedID: state.userId,
     }
 
     const apiName = "lmsStudio";

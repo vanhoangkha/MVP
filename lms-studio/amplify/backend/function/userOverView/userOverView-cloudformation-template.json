@@ -174,7 +174,8 @@
           "Statement": [
             {
               "Action": [
-                "cognito-idp:ListUsers"
+                "cognito-idp:ListUsers",
+                "cognito-idp:ListIdentityProviders"
               ],
               "Resource": [
                 "*"

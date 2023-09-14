@@ -1,4 +1,4 @@
-import React, { useEffect, useState,  } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Table,
@@ -18,8 +18,8 @@ import Title from "../../../components/Title";
 import { apiName, lecturePublicPath, lecturePath } from "../../../utils/api";
 import { API, Storage } from "aws-amplify";
 import { useNavigate } from "react-router-dom";
-import { transformDateTime } from "../../../utils/tool"
-import { useCollection } from '@cloudscape-design/collection-hooks';
+import { transformDateTime } from "../../../utils/tool";
+import { useCollection } from "@cloudscape-design/collection-hooks";
 import { getMyLecturesService } from "../services/lecture";
 
 const successMes = "Delete success";
@@ -31,7 +31,7 @@ function EmptyState({ title, subtitle, action }) {
       <Box variant="strong" textAlign="center" color="inherit">
         {title}
       </Box>
-      <Box variant="p" padding={{ bottom: 's' }} color="inherit">
+      <Box variant="p" padding={{ bottom: "s" }} color="inherit">
         {subtitle}
       </Box>
       {action}
@@ -53,26 +53,37 @@ const MyLectures = () => {
   const [actionDisable, setActionDisable] = useState(true);
   const [currentLecture, setCurrentLecture] = useState();
 
-  const navigate  = useNavigate()
+  const navigate = useNavigate();
 
-  const [preferences, setPreferences] = useState({ pageSize: 15, visibleContent: ["name", "updatedAt", "state", "actions"] });
-  const { items, actions, filteredItemsCount, collectionProps, filterProps, paginationProps } = useCollection(
-    lectures,
-    {
-      filtering: {
-        empty: <EmptyState title="No lectures" />,
-        noMatch: (
-          <EmptyState
-            title="No matches"
-            action={<Button onClick={() => actions.setFiltering('')}>Clear filter</Button>}
-          />
-        ),
-      },
-      pagination: { pageSize: preferences.pageSize },
-      sorting: {},
-      selection: {},
-    }
-  );
+  const [preferences, setPreferences] = useState({
+    pageSize: 15,
+    visibleContent: ["name", "updatedAt", "state", "actions"],
+  });
+  const {
+    items,
+    actions,
+    filteredItemsCount,
+    collectionProps,
+    filterProps,
+    paginationProps,
+  } = useCollection(lectures, {
+    filtering: {
+      empty: <EmptyState title="No lectures" />,
+      noMatch: (
+        <EmptyState
+          title="No matches"
+          action={
+            <Button onClick={() => actions.setFiltering("")}>
+              Clear filter
+            </Button>
+          }
+        />
+      ),
+    },
+    pagination: { pageSize: preferences.pageSize },
+    sorting: {},
+    selection: {},
+  });
 
   const handleGetLectures = async () => {
     setLoading(true);
@@ -101,7 +112,7 @@ const MyLectures = () => {
     switch (value.id) {
       case "rm":
         confirmDelete();
-        setCurrentLecture(lecture)
+        setCurrentLecture(lecture);
         break;
       case "edt":
         navigate(`/editLecture/${selectedItems[0]?.ID}`, {
@@ -159,58 +170,29 @@ const MyLectures = () => {
   const deleteLecture = async () => {
     setDisable(true);
     setDeleting(true);
-    let count = 0;
+    let lectureList = lectures;
     let countDeleteItems = currentLecture ? 1 : selectedItems.length;
-    let deleteItems = currentLecture ? currentLecture : selectedItems
+    let deleteItems = currentLecture ? currentLecture : selectedItems;
 
-    // selectedItems.map((item) => {
-    //   await API.delete(apiName, lecturePublicPath + "/object/" + item.lectureId)
-    // })
     for (let i = 0; i < countDeleteItems; i++) {
-      if (deleteItems[i].Content) {
-        deleteFile(deleteItems[i].Content)
-          .then((res) => {
-            deleteLectureInDB(deleteItems[i].ID, i)
-              .then((res) => {
-                count++;
-                if ( count === countDeleteItems ) {
-                  resetSuccess()
-                }
-              })
-              .catch((error) => {
-                resetFail();
-                console.log(error);
-              });
-          })
-          .catch((error) => {
-            resetFail();
-            console.log(error);
-          });
-      } else {
-        deleteLectureInDB(deleteItems[i].ID, i)
-          .then((res) => {
-            count++;
-            if ( count === countDeleteItems ) {
-              resetSuccess()
-            }
-          })
-          .catch((error) => {
-            resetFail();
-            console.log(error);
-          });
+      try {
+        if (deleteItems[i].Content) {
+          await Storage.remove(deleteItems[i].Content, { level: "public" });
+        }
+
+        await API.del(apiName, lecturePath + "/object/" + deleteItems[i].ID);
+        lectureList = lectureList.filter(
+          (course) => course.ID != deleteItems[i].ID
+        );
+        if (i === countDeleteItems - 1) {
+          resetSuccess();
+          setLectures(lectureList);
+        }
+      } catch (error) {
+        resetFail();
+        console.log(error);
       }
     }
-  };
-
-  const deleteFile = async (key) => {
-    await Storage.remove(key, { level: "public" });
-  };
-
-  const deleteLectureInDB = async (id, index) => {
-    await API.del(apiName, lecturePath + "/object/" + id);
-    let lectureList = lectures;
-    lectureList = lectureList.filter(course => course.ID != id);
-    setLectures(lectureList);
   };
 
   const confirmDelete = () => {
@@ -259,7 +241,8 @@ const MyLectures = () => {
           {
             id: "updatedAt",
             header: "Last Updated",
-            cell: (lecture) => lecture.LastUpdated ? transformDateTime(lecture.LastUpdated) : "",
+            cell: (lecture) =>
+              lecture.LastUpdated ? transformDateTime(lecture.LastUpdated) : "",
             sortingField: "updatedAt",
           },
           {
@@ -286,7 +269,7 @@ const MyLectures = () => {
                 items={[
                   { id: "detail", text: "View details" },
                   { id: "edt1", text: "Edit" },
-                  { id: "rm", text: "Delete"},
+                  { id: "rm", text: "Delete" },
                 ]}
               />
             ),
@@ -371,8 +354,7 @@ const MyLectures = () => {
               title: "Select visible content",
               options: [
                 {
-                  label:
-                    "Main distribution properties",
+                  label: "Main distribution properties",
                   options: [
                     {
                       id: "name",

@@ -39,7 +39,7 @@
 
 import { CognitoIdentityProviderClient, ListUsersCommand } from "@aws-sdk/client-cognito-identity-provider";
 
-const SOUTHEAST_REGION = "ap-southeast-1:";
+// const SOUTHEAST_REGION = "ap-southeast-1:";
 
 export const handler = async(event) => {
   const client = new CognitoIdentityProviderClient({ });
@@ -59,9 +59,9 @@ export const handler = async(event) => {
     // console.log('response:', response);
     const users = response.Users;
 
-    users.forEach((user) => {
-      user.Attributes[0].Value = SOUTHEAST_REGION + user.Attributes[0].Value
-    });
+    // users.forEach((user) => {
+    //   user.Attributes[0].Value = SOUTHEAST_REGION + user.Attributes[0].Value
+    // });
 
     return {
       statusCode: 200,

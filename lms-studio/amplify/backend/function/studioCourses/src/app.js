@@ -25,7 +25,7 @@ if (process.env.ENV && process.env.ENV !== "NONE") {
   tableName = tableName + '-' + process.env.ENV;
 }
 
-const userIdPresent = false; // TODO: update in case is required to use that definition
+const userIdPresent = true; // TODO: update in case is required to use that definition
 const partitionKeyName = "ID";
 const partitionKeyType = "S";
 const userIndex = "CreatorID-index";
@@ -248,10 +248,8 @@ app.put(path, function(req, res) {
 // *************************************/
 
 app.post(path, function(req, res) {
-
-  if (userIdPresent) {
-    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  }
+  
+  req.body['CreatorID'] = req.apiGateway.event.requestContext.identity.cognitoAuthenticationProvider.split(':CognitoSignIn:')[1] || UNAUTH;
 
   let putItemParams = {
     TableName: tableName,
@@ -273,9 +271,9 @@ app.post(path, function(req, res) {
 
 app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
   const params = {};
-  if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  } else {
+  // if (userIdPresent && req.apiGateway) {
+    // params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+  // } else {
     params[partitionKeyName] = req.params[partitionKeyName];
      try {
       params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
@@ -283,7 +281,7 @@ app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
       res.statusCode = 500;
       res.json({error: 'Wrong column type ' + err});
     }
-  }
+  // }
   if (hasSortKey) {
     try {
       params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);

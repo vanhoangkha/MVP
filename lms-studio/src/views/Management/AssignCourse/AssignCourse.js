@@ -41,35 +41,59 @@ const AssignCourse = (props) => {
   const [oppValue, setOppValue] = React.useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [items, setItems] = useState([]);
+  const [ currentSelectedUsers, setCurrentSelectedUsers ] = useState([]);
   const navigate = useNavigate();
   const {state} = useLocation();
   // console.log("passed vars: " + JSON.stringify(prevState))
 
 
-  const handlePutAssignCourse = async (
-  ) => {
-    const staticData = {
-      CourseID: state.ID,
-      OppID: oppId,
-      OppValue: oppValue,
-      flexible: checked,
-      Status: "ASSIGNED",
-      CreatorID: state.CreatorID,
-    };
+  const handlePutAssignCourse = async () => {
+    if ( currentSelectedUsers === selectedUsers ) {
+      return;
+    }
+
     setButtonLoad(true)
+
+    // Compare Assigned User
+    var unassignedList = [];
+    var assigedList = [];
     var userCourseArray = [];
+    var deleteUserCourseArray = [];
 
-    selectedUsers.forEach((user) => {
-      if(user?.id){
-        const dynamicData = { ...staticData, UserID: user.id };
-        userCourseArray.push(dynamicData);
-      }
+    unassignedList = selectedUsers.filter(function (obj) {
+      return currentSelectedUsers.indexOf(obj) == -1;
     });
+    console.log(unassignedList);
+    assigedList = currentSelectedUsers.filter(function (obj) {
+      return selectedUsers.indexOf(obj) == -1;
+    });
+    console.log(assigedList)
+    try {
+      const staticData = {
+        CourseID: state.ID,
+        OppID: oppId,
+        OppValue: oppValue,
+        flexible: checked,
+        Status: "ASSIGNED",
+        CreatorID: state.CreatorID,
+      };
+      assigedList.forEach((user) => {
+        if(user?.UserID){
+          const dynamicData = { ...staticData, UserID: user.UserID };
+          userCourseArray.push(dynamicData);
+        }
+      });
+      await API.put(apiName, userCourse, { body: userCourseArray })
 
-    console.log(userCourseArray);
+      userCourseArray = [];
+      unassignedList.forEach((user) => {
+        if(user?.UserID){
+          const dynamicData = { CourseID: state.ID, UserID: user.UserID };
+          deleteUserCourseArray.push(dynamicData);
+        }
+      });
+      await API.del(apiName, userCourse, { body: deleteUserCourseArray });
 
-    API.put(apiName, userCourse, { body: userCourseArray })
-    .then((response) => {
       setItems([{
         type: "success",
         content: "Assign course successfully!",
@@ -78,9 +102,9 @@ const AssignCourse = (props) => {
         onDismiss: () => setItems([]),
       }])
       setButtonLoad(false);
+      setSelectedUsers(currentSelectedUsers)
       setTimeout(() => setItems([]),3000)
-    })
-    .catch((error) => {
+    }catch(error) {
       console.error(error); // from creation or business logic
       setItems([{
         type: "error",
@@ -91,7 +115,8 @@ const AssignCourse = (props) => {
       }]) 
       setButtonLoad(false);
       setTimeout(() => setItems([]),3000)
-    })
+    }
+    
   }
 
   const getAllUser = async () => {
@@ -99,16 +124,21 @@ const AssignCourse = (props) => {
     let userList = [];
     try {
       const userData = await API.get(apiName, userOverview);
+      
       console.log(userData)
       userData.forEach((user) => {
         userList.push({
-          id: user.Attributes[0].Value,
-          email: user.Attributes[4].Value,
-          preferred_username: user.Attributes[2].Value,
-          family_name: user.Attributes[3].Value,
+          UserID: user.Attributes[0].Value,
+          email: user.Attributes[2].Value,
+          name: user.Attributes[3].Value,
         });
       });
       setUsers(userList);
+
+      const assignedUser = await API.get(apiName, userCourse + "/assigned/" + state.ID);
+      console.log(assignedUser)
+      setSelectedUsers(assignedUser);
+      setCurrentSelectedUsers(assignedUser)
       setLoading(false);
     }
     catch(err){
@@ -443,17 +473,17 @@ const AssignCourse = (props) => {
               <div>
                 <Table
                   onSelectionChange={({ detail }) =>
-                    setSelectedUsers(detail.selectedItems)
+                    setCurrentSelectedUsers(detail.selectedItems)
                   }
-                  selectedItems={selectedUsers}
+                  selectedItems={currentSelectedUsers}
                   ariaLabels={{
                     selectionGroupLabel: "Users selection",
-                    allUsersSelectionLabel: ({ selectedUsers }) =>
-                      `${selectedUsers.length} ${
-                        selectedUsers.length === 1 ? "item" : "items"
+                    allUsersSelectionLabel: ({ currentSelectedUsers }) =>
+                      `${currentSelectedUsers.length} ${
+                        currentSelectedUsers.length === 1 ? "item" : "items"
                       } selected`,
-                    userSelectionLabel: ({ selectedUsers }, item) => {
-                      const isUserSelected = selectedUsers.filter(
+                    userSelectionLabel: ({ currentSelectedUsers }, item) => {
+                      const isUserSelected = currentSelectedUsers.filter(
                         (i) => i.name === item.name
                       ).length;
                       return `${item.name} is ${
@@ -463,6 +493,12 @@ const AssignCourse = (props) => {
                   }}
                   columnDefinitions={[
                     {
+                      id: "UserID",
+                      header: "User ID",
+                      cell: (e) => e.UserID,
+                      sortingField: "name",
+                    },
+                    {
                       id: "email",
                       header: "Email",
                       cell: (e) => e.email,
@@ -470,28 +506,22 @@ const AssignCourse = (props) => {
                       isRowHeader: true,
                     },
                     {
-                      id: "familyName",
-                      header: "Family Name",
-                      cell: (e) => e.family_name,
-                      sortingField: "name",
-                    },
-                    {
-                      id: "preferredName",
-                      header: "Preferred Name",
-                      cell: (e) => e.preferred_username,
+                      id: "name",
+                      header: "Name",
+                      cell: (e) => e.name,
                       sortingField: "name",
                     },
                   ]}
                   columnDisplay={[
                     { id: "email", visible: true },
                     { id: "familyName", visible: true },
-                    { id: "preferredName", visible: true },
+                    { id: "name", visible: true },
                   ]}
                   items={users}
                   loading={loading}
                   loadingText="Loading users"
                   selectionType="multi"
-                  trackBy="email"
+                  trackBy="UserID"
                   empty={
                     <Box textAlign="center" color="inherit">
                       {" "}
@@ -515,8 +545,8 @@ const AssignCourse = (props) => {
                   header={
                     <Header
                       counter={
-                        selectedUsers.length
-                          ? "(" + selectedUsers.length + "/10)"
+                        currentSelectedUsers.length
+                          ? "(" + currentSelectedUsers.length + "/10)"
                           : "(10)"
                       }
                     >
@@ -589,7 +619,7 @@ const AssignCourse = (props) => {
                     Cancel{" "}
                   </Button>{" "}
                   <Button
-                    disabled={!selectedUsers.length}
+                    disabled={!currentSelectedUsers.length}
                     variant="primary"
                     onClick={() => handlePutAssignCourse()}
                     loading={buttonLoad}
