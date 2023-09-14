@@ -66,7 +66,7 @@ app.get(path, function(req, res) {
   }
 
   if (userIdPresent && req.apiGateway) {
-    condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
+    condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoAuthenticationProvider.split(':CognitoSignIn:')[1] || UNAUTH ];
   } else {
     try {
       condition[partitionKeyName]['AttributeValueList'] = [ convertUrlType(req.params[partitionKeyName], partitionKeyType) ];
@@ -98,8 +98,8 @@ app.get(path, function(req, res) {
 app.get(path + sortKeyPath, function(req, res) {
   const params = {};
   if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-    console.log(params[partitionKeyName]);
+    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoAuthenticationProvider.split(':CognitoSignIn:')[1] || UNAUTH;
+    // console.log(req);
   } else {
     params[partitionKeyName] = req.params[partitionKeyName];
     try {
@@ -167,7 +167,7 @@ app.get(path + sortKeyPath, function(req, res) {
 app.put(path, function(req, res) {
 
   if (userIdPresent) {
-    req.body['UserID'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
+    req.body['UserID'] = req.apiGateway.event.requestContext.identity.cognitoAuthenticationProvider.split(':CognitoSignIn:')[1] || UNAUTH;
   }
 
   let putItemParams = {

@@ -45,8 +45,9 @@ export default class Cert extends React.Component {
         }).then((user) => {
             this.setState({
                 userEmail: user.attributes.email,
-                userName: user.attributes.family_name + " " + user.attributes.name,
+                userName: user.attributes['custom:name_on_certificate'],
             })
+            console.log(user.attributes['custom:name_on_certificate'])
         });
     }
 
@@ -120,6 +121,7 @@ export default class Cert extends React.Component {
         API.put(apiName, path, myInit)
         .then((response) => {
             this.setState({cert: myInit.body});
+            console.log(myInit)
             let userCourse = this.state.userCourse;
             userCourse.CertificateID = myInit.body.ID;
             const apiName = 'courses';
