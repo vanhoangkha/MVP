@@ -38,8 +38,8 @@ Follow below instructions in section "Install the Amplify CLI", and section "Con
 **Step:** "Specify the **AWS Region**" -> Choose **Singapore Region**.
 
 ## 4. Init Amplify and connect your local env to the Cloud:
-Check out git branch d_unicorm_gym_master before continuing.
-Open your local LMS root folder and do amplify setup with lms first:
+- Check out git branch d_unicorm_gym_master before continuing.
+- Open your local LMS root folder and do amplify setup with lms first:
 
 ```
 cd lms/lms
@@ -60,8 +60,8 @@ amplify push
 
 ```
 
-Similarly, do all the above steps in this section 3 for lms:
-Open your local LMS root folder, then:
+- Similarly, do all the above steps in this section 3 for lms:
+- Open your local LMS root folder, then:
 
 ```
 cd lms/lms-studio
@@ -69,13 +69,13 @@ cd lms/lms-studio
 (sudo) amplify init
 ```
 
-When initializing lms-studio project, if amplify adds a table to import, select **courses-dev, lecture-resource ...**
+- When initializing lms-studio project, if amplify adds a table to import, select **courses-dev, lecture-resource ...**
 
 ```
 amplify push
 ```
 
-We will create a policy to provide access to the S3 lecture resources with the following content:
+- We will create a policy to provide access to the S3 lecture resources with the following content:
 
 ```
 {
@@ -138,13 +138,13 @@ We will create a policy to provide access to the S3 lecture resources with the f
 
 ```
 
-Then, create a role named "amplify-lmsstudio-prod-authRole" and attach the policy to it.
+- Then, create a role named "amplify-lmsstudio-prod-authRole" and attach the policy to it.
 ## 5. Check Your Apps Are On or Not:
-Open your own Isengard account and go to "Amplify" service to check if your app is now shown on or not (app names: lms, lmsstudio)
+- Open your own Isengard account and go to "Amplify" service to check if your app is now shown on or not (app names: lms, lmsstudio)
 
 ## 6. Run Frontend from Your Local Laptop:
 ### 6.1. How to Run LMS FE:
-Open your local LMS root folder, then:
+- Open your local LMS root folder, then:
 ```
 cd LMS/lms/
 
@@ -154,7 +154,7 @@ npm start
 ```
 
 ### 6.2. How to Run LMS-Studio FE:
-Open your local LMS root folder, then:
+- Open your local LMS root folder, then:
 
 ```
 cd LMS/lms-studio/
@@ -165,13 +165,13 @@ npm start
 ```
 
 ## 7. Add Sample Data to DynamoDB Tables
-Sample data for Course and Lecture tables are stored in the sample-data folder.
-You can add these data to DynamoDB using JSON view when creating a new item in DynamoDB Console.
+- Sample data for Course and Lecture tables are stored in the sample-data folder.
+- You can add these data to DynamoDB using JSON view when creating a new item in DynamoDB Console.
 
 ## 8. How Can We Contribute to the Source Code ?
-Inside your cloned repository from section 1. From the d_unicorm_gym_master branch, create a new feature branch, naming convention: f_feature_name (E.g: f_create_course).
+- Inside your cloned repository from section 1. From the d_unicorm_gym_master branch, create a new feature branch, naming convention: f_feature_name (E.g: f_create_course).
 
-You develop, test the project with that branch.
+- You develop, test the project with that branch.
 
 Development steps:
 
@@ -193,9 +193,9 @@ amplify publish
 
 ```
 ## 10. Demo
-Demo AWS Cloud Academy Studio: AWS Cloud Academy Studio
+- Demo AWS Cloud Academy Studio: AWS Cloud Academy Studio
 
-Demo AWS Cloud Solution Journey: Cloud Solution Journey
+- Demo AWS Cloud Solution Journey: Cloud Solution Journey
 
 ## 11. Additional Step After Publishing
 After publishing, follow these additional steps:
