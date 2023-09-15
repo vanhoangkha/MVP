@@ -358,5 +358,62 @@
         }
       }
     }
+  },
+  "lmsdev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lmsstudio-lmsdev-110922-authRole",
+      "UnauthRoleArn": "arn:aws:iam::148922931563:role/amplify-lmsstudio-lmsdev-110922-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::148922931563:role/amplify-lmsstudio-lmsdev-110922-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-lmsstudio-lmsdev-110922-deployment",
+      "UnauthRoleName": "amplify-lmsstudio-lmsdev-110922-unauthRole",
+      "StackName": "amplify-lmsstudio-lmsdev-110922",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:148922931563:stack/amplify-lmsstudio-lmsdev-110922/a7756491-537d-11ee-9ef6-026b9d98a442",
+      "AmplifyAppId": "d1q01t5z1hu3ey",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-lmsstudio-lmsdev-110922-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "auth": {
+        "lmsstudioc3fd255f": {}
+      },
+      "function": {
+        "studioCourses": {
+          "tableName": "",
+          "deploymentBucketName": "amplify-lmsstudio-lmsdev-110922-deployment",
+          "s3Key": "amplify-builds/studioCourses-6f3956583969746c5330-build.zip"
+        },
+        "studioLectures": {
+          "deploymentBucketName": "amplify-lmsstudio-lmsdev-110922-deployment",
+          "s3Key": "amplify-builds/studioLectures-794f554b414969396835-build.zip"
+        },
+        "studioUserCourse": {
+          "deploymentBucketName": "amplify-lmsstudio-lmsdev-110922-deployment",
+          "s3Key": "amplify-builds/studioUserCourse-792b6e794531676d534f-build.zip"
+        },
+        "studiousers": {
+          "deploymentBucketName": "amplify-lmsstudio-lmsdev-110922-deployment",
+          "s3Key": "amplify-builds/studiousers-554d6b51596c54726479-build.zip"
+        },
+        "userOverview": {
+          "deploymentBucketName": "amplify-lmsstudio-lmsdev-110922-deployment",
+          "s3Key": "amplify-builds/userOverview-42694e34445532687352-build.zip"
+        }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1q01t5z1hu3ey",
+          "type": "manual"
+        }
+      },
+      "storage": {
+        "lmsstudiodcbd5e2f": {
+          "bucketName": "lecture-resource110654-lmsdev",
+          "region": "ap-southeast-1"
+        }
+      },
+      "api": {
+        "lmsStudio": {}
+      }
+    }
   }
 }
